@@ -1,0 +1,90 @@
+
+<div class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">PAIS</a>
+    </div>
+
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Nova porudžbina <span class="sr-only">(current)</span></a></li>
+        <li><a href="#/orders">Moje porudžbine</a></li>
+        <li><a href="#/results">Snimanja i senzori</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      	<li><a href="#/orders">Moji podaci</a></li>
+        <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Izlaz</a></li>
+      </ul>
+    </div>
+  </div>
+</nav> 
+
+<div class="container-fluid holder" ng-controller="testCtrl">
+	<div class="row backopacity">
+
+		<div class="col-sm-6 map">
+			<div class="google-map-canvas" id="map-canvas"></div>
+		</div>
+
+		<div class="col-sm-5 col-sm-offset-1">
+
+			<h2>Hello {{msg}}</h2>
+
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-xs-10">
+						<input class="form-control" placeholder="Ime narudžbine" ng-model="orderName">
+					</div>
+				</div>
+				<hr>
+				<div class="form-group">
+					<div class="col-xs-10 fullwidth">
+						<div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings" ng-disabled="polygonSelected">Izaberi</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-10">
+						<input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom" ng-disabled="polygonSelected">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-10">
+						<input class="form-control" type="date" max="2020-07-01" ng-model="dateTo" ng-disabled="polygonSelected">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-10">
+						<select class="form-control" id="sel1">
+					    <option>7 dana</option>
+					    <option>15 dana</option>
+					    <option>30 dana</option>
+					    <option>60 dana</option>
+					  </select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-10">
+						<button class="btn btn-primary pull-right" ng-click="init()">Submit</button>
+					</div>
+				</div>
+
+
+
+			</form>
+			<hr>
+		</div>
+		<!--/col-5-->
+
+	</div>
+</div>
+</div>
