@@ -5,17 +5,22 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 		alert(scope.polygonSelected);
 	}
 
+  	scope.recordings = [];
+  	scope.availableColors = ['Snimanje 1','Snimanje 2','Snimanje 3','Snimanje 4','Snimanje 5'];
 
 	scope.polygons = [];
+	scope.polygonSurface = 0;
+	scope.polygonSurfaceFixed = 0;
 	scope.sensors = [];
 
-	scope.polygonSelected = false;
-	scope.markerSelected = false;
+	scope.polygonNotSelected = true;
+	scope.markerNotSelected = true;
 
 	scope.orderName = "";
-
 	scope.dateFrom = "";
 	scope.dateTo = "";
+
+	scope.estimatedPrice = "620EUR";
 
 	scope.multiselectmodel = [];
 	scope.multiselectdata = [
@@ -27,7 +32,7 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
     ];
 
 	scope.multiselectsettings = {
-	    smartButtonMaxItems: 3,
+	    smartButtonMaxItems: 1,
 	    smartButtonTextConverter: function(itemText, originalItem) {
 	        if (itemText === 'Jhon') {
 	        return 'Jhonny!';
@@ -44,6 +49,12 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
     	autoclose: true,
     	weekStart: 0,
 	}
+
+
+	scope.estimate = function() {
+		$('#warning').show();
+	}
+
 	/**
 	 * A library to draw overlays on top of Google Maps to get geospatial info
 	 * Author: @rodowi
@@ -54,8 +65,8 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 	mapDataId = 'map-data',
 	mapOverlayStyle = {
 			fillColor: '#21CCCA',
-			fillOpacity: 0.25,
-			strokeWeight: 0.75
+			fillOpacity: 0.75,
+			strokeWeight: 0.95
 	};
 
 
@@ -71,6 +82,7 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 			center: new google.maps.LatLng(44, 20.461414),
 			streetViewControl: false,
 			zoom: 8,
+			mapTypeId: google.maps.MapTypeId.HYBRID,
 			zoomControlOptions: {
 				style: google.maps.ZoomControlStyle.LARGE,
 				position: google.maps.ControlPosition.LEFT_CENTER
@@ -91,7 +103,7 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 			polygonOptions: mapOverlayStyle,
 			markerOptions: {
 				title: "Senzor",
-				icon: "public/img/waterfilter.png"
+				icon: "img/waterfilter.png"
 			},
 		});
 		drawingManager.setMap(map);
@@ -126,8 +138,8 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 				mapOverlays.push(event.overlay);
 				var sensor = event.overlay.position;
 				scope.sensors.push(sensor);
-				if (scope.markerSelected == false) {
-					scope.markerSelected = true;
+				if (scope.markerNotSelected == true) {
+					scope.markerNotSelected = false;
 				}
 			} else {
 				var bounds = event.overlay.toCapArea();
@@ -139,10 +151,12 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 				var area = google.maps.geometry.spherical.computeArea(paths);
 				var polygon = area/10000;
 				scope.polygons.push(polygon);
-				alert (area/10000);
-				alert (scope.polygons.length);
-				if (scope.polygonSelected == false) {
-					scope.polygonSelected = true;
+				//alert (area/10000);
+				//alert (scope.polygons.length);
+				scope.polygonSurface = scope.polygonSurface + polygon;
+				scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
+				if (scope.polygonNotSelected == true) {
+					scope.polygonNotSelected = false;
 				}
 			}
 			// Get states intersecting the bounds
@@ -213,8 +227,12 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 	function resetMap() {
 		removeMapOverlays();
 		removeMapData();
-		scope.polygonSelected = false;
-		scope.markerSelected = false;
+		scope.polygonNotSelected = true;
+		scope.markerNotSelected = true;
+		scope.polygonSurface = 0;
+		scope.polygonSurfaceFixed = 0;
+		scope.polygons = [];
+		scope.sensors = [];
 	}
 
 

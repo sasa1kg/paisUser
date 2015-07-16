@@ -1,0 +1,124 @@
+<div class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/orders">PAIS</a>
+    </div>
+
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a>Nova porudžbina </a></li>
+        <li><a href="#/orders">Moje porudžbine</a></li>
+        <li><a href="#/results">Snimanja i senzori</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      	<li class="active"><a>Moji podaci  <span class="sr-only">(current)</span></a></li>
+        <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Izlaz</a></li>
+      </ul>
+    </div>
+  </div>
+</nav> 
+
+
+<div class="panel panel-default">
+	    <div class="panel-heading">
+	      <h2 class="panel-title">Moji podaci </h2>
+	    </div>
+	    <div class="panel-body">
+	     	<div class="col-sm-6">
+	     		<dl>
+	     				<dt><label>E-MAIL: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="email">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>LOZINKA: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input type="password" class="form-control" placeholder="Lozinka" ng-model="password">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>IME: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="Ime" ng-model="name">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>PREZIME: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="Prezime" ng-model="lastname">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>ADRESA: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="address">
+							</div>
+						</dd>
+						</br>
+						<hr>
+					</dl>
+			</div>
+
+			<div class="col-sm-6">
+				<dl>
+						<dt><label>POŠTANSKI BROJ: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="postcode">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>OPŠTINA: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="city">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>KONTAKT TELEFON: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="phone">
+							</div>
+						</dd>
+						</br>
+						<hr>
+						<dt><label>DATUM ROĐENJA: </label></dt>
+						<dd>
+							<div class="col-xs-10">
+								<input class="form-control" placeholder="E-mail" ng-model="dob">
+							</div>
+						</dd>			
+				</dl>
+			</br>
+			<div class="col-xs-10 pulltopbutton">
+				<a class="btn-lg btn-primary pull-right" type="button" href="#/login">SAČUVAJ</a>
+			</div>
+			</div>
+	    	</div>
+	    </div>
+	    </div>
+	</div>
+
+</div>

@@ -30,6 +30,24 @@ angular.module("userApp").config(['$routeProvider', function(routeProvider) {
 		resolve: {
 		}
 	})
+	.when("/sensor/:id/", {
+		templateUrl: "partials/sensorReadings.html",
+		controller: "sensorReadingsCtrl",
+		resolve: {
+		}
+	})
+	.when("/recording/:id/", {
+		templateUrl: "partials/recording.html",
+		controller: "recordingCtrl",
+		resolve: {
+		}
+	})
+	.when("/userDetails", {
+		templateUrl: "partials/accountDetails.html",
+		controller: "accountDetailsCtrl",
+		resolve: {
+		}
+	})
 	.otherwise({redirectTo: '/login'});
 
 }]);

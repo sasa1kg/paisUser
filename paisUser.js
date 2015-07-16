@@ -1,4 +1,5 @@
-var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'angularjs-dropdown-multiselect']);
+var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'angularjs-dropdown-multiselect', 'angularCharts', 'ngMagnify', 'nvd3']);
+
 
 
 /*userApp.config(function(GoogleMapApiProviders) {

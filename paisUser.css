@@ -19,6 +19,11 @@ body{
 	padding: 10px;
 }
 
+.sensorholder {
+	background-color: rgba(231, 231, 231, 0.9);
+	padding: 10px;
+}
+
 .backopacity {
 	background-color: rgba(231, 231, 231, 0.9);
 }
@@ -53,11 +58,68 @@ body{
  	height:calc(100% - 0px);
 }
 
+#map-canvas-results {
+	width:100%;
+    height: 50%;
+ }
+
 .angular-google-map-container { 
 	height: 80%; 	
 }
 
 .hoverblue:HOVER {
-	background-color: blue !important;
+	background-color: #888888 !important;
+	cursor: pointer;
+}
+li.active {
+	background:blue; 
+	color:white;
+}
+.map {
+	margin-top: 10px;
+}
+.dateFromDatePicker {
+	
+}
+.dateToDatePicker {
+	
+}
+.freqPicker {
+	
+}
+.labelwidth {
+	width: 200px;
+}
+[ac-chart] {
+	float:left;
+	width: 100%;
+	height: 70%;
+	margin: 0 1%;
+}
+
+.ac-tooltip {
+    color: black;
+    border: 2px solid rgba(200,200,0,0.8);
+    background-color: rgba(200,200,0,0.5);
+ }
+ #chart1 .ac-legend-box {
+    border-radius: 10px;
+    border: 1px black;
+ }
+.select2 > .select2-choice.ui-select-match {
+    /* Because of the inclusion of Bootstrap */
+    height: 29px;
+}
+
+ .selectize-control > .selectize-dropdown { 
+   top: 36px;
+ }
+.imgHolder {
+	max-height: 80%;
+}
+.pulltopbutton {
+	margin-top: 30px;
+}
+.cursorchg {
 	cursor: pointer;
 }

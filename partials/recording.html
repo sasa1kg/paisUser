@@ -1,0 +1,52 @@
+
+
+<div class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/orders">PAIS</a>
+    </div>
+
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Nova porudžbina <span class="sr-only">(current)</span></a></li>
+        <li><a href="#/orders">Moje porudžbine</a></li>
+        <li><a href="#/results">Snimanja i senzori</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#/userDetails">Moji podaci</a></li>
+        <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Izlaz</a></li>
+      </ul>
+    </div>
+  </div>
+</nav> 
+
+<div class="col-lg-12">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Snimanje {{recordingId}}  <li class="pull-right"><a href="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg"><span class="glyphicon glyphicon-floppy-save" download="image.png"></span> Sačuvaj</a></li></h3>
+    </div>
+    <div class="panel-body img-responsive imgHolder">
+       <!--<img src="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg" image-zoom class="img-responsive">
+       <div image-src="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg" image-zoom></div>-->
+		<div id="example2" class="img-responsive" data-ng-magnify image-src="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg"></div>
+    </div>
+
+
+
+  </div>
+</div>
+
+
+
+
+</div>
