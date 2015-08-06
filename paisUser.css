@@ -137,3 +137,7 @@ li.active {
 	padding-top: 14px;
 	margin-left: 5px;
 }
+
+.hover {
+	cursor: pointer;
+}

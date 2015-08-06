@@ -57,6 +57,7 @@
         </div>
     </div>
 
+
     <!-- Modal -->
     <div id="placeOrderModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -79,111 +80,105 @@
         </div>
     </div>
 
-    <div class="container-fluid holder" ng-controller="testCtrl">
-        <div class="row backopacity">
+ 
 
-            <div class="col-sm-6 map">
-                <div class="google-map-canvas" id="map-canvas"></div>
-            </div>
 
-            <div class="col-sm-5 col-sm-offset-1">
+<div class="container-fluid holder" ng-controller="testCtrl">
+	<div class="row backopacity">
 
-                <h3>Narudžbina</h3>
+		<div class="col-sm-6 map">
+			<div class="google-map-canvas" id="map-canvas"></div>
+		</div>
 
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-xs-10">
-                            <input class="form-control" placeholder="Ime narudžbine" ng-model="orderName">
-                        </div>
-                    </div>
-                    <hr>
-                    <h4>Podešavanja snimanja</h4>
+		<div class="col-sm-5 col-sm-offset-1">
 
-                    <dl>
-                        <dt><label>Broj obeleženih teritorija: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
-                                       ng-model="polygons.length" ng-disabled="true">
-                            </div>
-                        </dd>
-                        <dt><label>Obeležena površina u ha: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
-                                       ng-model="polygonSurfaceFixed" ng-disabled="true">
-                            </div>
-                        </dd>
-                        <dt><label>Tipovi snimanja: </label></dt>
-                        <dd>
-                            <div class="col-xs-10 fullwidth">
-                                <div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata"
-                                     selected-model="multiselectmodel" extra-settings="multiselectsettings"
-                                     ng-disabled="polygonNotSelected">Izaberi
-                                </div>
-                            </div>
-                        </dd>
-                        <dt><label>Početak snimanja: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom"
-                                       ng-disabled="polygonNotSelected">
-                            </div>
-                        </dd>
-                        <dt><label>Kraj snimanja: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo"
-                                       ng-disabled="polygonNotSelected">
-                            </div>
-                        </dd>
-                        <dt><label>Frekvencija snimanja: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
-                                    <option>7 dana</option>
-                                    <option>15 dana</option>
-                                    <option>30 dana</option>
-                                    <option>60 dana</option>
-                                </select>
-                            </div>
-                        </dd>
-                        </br>
-                        <hr>
-                        <h4>Podešavanja senzora</h4>
-                        <dt><label>Broj postavljenih senzora: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" placeholder="Niste odabrali nijedan senzor"
-                                       ng-model="sensors.length" ng-disabled="true">
-                            </div>
-                        </dd>
-                        <dt><label>Tip senzor: </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <select class="form-control" id="selSensors" ng-disabled="markerNotSelected">
-                                    <option>Temperatura</option>
-                                    <option>Vlažnost</option>
-                                    <option>Tip 3</option>
-                                    <option>Tip 4</option>
-                                </select>
-                            </div>
-                        </dd>
+			<h3>{{ 'ORDER' | translate }}</h3>
 
-                    </dl>
-                    </br>
-                    <hr>
-                    <div class="form-group">
-                        <div class="col-xs-10">
-                            <button class="btn btn-primary pull-right" type="button" data-toggle="modal"
-                                    data-target="#estimateModal">Proceni
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <!--/col-5-->
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-xs-10">
+						<input class="form-control" placeholder="{{ 'NAME_ORDER' | translate }}" ng-model="orderName">
+					</div>
+				</div>
+				<hr>
+				<h4>{{ 'IMAGE_SETTINGS' | translate }}</h4>
 
-        </div>
-    </div>
+				<dl>
+					<dt><label>{{ 'NO_TERITORIES' | translate }}</label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygons.length" ng-disabled="true">
+						</div>
+					</dd>
+					<dt><label>{{ 'SURFACE' | translate }}</label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygonSurfaceFixed" ng-disabled="true">
+						</div>
+					</dd>
+					<dt><label>Tipovi snimanja: </label></dt>
+					<dd>
+						<div class="col-xs-10 fullwidth">
+							<div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings" ng-disabled="polygonNotSelected">Izaberi</div>
+						</div>
+					</dd>
+					<dt><label>Početak snimanja: </label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom" ng-disabled="polygonNotSelected">
+						</div>
+					</dd>
+					<dt><label>Kraj snimanja: </label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<input class="form-control" type="date" min="2015-07-01" ng-model="dateTo" ng-disabled="polygonNotSelected">
+						</div>
+					</dd>
+					<dt><label>Frekvencija snimanja: </label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
+						    <option>7 dana</option>
+						    <option>15 dana</option>
+						    <option>30 dana</option>
+						    <option>60 dana</option>
+						  </select>
+						</div>
+					</dd>
+					</br>
+					<hr>
+					<h4>Podešavanja senzora</h4>
+					<dt><label>Broj postavljenih senzora: </label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<input class="form-control" placeholder="Niste odabrali nijedan senzor" ng-model="sensors.length" ng-disabled="true">
+						</div>
+					</dd>
+					<dt><label>Tip senzor: </label></dt>
+					<dd>
+						<div class="col-xs-10">
+							<select class="form-control" id="selSensors" ng-disabled="markerNotSelected">
+						    <option>Temperatura</option>
+						    <option>Vlažnost</option>
+						    <option>Tip 3</option>
+						    <option>Tip 4</option>
+						  </select>
+						</div>
+					</dd>
+					
+				</dl>
+				</br>
+				<hr>
+				<div class="form-group">
+					<div class="col-xs-10">
+						<button class="btn btn-primary pull-right" type="button" data-toggle="modal" data-target="#estimateModal">Proceni</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--/col-5-->
+
+	</div>
+</div>
+
 </div>

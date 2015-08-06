@@ -1,5 +1,9 @@
-angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", "$filter", "$routeParams",   function (scope, http, filter, rootParams) {
-	scope.activeState = 2;
+
+angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", 
+	"$filter", "$routeParams", "OrdersService",   
+	function (scope, http, filter, rootParams, OrdersService) {
+
+
 	console.log("Sensor Readings! " + rootParams.id);
 	scope.msg = "Sensor Readings Here";
 
@@ -41,17 +45,8 @@ angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", "
 
 
 	scope.data3 = function () {
-			var sin = [];
-			var sin2 = [];
-			var cos = [];
 			var temp = [];
 			var moist = [];
-		    //Data is represented as an array of {x,y} pairs.
-            for (var i = 0; i < 100; i++) {
-                sin.push({x: i, y: Math.sin(i/10)});
-                sin2.push({x: i, y: i % 10 == 5 ? null : Math.sin(i/10) *0.25 + 0.5});
-                cos.push({x: i, y: .5 * Math.cos(i/10+ 2) + Math.random() / 10});
-            }
 
             
 	            temp.push({

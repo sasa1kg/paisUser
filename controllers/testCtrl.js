@@ -1,13 +1,20 @@
-angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
-	scope.activeState = 0;
+
+angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", "$translate",  function (scope, http, filter, translate) {
+
 	scope.msg = "PAIS user!";
 
 	scope.init = function () {
 		alert(scope.polygonSelected);
 	}
 
+	scope.translate = function (lang) {
+		translate.use(lang);
+	}
+
   	scope.recordings = [];
   	scope.availableColors = ['Snimanje 1','Snimanje 2','Snimanje 3','Snimanje 4','Snimanje 5'];
+
+  	scope.test = 5;
 
 	scope.polygons = [];
 	scope.polygonSurface = 0;
@@ -139,6 +146,7 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 				mapOverlays.push(event.overlay);
 				var sensor = event.overlay.position;
 				scope.sensors.push(sensor);
+				console.log("sensors " + scope.sensors.length);
 				if (scope.markerNotSelected == true) {
 					scope.markerNotSelected = false;
 				}
@@ -153,9 +161,10 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 				var polygon = area/10000;
 				scope.polygons.push(polygon);
 				//alert (area/10000);
-				//alert (scope.polygons.length);
 				scope.polygonSurface = scope.polygonSurface + polygon;
 				scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
+				console.log("polygonSurfaceFixed " + scope.polygonSurfaceFixed);
+				console.log("polygon " + scope.polygons.length);
 				if (scope.polygonNotSelected == true) {
 					scope.polygonNotSelected = false;
 				}
