@@ -1,197 +1,189 @@
-
 <div class="container">
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
+    <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
+    </nav>
 
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#/orders">PAIS</a>
+
+    <!-- Modal -->
+    <div id="estimateModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Informacije</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Odabrane usluge</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Obeležili ste površina {{polygons.length}}, sa ukupnom površinom {{polygonSurfaceFixed}}
+                                hektara.</p>
+
+                            <p>Obeležili ste senzora {{sensors.length}}</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Procena vrednosti</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Približna vrednost obeleženih usluga je {{estimatedPrice}}</p>
+                            <hr>
+                            <p>NAPOMENA: Procenjena vrednost je samo približno izračunata i može varirati od tačne cene.
+                                Po potvrdi narudžbine bićete kontaktirani od strane našeg tima koji će vas upoznati sa
+                                tačnom cenom, načinom i dinamikom plaćanja.</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Pravne informacije</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Naručivanjem obeleženih usluga prihvatam uslove korišćenja.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#placeOrderModal">
+                        Potvrdi narudžbinu
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Nazad</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
+    <!-- Modal -->
+    <div id="placeOrderModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a>Nova porudžbina <span class="sr-only">(current)</span></a></li>
-        <li><a href="#/orders">Moje porudžbine</a></li>
-        <li><a href="#/results">Snimanja i senzori</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-      	<li><a href="#/userDetails">Moji podaci</a></li>
-        <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Izlaz</a></li>
-      </ul>
-    </div>
-  </div>
-</nav> 
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Informacije</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Narudžbina je uspešno poslata. Očekujte da budete kontaktirani preko kontakt brojeva koji se
+                        nalaze u vašem profilu.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                </div>
+            </div>
 
-<!-- Modal -->
-<div id="estimateModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Informacije</h4>
-      </div>
-     	<div class="modal-body">
-	        <div class="panel panel-default">
-			    <div class="panel-heading">
-			      <h3 class="panel-title">Odabrane usluge</h3>
-			    </div>
-			    <div class="panel-body">
-			    	<p>Obeležili ste površina {{polygons.length}}, sa ukupnom površinom {{polygonSurfaceFixed}} hektara.</p>
-			    	<p>Obeležili ste senzora {{sensors.length}}</p>
-			    </div>
-	  		</div>
-	  		<div class="panel panel-default">
-			    <div class="panel-heading">
-			      <h3 class="panel-title">Procena vrednosti</h3>
-			    </div>
-			    <div class="panel-body">
-			    	<p>Približna vrednost obeleženih usluga je {{estimatedPrice}}</p>
-			    	<hr>
-			    	<p>NAPOMENA: Procenjena vrednost je samo približno izračunata i može varirati od tačne cene. Po potvrdi narudžbine bićete kontaktirani od strane našeg tima koji će vas upoznati sa tačnom cenom, načinom i dinamikom plaćanja.</p>
-			    </div>
-	  		</div>
-	  		 <div class="panel panel-default">
-			    <div class="panel-heading">
-			      <h3 class="panel-title">Pravne informacije</h3>
-			    </div>
-			    <div class="panel-body">
-			    	<p>Naručivanjem obeleženih usluga prihvatam uslove korišćenja.</p>
-			    </div>
-	  		</div>
-		</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#placeOrderModal">Potvrdi narudžbinu</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Nazad</button>
-      </div>
+        </div>
     </div>
 
-  </div>
-</div>
+    <div class="container-fluid holder" ng-controller="testCtrl">
+        <div class="row backopacity">
 
-<!-- Modal -->
-<div id="placeOrderModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+            <div class="col-sm-6 map">
+                <div class="google-map-canvas" id="map-canvas"></div>
+            </div>
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Informacije</h4>
-      </div>
-     	<div class="modal-body">
-	        <p>Narudžbina je uspešno poslata. Očekujte da budete kontaktirani preko kontakt brojeva koji se nalaze u vašem profilu.</p>
-		</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-      </div>
+            <div class="col-sm-5 col-sm-offset-1">
+
+                <h3>Narudžbina</h3>
+
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-xs-10">
+                            <input class="form-control" placeholder="Ime narudžbine" ng-model="orderName">
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>Podešavanja snimanja</h4>
+
+                    <dl>
+                        <dt><label>Broj obeleženih teritorija: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
+                                       ng-model="polygons.length" ng-disabled="true">
+                            </div>
+                        </dd>
+                        <dt><label>Obeležena površina u ha: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
+                                       ng-model="polygonSurfaceFixed" ng-disabled="true">
+                            </div>
+                        </dd>
+                        <dt><label>Tipovi snimanja: </label></dt>
+                        <dd>
+                            <div class="col-xs-10 fullwidth">
+                                <div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata"
+                                     selected-model="multiselectmodel" extra-settings="multiselectsettings"
+                                     ng-disabled="polygonNotSelected">Izaberi
+                                </div>
+                            </div>
+                        </dd>
+                        <dt><label>Početak snimanja: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom"
+                                       ng-disabled="polygonNotSelected">
+                            </div>
+                        </dd>
+                        <dt><label>Kraj snimanja: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo"
+                                       ng-disabled="polygonNotSelected">
+                            </div>
+                        </dd>
+                        <dt><label>Frekvencija snimanja: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
+                                    <option>7 dana</option>
+                                    <option>15 dana</option>
+                                    <option>30 dana</option>
+                                    <option>60 dana</option>
+                                </select>
+                            </div>
+                        </dd>
+                        </br>
+                        <hr>
+                        <h4>Podešavanja senzora</h4>
+                        <dt><label>Broj postavljenih senzora: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="Niste odabrali nijedan senzor"
+                                       ng-model="sensors.length" ng-disabled="true">
+                            </div>
+                        </dd>
+                        <dt><label>Tip senzor: </label></dt>
+                        <dd>
+                            <div class="col-xs-10">
+                                <select class="form-control" id="selSensors" ng-disabled="markerNotSelected">
+                                    <option>Temperatura</option>
+                                    <option>Vlažnost</option>
+                                    <option>Tip 3</option>
+                                    <option>Tip 4</option>
+                                </select>
+                            </div>
+                        </dd>
+
+                    </dl>
+                    </br>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-xs-10">
+                            <button class="btn btn-primary pull-right" type="button" data-toggle="modal"
+                                    data-target="#estimateModal">Proceni
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--/col-5-->
+
+        </div>
     </div>
-
-  </div>
-</div>
-
-<div class="container-fluid holder" ng-controller="testCtrl">
-	<div class="row backopacity">
-
-		<div class="col-sm-6 map">
-			<div class="google-map-canvas" id="map-canvas"></div>
-		</div>
-
-		<div class="col-sm-5 col-sm-offset-1">
-
-			<h3>Narudžbina</h3>
-
-			<form class="form-horizontal">
-				<div class="form-group">
-					<div class="col-xs-10">
-						<input class="form-control" placeholder="Ime narudžbine" ng-model="orderName">
-					</div>
-				</div>
-				<hr>
-				<h4>Podešavanja snimanja</h4>
-
-				<dl>
-					<dt><label>Broj obeleženih teritorija: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygons.length" ng-disabled="true">
-						</div>
-					</dd>
-					<dt><label>Obeležena površina u ha: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygonSurfaceFixed" ng-disabled="true">
-						</div>
-					</dd>
-					<dt><label>Tipovi snimanja: </label></dt>
-					<dd>
-						<div class="col-xs-10 fullwidth">
-							<div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings" ng-disabled="polygonNotSelected">Izaberi</div>
-						</div>
-					</dd>
-					<dt><label>Početak snimanja: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom" ng-disabled="polygonNotSelected">
-						</div>
-					</dd>
-					<dt><label>Kraj snimanja: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" type="date" min="2015-07-01" ng-model="dateTo" ng-disabled="polygonNotSelected">
-						</div>
-					</dd>
-					<dt><label>Frekvencija snimanja: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
-						    <option>7 dana</option>
-						    <option>15 dana</option>
-						    <option>30 dana</option>
-						    <option>60 dana</option>
-						  </select>
-						</div>
-					</dd>
-					</br>
-					<hr>
-					<h4>Podešavanja senzora</h4>
-					<dt><label>Broj postavljenih senzora: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijedan senzor" ng-model="sensors.length" ng-disabled="true">
-						</div>
-					</dd>
-					<dt><label>Tip senzor: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<select class="form-control" id="selSensors" ng-disabled="markerNotSelected">
-						    <option>Temperatura</option>
-						    <option>Vlažnost</option>
-						    <option>Tip 3</option>
-						    <option>Tip 4</option>
-						  </select>
-						</div>
-					</dd>
-					
-				</dl>
-				</br>
-				<hr>
-				<div class="form-group">
-					<div class="col-xs-10">
-						<button class="btn btn-primary pull-right" type="button" data-toggle="modal" data-target="#estimateModal">Proceni</button>
-					</div>
-				</div>
-			</form>
-		</div>
-		<!--/col-5-->
-
-	</div>
-</div>
 </div>

@@ -59,7 +59,7 @@ body{
 
 #map-canvas-results {
 	width:100%;
-    height: 50%;
+    height: 100%;
  }
 
 .angular-google-map-container { 
@@ -121,4 +121,19 @@ li.active {
 }
 .cursorchg {
 	cursor: pointer;
+}
+
+.navbar-brand{
+	background: url("img/PAIS_logo_S.png");
+	height: 78px;
+	width: 100px;
+	margin-left: 15px !important;
+}
+
+.navbar-fixed-top{
+	height: 78px;
+}
+.navbar-nav{
+	padding-top: 14px;
+	margin-left: 5px;
 }
