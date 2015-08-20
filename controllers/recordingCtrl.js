@@ -1,5 +1,5 @@
 angular.module('userApp').controller("recordingCtrl", ["$scope", "$http", "$filter", "$routeParams",  function (scope, http, filter, rootParams) {
-
+	scope.activeState = 2;
 	console.log("Recording Image! " + rootParams.id);
 	
 

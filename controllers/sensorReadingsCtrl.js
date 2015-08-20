@@ -1,5 +1,5 @@
 angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", "$filter", "$routeParams",   function (scope, http, filter, rootParams) {
-
+	scope.activeState = 2;
 	console.log("Sensor Readings! " + rootParams.id);
 	scope.msg = "Sensor Readings Here";
 

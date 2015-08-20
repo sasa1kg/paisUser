@@ -1,5 +1,5 @@
 angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
-
+	scope.activeState = 1;
 	console.log("Accounts!");
 	scope.msg = "User accounts!";
 

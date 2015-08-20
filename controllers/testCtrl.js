@@ -1,4 +1,5 @@
 angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
+	scope.activeState = 0;
 	scope.msg = "PAIS user!";
 
 	scope.init = function () {
