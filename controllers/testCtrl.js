@@ -1,14 +1,9 @@
-
 angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", "$translate",  function (scope, http, filter, translate) {
 
 	scope.msg = "PAIS user!";
 
 	scope.init = function () {
 		alert(scope.polygonSelected);
-	}
-
-	scope.translate = function (lang) {
-		translate.use(lang);
 	}
 
   	scope.recordings = [];
@@ -29,6 +24,16 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 	scope.dateTo = "";
 
 	scope.estimatedPrice = "620EUR";
+	
+	scope.typeChange = function () {
+		console.log(scope.sensors);
+	}
+	
+	scope.sensortypes = [
+		{id: 0, name:"Temperatura"},
+		{id: 1, name:"Vlaznost"},
+		{id: 2, name:"Tip 3"}
+	];
 
 	scope.multiselectmodel = [];
 	scope.multiselectdata = [
@@ -117,7 +122,7 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 		drawingManager.setMap(map);
 
 		// Add custom clear button
-		var resetControl = $('<div id="again">PONOVO</div>').css({
+		var resetControl = $('<div id="again">RESET</div>').css({
 			backgroundColor: 'white',
 			borderColor: '#AAA',
 			borderStyle: 'solid',
@@ -145,7 +150,19 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 				insertBoundsIntoDOM(event.overlay.position, mapDataId);
 				mapOverlays.push(event.overlay);
 				var sensor = event.overlay.position;
-				scope.sensors.push(sensor);
+				var infowindow = new google.maps.InfoWindow({
+					content: "Senzor " + (scope.sensors.length+1) 
+				});
+				infowindow.open(map, event.overlay);
+				google.maps.event.addListener(event.overlay, 'click', function() {
+					infowindow.open(map,event.overlay);
+				});
+				var sensorInfo = {
+					"id" : (scope.sensors.length+1),
+					"data" : sensor,
+					"type" : -1
+				};
+				scope.sensors.push(sensorInfo);
 				console.log("sensors " + scope.sensors.length);
 				if (scope.markerNotSelected == true) {
 					scope.markerNotSelected = false;

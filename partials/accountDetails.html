@@ -5,12 +5,12 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h2 class="panel-title">Moji podaci </h2>
+            <h2 class="panel-title">{{ 'MY_DATA' | translate }} </h2>
         </div>
         <div class="panel-body">
             <div class="col-sm-6">
                 <dl>
-                    <dt><label>E-MAIL: </label></dt>
+                    <dt><label>{{ 'E-MAIL' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="email">
@@ -18,7 +18,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>LOZINKA: </label></dt>
+                    <dt><label>{{ 'PASSWORD' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input type="password" class="form-control" placeholder="Lozinka" ng-model="password">
@@ -26,7 +26,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>IME: </label></dt>
+                    <dt><label>{{ 'NAME' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="Ime" ng-model="name">
@@ -34,7 +34,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>PREZIME: </label></dt>
+                    <dt><label>{{ 'SURNAME' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="Prezime" ng-model="lastname">
@@ -42,7 +42,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>ADRESA: </label></dt>
+                    <dt><label>{{ 'ADDRESS' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="address">
@@ -55,7 +55,7 @@
 
             <div class="col-sm-6">
                 <dl>
-                    <dt><label>POŠTANSKI BROJ: </label></dt>
+                    <dt><label>{{ 'POST_CODE' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="postcode">
@@ -63,7 +63,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>OPŠTINA: </label></dt>
+                    <dt><label>{{ 'CITY' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="city">
@@ -71,7 +71,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>KONTAKT TELEFON: </label></dt>
+                    <dt><label>{{ 'PHONE' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="phone">
@@ -79,7 +79,7 @@
                     </dd>
                     </br>
                     <hr>
-                    <dt><label>DATUM ROĐENJA: </label></dt>
+                    <dt><label>{{ 'DOB' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
                             <input class="form-control" placeholder="E-mail" ng-model="dob">
@@ -88,7 +88,7 @@
                 </dl>
                 </br>
                 <div class="col-xs-10 pulltopbutton">
-                    <a class="btn-lg btn-primary pull-right" type="button" href="#/login">SAČUVAJ</a>
+                    <a class="btn-lg btn-primary pull-right" type="button" href="#/login">{{ 'SAVE' | translate }}</a>
                 </div>
             </div>
         </div>

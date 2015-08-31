@@ -116,62 +116,56 @@
 							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygonSurfaceFixed" ng-disabled="true">
 						</div>
 					</dd>
-					<dt><label>Tipovi snimanja: </label></dt>
+					<dt><label>{{ 'IMAGE_TYPES' | translate }}</label></dt>
 					<dd>
 						<div class="col-xs-10 fullwidth">
 							<div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings" ng-disabled="polygonNotSelected">Izaberi</div>
 						</div>
 					</dd>
-					<dt><label>Početak snimanja: </label></dt>
+					<dt><label>{{ 'IMAGE_START' | translate }}</label></dt>
 					<dd>
 						<div class="col-xs-10">
 							<input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom" ng-disabled="polygonNotSelected">
 						</div>
 					</dd>
-					<dt><label>Kraj snimanja: </label></dt>
+					<dt><label>{{ 'IMAGE_END' | translate }}</label></dt>
 					<dd>
 						<div class="col-xs-10">
 							<input class="form-control" type="date" min="2015-07-01" ng-model="dateTo" ng-disabled="polygonNotSelected">
 						</div>
 					</dd>
-					<dt><label>Frekvencija snimanja: </label></dt>
+					<dt><label>{{ 'IMAGE_FREQ' | translate }} </label></dt>
 					<dd>
 						<div class="col-xs-10">
 							<select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
-						    <option>7 dana</option>
-						    <option>15 dana</option>
-						    <option>30 dana</option>
-						    <option>60 dana</option>
+						    <option>{{ 'SEVEN_DAYS' | translate }}</option>
+						    <option>{{ 'FIFTEEN_DAYS' | translate }}</option>
+						    <option>{{ 'MONTH' | translate }}</option>
+						    <option>{{ 'TWO_MONTHS' | translate }}</option>
 						  </select>
 						</div>
 					</dd>
 					</br>
 					<hr>
-					<h4>Podešavanja senzora</h4>
-					<dt><label>Broj postavljenih senzora: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijedan senzor" ng-model="sensors.length" ng-disabled="true">
-						</div>
-					</dd>
-					<dt><label>Tip senzor: </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<select class="form-control" id="selSensors" ng-disabled="markerNotSelected">
-						    <option>Temperatura</option>
-						    <option>Vlažnost</option>
-						    <option>Tip 3</option>
-						    <option>Tip 4</option>
-						  </select>
-						</div>
-					</dd>
-					
+					<h4>{{ 'SENSOR_SETTINGS' | translate }}</h4>
+					</br>
+					<table class="table-responsive col-xs-10">
+						<tbody ng-repeat="sensor in sensors">
+						<td><label>{{ 'SENSOR' | translate }} {{sensor.id}}</label></td>
+						<td>
+							<select class="form-control" id="selSensors" ng-model="sensor.type" ng-disabled="markerNotSelected" ng-change="typeChange()">
+						    <option ng-repeat="type in sensortypes" ng-value="type.id">{{type.name}}</option>
+							</select>
+						 </td>
+						</tbody>
+					</table>
+					</br>
 				</dl>
 				</br>
 				<hr>
 				<div class="form-group">
 					<div class="col-xs-10">
-						<button class="btn btn-primary pull-right" type="button" data-toggle="modal" data-target="#estimateModal">Proceni</button>
+						<button class="btn btn-primary pull-right" type="button" data-toggle="modal" data-target="#estimateModal">{{ 'ESTIMATE' | translate}}</button>
 					</div>
 				</div>
 			</form>

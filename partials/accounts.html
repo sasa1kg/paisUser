@@ -26,14 +26,14 @@
             <div class="panel-body">
                 <div class="form-group">
                     <dl>
-                        <dt><label>Broj obeleženih teritorija: </label></dt>
+                        <dt><label>{{ 'NO_TERITORIES' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
                                 <input class="form-control" placeholder="Niste odabrali nijednu površinu"
                                        ng-model="polygonsNums" ng-disabled="true">
                             </div>
                         </dd>
-                        <dt><label>Obeležena površina u ha: </label></dt>
+                        <dt><label>{{ 'SURFACE' | translate}}</label></dt>
                         <dd>
                             <div class="col-xs-10">
                                 <input class="form-control" placeholder="Niste odabrali nijednu površinu"
@@ -42,7 +42,7 @@
                         </dd>
                         </br>
                         <hr>
-                        <dt><label>Tipovi snimanja: </label></dt>
+                        <dt><label>{{ 'IMAGE_TYPES' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10 fullwidth">
                                 <ul class="list-group">
@@ -50,7 +50,7 @@
                                 </ul>
                             </div>
                         </dd>
-                        <dt><label>Frekvencija snimanja: </label></dt>
+                        <dt><label>{{ 'IMAGE_FREQ' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
                                 <input class="form-control" placeholder="" ng-model="sensorFreq" ng-disabled="true">
@@ -58,7 +58,7 @@
                         </dd>
                         </br>
                         <hr>
-                        <dt><label>Početak snimanja: </label></dt>
+                        <dt><label>{{ 'IMAGE_START' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
                                 <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom"
@@ -67,7 +67,7 @@
                         </dd>
                         <br>
                         <hr>
-                        <dt><label>Kraj snimanja: </label></dt>
+                        <dt><label>{{ 'IMAGE_END' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
                                 <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo"

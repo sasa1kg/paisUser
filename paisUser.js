@@ -12,6 +12,12 @@ userApp.config(function($sceDelegateProvider) {
   ]);
 });
 
+userApp.run(function($rootScope, $translate) {
+        $rootScope.translate = function(lang) {
+			$translate.use(lang);
+        };
+});
+
 
 userApp.config(function($translateProvider) {
     $translateProvider.useSanitizeValueStrategy(null);
@@ -31,7 +37,13 @@ userApp.config(function($translateProvider) {
       IMAGE_END: 'End of image taking:',
       IMAGE_FREQ: 'Image frequency:',
       SENSOR_SETTINGS: 'Sensor settings',
-      NO_SENSORS: 'Number of selected sensors'
+      NO_SENSORS: 'Number of selected sensors',
+	  SEVEN_DAYS: '7 days',
+	  FIFTEEN_DAYS: '15 days',
+	  MONTH: '30 days',
+	  TWO_MONTHS: '60 days',
+	  AGAIN: 'PONOVO',
+	  SENSOR: 'Sensor'
     })
     .translations('rs', {
       NEW_ORDER: 'Nova porudžbina',
@@ -49,8 +61,34 @@ userApp.config(function($translateProvider) {
       IMAGE_END: 'Kraj snimanja:',
       IMAGE_FREQ: 'Frekvencija snimanja:',
       SENSOR_SETTINGS: 'Podešavanja senzora',
-      NO_SENSORS: 'Broj obeleženih senzora'
-
+      NO_SENSORS: 'Broj obeleženih senzora',
+	  SEVEN_DAYS: '7 dana',
+	  FIFTEEN_DAYS: '15 dana',
+	  MONTH: '30 dana',
+	  TWO_MONTHS: '60 dana',
+	  AGAIN: 'PONOVO',
+	  SENSOR: 'Senzor',
+	  E-MAIL: 'E-MEJL',
+	  PASSWORD: 'LOZINKA',
+	  NAME: 'IME',
+	  ADDRESS: 'ADRESA',
+	  POST_CODE: 'POŠTANSKI BROJ',
+	  CITY: 'OPŠTINA',
+	  PHONE: 'KONTAKT TELEFON',
+	  DOB: 'DATUM ROĐENJA',
+	  SAVE: 'SAČUVAJ',
+	  MY_DATA: 'Moji podaci',
+	  RECORDING: 'Snimanje',
+	  ORDERS: 'Narudžbine',
+	  IMAGES: 'Slike',
+	  IMAGE_NAME: 'Ime',
+	  IMAGE_TYPE: 'Tip slike',
+	  IMAGE_TIME: 'Vreme',
+	  OPEN: 'Otvori',
+	  SENSORS: 'Senzori',
+	  FROM: 'Od',
+	  TO: 'Do',
+	  SENSOR_ID: 'Senzor id'
     });
     $translateProvider.preferredLanguage('rs');
 });

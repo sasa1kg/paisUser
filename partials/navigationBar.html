@@ -14,13 +14,15 @@
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav">
             <!--<li class="active"><a>Nova porudžbina <span class="sr-only">(current)</span></a></li>-->
-            <li ng-class="{'active' : activeState ==0}"><a href="#/newOrder">Nova porudžbina </a></li>
-            <li ng-class="{'active' : activeState ==1}"><a href="#/orders">Moje porudžbine</a></li>
-            <li ng-class="{'active' : activeState ==2}"><a href="#/results">Snimanja i senzori</a></li>
+            <li ng-class="{'active' : activeState ==0}"><a href="#/newOrder">{{ 'NEW_ORDER' | translate }} </a></li>
+            <li ng-class="{'active' : activeState ==1}"><a href="#/orders">{{ 'MY_ORDERS' | translate }}</a></li>
+            <li ng-class="{'active' : activeState ==2}"><a href="#/results">{{ 'MY_RESULTS' | translate }}</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right ">
-            <li><a href="#/userDetails">Moji podaci</a></li>
-            <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Izlaz</a></li>
+			<li><a ng-click="translate('rs')" class="hover"><img src="img/flag_serbian.gif"></img></a></li>
+			<li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
+            <li><a href="#/userDetails">{{ 'MY_PROFILE' | translate }}</a></li>
+            <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> {{ 'EXIT' | translate }}</a></li>
         </ul>
     </div>
 </div>
