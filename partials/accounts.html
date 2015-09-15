@@ -2,42 +2,65 @@
     <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
     </nav>
 
-    <div class="col-lg-4">
+
+    <div class="alert alert-warning" ng-if="accounts.length==0">
+        <a class="close" aria-label="close">&times;</a>
+        <strong>{{ 'ORDERS' | translate }}</strong> {{ 'NO_ORDERS' | translate }} 
+        <a href="#/newOrder"class="alert-link"> {{ 'NEW_ORDER' | translate}}</a>
+    </div>
+
+    <div class="col-lg-4" ng-if="accounts.length>0" cg-busy="{promise:getOrders,message:'Loading...',backdrop:true}">
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Porudžbine</h3>
+                <h3 class="panel-title"> {{ 'ORDERS' | translate}}</h3>
             </div>
             <div class="panel-body">
                 <ul class="list-group">
-                    <a class="list-group-item hoverblue" ng-repeat="account in accounts" ng-click="sayHello(account)"
-                       id="{{account}}" ng-class="{'active' : isActive(account)}">{{account}}</a>
+                    <a class="list-group-item hoverblue" ng-repeat="account in accounts" ng-click="select(account.order_id)"
+                       id="{{account.order_id}}" ng-class="{'active' : isActive(account.order_id)}">{{account.name}} <span class="badge activeBadge" ng-if="account.status==1">{{ 'ACTIVE' | translate}}</span> <span class="badge inactiveBadge" ng-if="account.status==0">{{ 'INACTIVE' | translate}}</span></a>
                 </ul>
             </div>
         </div>
     </div>
 
 
-    <div class="col-lg-8">
+    <div class="col-lg-8" ng-if="accounts.length>0" ng-show="!loaded">
+        <div class="panel panel-default">
+            <div class="panel-heading form-group">
+                <h3 class="panel-title">{{ 'LOADING' | translate }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8" ng-if="accounts.length>0" cg-busy="{promise:getFrequencies,message:'Loading...',backdrop:true}" ng-show="loaded">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Detalji</h3>
+                <h3 class="panel-title">{{ 'DETAILS' | translate}}</h3>
             </div>
             <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">{{ 'DESCRIPTION' | translate}}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <label>{{selectedAccount.description}} </label>
+                    </div>
+                </div>
                 <div class="form-group">
                     <dl>
                         <dt><label>{{ 'NO_TERITORIES' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
-                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
-                                       ng-model="polygonsNums" ng-disabled="true">
+                                <input class="form-control"
+                                       ng-model="selectedAccount.polygons.length" ng-disabled="true">
                             </div>
                         </dd>
                         <dt><label>{{ 'SURFACE' | translate}}</label></dt>
                         <dd>
                             <div class="col-xs-10">
-                                <input class="form-control" placeholder="Niste odabrali nijednu površinu"
-                                       ng-model="polygonsSurface" ng-disabled="true">
+                                <input class="form-control" 
+                                       ng-model="totalSurface" ng-disabled="true">
                             </div>
                         </dd>
                         </br>
@@ -46,32 +69,34 @@
                         <dd>
                             <div class="col-xs-10 fullwidth">
                                 <ul class="list-group">
-                                    <a class="list-group-item hoverblue" ng-repeat="record in records">{{record}}</a>
+                                    <a class="list-group-item hoverblue" ng-repeat="imageType in selectedAccount.imageTypes">{{imageType.image_type_name}}</a>
                                 </ul>
                             </div>
                         </dd>
                         <dt><label>{{ 'IMAGE_FREQ' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
-                                <input class="form-control" placeholder="" ng-model="sensorFreq" ng-disabled="true">
+                                <input class="form-control" ng-model="frequencyName" ng-disabled="true">
                             </div>
                         </dd>
                         </br>
                         <hr>
-                        <dt><label>{{ 'IMAGE_START' | translate}} </label></dt>
+                        <dt><label>{{ 'CREATED_AT' | translate}} </label></dt>
                         <dd>
                             <div class="col-xs-10">
-                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom"
+                                <input class="form-control" type="text" ng-model="selectedAccount.created_at"
                                        ng-disabled="true">
                             </div>
                         </dd>
                         <br>
                         <hr>
-                        <dt><label>{{ 'IMAGE_END' | translate}} </label></dt>
+                        <dt class="col-xs-10"><label>{{ 'NO_SENSORS' | translate}} </label>
+                            <span class="badge activeBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'ACTIVE_SENSORS' | translate}} {{activeSensors}}</span>
+                            <span class="badge inactiveBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'INACTIVE_SENSORS' | translate}} {{nonActiveSensors}}</span></dt>
                         <dd>
                             <div class="col-xs-10">
-                                <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo"
-                                       ng-disabled="true">
+                                <input class="form-control"
+                                       ng-model="selectedAccount.sensors.length" ng-disabled="true" >
                             </div>
                         </dd>
                 </div>

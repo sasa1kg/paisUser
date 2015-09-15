@@ -2,18 +2,17 @@
     <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
     </nav>
 
-
-    <div class="panel panel-default">
+    <div class="panel panel-default" cg-busy="{promise:getUser,message:'Loading...',backdrop:true}">
         <div class="panel-heading">
             <h2 class="panel-title">{{ 'MY_DATA' | translate }} </h2>
         </div>
-        <div class="panel-body">
+        <form class="panel-body">
             <div class="col-sm-6">
                 <dl>
-                    <dt><label>{{ 'E-MAIL' | translate }}:  </label></dt>
+                    <dt><label>{{ 'USERNAME' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="email">
+                            <input class="form-control bold" placeholder="{{ 'USERNAME' | translate }}" ng-model="user.username" ng-disabled=true>
                         </div>
                     </dd>
                     </br>
@@ -21,7 +20,15 @@
                     <dt><label>{{ 'PASSWORD' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input type="password" class="form-control" placeholder="Lozinka" ng-model="password">
+                            <input type="password" name="password" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="user.password" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'E-MAIL' | translate }}:  </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input type="email" name="email" class="form-control" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required>
                         </div>
                     </dd>
                     </br>
@@ -29,7 +36,7 @@
                     <dt><label>{{ 'NAME' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="Ime" ng-model="name">
+                            <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="user.first_name">
                         </div>
                     </dd>
                     </br>
@@ -37,15 +44,7 @@
                     <dt><label>{{ 'SURNAME' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="Prezime" ng-model="lastname">
-                        </div>
-                    </dd>
-                    </br>
-                    <hr>
-                    <dt><label>{{ 'ADDRESS' | translate }}:  </label></dt>
-                    <dd>
-                        <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="address">
+                            <input class="form-control" placeholder="{{ 'SURNAME' | translate }}" ng-model="user.last_name">
                         </div>
                     </dd>
                     </br>
@@ -55,18 +54,10 @@
 
             <div class="col-sm-6">
                 <dl>
-                    <dt><label>{{ 'POST_CODE' | translate }}: </label></dt>
+                    <dt><label>{{ 'ACCOUNT_TYPE' | translate }}</label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="postcode">
-                        </div>
-                    </dd>
-                    </br>
-                    <hr>
-                    <dt><label>{{ 'CITY' | translate }}: </label></dt>
-                    <dd>
-                        <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="city">
+                            <input class="form-control" placeholder="{{ 'ACCOUNT_TYPE' | translate }}" ng-disabled=true ng-model="user.type_name">
                         </div>
                     </dd>
                     </br>
@@ -74,7 +65,15 @@
                     <dt><label>{{ 'PHONE' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="phone">
+                            <input class="form-control" placeholder="{{ 'PHONE' | translate }}" ng-model="user.phone">
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'COUNTRY' | translate }}: </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input class="form-control" placeholder="{{ 'COUNTRY' | translate }}" ng-model="user.country_code" ng-disabled=true>
                         </div>
                     </dd>
                     </br>
@@ -82,16 +81,26 @@
                     <dt><label>{{ 'DOB' | translate }}: </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input class="form-control" placeholder="E-mail" ng-model="dob">
+                            <input class="form-control" placeholder="{{ 'DOB' | translate }}" ng-model="user.registration_date" ng-disabled=true>
                         </div>
                     </dd>
                 </dl>
                 </br>
                 <div class="col-xs-10 pulltopbutton">
-                    <a class="btn-lg btn-primary pull-right" type="button" href="#/login">{{ 'SAVE' | translate }}</a>
+                    <submit class="btn-lg btn-primary pull-right cursorchg" type="button" ng-click="updateUser()">{{ 'SAVE' | translate }}</submit>
                 </div>
             </div>
-        </div>
+        </form>
+    </div>
+
+    <div class="alert alert-success" ng-show="updateSuccess && updateDone">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'PROFILE_CHANGE' | translate }}</strong> {{ 'PROFILE_CHANGE_SUCCESS' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="!updateSuccess && updateDone">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'PROFILE_CHANGE' | translate }}</strong> {{ 'PROFILE_CHANGE_FAIL' | translate }}
     </div>
 </div>
 </div>

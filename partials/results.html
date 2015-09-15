@@ -29,7 +29,6 @@
                     <thead>
                     <tr>
                         <th><a ng-click="orderByName()" class="cursorchg">{{'IMAGE_NAME' | translate}}</a></th>
-                        <th><a ng-click="orderByType()" class="cursorchg">{{'IMAGE_TYPE' | translate}}</a></th>
                         <th><a ng-click="orderByDate()" class="cursorchg">{{'IMAGE_TIME' | translate}}</a></th>
                         <th></th>
                     </tr>
@@ -37,10 +36,9 @@
                     <tbody>
                     <tr ng-repeat="record in recordings | orderBy : order">
                         <td>{{ record.name }}</td>
-                        <td>{{ record.type }}</td>
                         <td>{{ record.date }}</td>
                         <td>
-                            <a class="btn btn-primary" href='#/recording/{{record.id}}/'>{{'OPEN' | translate}}</a>
+                            <a class="btn btn-primary" href='#/images/{{record.id}}/'>{{'OPEN' | translate}}</a>
                         </td>
                     </tr>
                     </tbody>

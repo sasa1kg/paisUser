@@ -18,19 +18,25 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
     			"name" : "A_slika_Op1_Absa",
     			"type" : "IR slika",
     			"date" : "20.07.2015",
-    			"id" : "1"
+    			"id" : "1",
+                "lat" : 44.03,
+                "longitude" : 20.2591
     		},
     		{
     			"name" : "B_slika_Op2_Ipsy",
     			"type" : "AIR slika",
     			"date" : "19.07.2015",
-    			"id" : "2"
+    			"id" : "2",
+                "lat" : 44.84,
+                "longitude" : 19.84
     		},
     		{
     			"name" : "D_slika_Op2_Xfeg",
     			"type" : "Tip2 slika",
     			"date" : "21.07.2015",
-    			"id" : "3"
+    			"id" : "3",
+                "lat" : 43.71,
+                "longitude" : 20.74561
     		}
     ];
 
@@ -76,7 +82,7 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
 			"sensors" : 2
 		},
 		{
-			"id" : 3,
+			"id" : 4,
 			"name" : "jos nesto",
 			"recordings" : 3,
 			"sensors" : 0
@@ -90,7 +96,7 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
 				break;
 			}
 		};
-		setMarkers(scope.map, sensors);
+		setMarkers(scope.map, sensors, scope.recordings);
 	};
 
 
@@ -108,15 +114,15 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
 			}
         }
 		scope.map = new google.maps.Map(document.getElementById(mapCanvasId), myOptions);
-		setMarkers(scope.map, sensors);
+		setMarkers(scope.map, sensors, scope.recordings);
 	});
 
 
-	function setMarkers(map, locations) {
+	function setMarkers(map, sensorLocations, imageLocations) {
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < locations.length; i++) 
+    for (var i = 0; i < sensorLocations.length; i++) 
     {
-            var sensors = locations[i];
+            var sensors = sensorLocations[i];
             var coords = new google.maps.LatLng(sensors[1], sensors[2]);
             var contentString = sensors[0] +" <br/> <a href='#/sensor/" + sensors[3] + "/'> <b>MERENJA</b> </a><br/>";
             var infowindow = new google.maps.InfoWindow({content: contentString});
@@ -137,6 +143,28 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
             bounds.extend(coords);
             scope.map.fitBounds(bounds);
     }
+    /*for (var i = 0; i < imageLocations.length; i++) 
+    {
+        var image = imageLocations[i];
+        var coords = new google.maps.LatLng(image.lat, image.longitude);
+        var contentString = image.name +" <br/> <a href='#/recording/" + image.id + "/'> <b>SLIKA</b> </a><br/>";
+        var infowindow = new google.maps.InfoWindow({content: contentString});
+        var marker = new google.maps.Marker({
+                position: coords,
+                map: map,
+                icon: "img/camera.png",
+                title: image.name
+        });
+        google.maps.event.addListener(marker, 'click', 
+                function (infowindow, marker) {
+                    return function () {
+                        infowindow.open(map, marker);
+                    };
+                }(infowindow, marker)
+            );
+        bounds.extend(coords);
+        scope.map.fitBounds(bounds);
+    }*/
 }
 
  

@@ -1,67 +1,230 @@
-angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", "$translate",  function (scope, http, filter, translate) {
+angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http", "$filter", "$translate", "ServerService",  
+	function (rootScope, scope, http, filter, translate, ServerService) {
 
-	scope.msg = "PAIS user!";
+	scope.msg = "PAIS user! " + new Date(); 
 
 	scope.init = function () {
-		alert(scope.polygonSelected);
+		scope.clientId = 22;
+
+		rootScope.evaluated = false;
+		rootScope.evaluatedError = false;
+		rootScope.evaluationAvailable = true;
+		scope.generalError = false;
+
+		scope.orderNameInvalid = false;
+		scope.orderImgTypeInvalid = false;
+		scope.orderDescInvalid = false;
+
+		scope.setMultiselectIN();
 	}
 
-  	scope.recordings = [];
-  	scope.availableColors = ['Snimanje 1','Snimanje 2','Snimanje 3','Snimanje 4','Snimanje 5'];
+	scope.init();
 
-  	scope.test = 5;
 
-	scope.polygons = [];
+
+	scope.multiselectmodel = [];
+    scope.multiselectdata = [];
+    	scope.multiselectsettings = {
+	    smartButtonMaxItems: 2,
+	};
+
+	scope.setMultiselectIN = function () {
+		alert(rootScope.getLanguage());
+		if (rootScope.getLanguage() === 'en') {
+			scope.msTranslate = {
+				'buttonDefaultText' : 'Select',
+				'uncheckAll' : 'Uncheck All',
+				'selectionCount' : 'checked',
+				'selectionOf' : '/',
+				'searchPlaceholder' : 'Search...',
+				'checkAll' : 'Check All',
+				'dynamicButtonTextSuffix' : 'checked'
+			}
+		} else {
+			alert("serbian");
+			scope.msTranslate = {
+				'buttonDefaultText' : 'Izaberi',
+				'uncheckAll' : 'Isključi sve',
+				'selectionCount' : 'obeleženo',
+				'selectionOf' : '/',
+				'searchPlaceholder' : 'Pretraži...',
+				'checkAll' : 'Obeleži sve',
+				'dynamicButtonTextSuffix' : 'obeleženo'
+			}
+		}
+	};
+
+
+
+	scope.validateName = function () {
+		if (scope.order.name == undefined || scope.order.name.length < 3) {
+			return false;
+		} else {
+			return true;
+		} 
+	}
+
+	scope.validatePolygons = function () {
+		if (scope.order.polygons.length != 0 && scope.order.imageTypes.length == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	scope.validateDescription = function () {
+		if (scope.order.description == undefined || scope.order.description.length > 100) {
+			return false;
+		} else {
+			return true;
+		} 
+	}
+
+
+	scope.injectToRoot = function() {
+		// if (scope.order.name == undefined || scope.order.name.length < 3) {
+		// 	alert("Enter name");
+		// 	return;
+		// } 
+		// if (scope.order.polygons.length != 0 && scope.order.imageTypes.length == 0) {
+		// 	alert("Select image types");
+		// 	return;
+		// }
+
+
+		for (var i = scope.multiselectmodel.length - 1; i >= 0; i--) {
+			scope.order.imageTypes.push({
+				"image_type_id" : parseInt(scope.multiselectmodel[i].id)
+			});
+		};
+
+		scope.order.image_frequency_id = parseInt(scope.order.image_frequency_id);
+
+
+		rootScope.evaluated = false;
+		rootScope.evaluatedError = false;
+		rootScope.evaluationAvailable = true;
+		rootScope.estimateOrder = scope.order;
+		rootScope.estimateSurface = scope.polygonSurfaceFixed;
+		if (rootScope.estimateOrder.polygons.length == 0) {
+			rootScope.estimateOrder.imageTypes = [];
+			rootScope.estimateOrder.image_frequency_id = "";
+		}
+	}
+
+
+	scope.test = function () {
+		alert(angular.toJson(scope.order));
+		alert (angular.toJson(scope.multiselectmodel));
+		//alert(angular.toJson(scope.order.polygons));
+		//$('#estimateModal').show();
+	}
+
+	scope.getImageTypes = ServerService.getImageTypes().then(function (data) {
+                if (data) {
+                	for (var i = data.length - 1; i >= 0; i--) {
+                		var type = {
+                			id : data[i].id,
+                			label: data[i].name
+                		};
+                		scope.multiselectdata.push(type);
+                		scope.multiselectmodel.push(type);
+                	};
+                } else {
+                   scope.generalError = true;
+                }
+    }, function(reason) {
+  				scope.generalError = true;
+	});
+
+	scope.getFrequencies = ServerService.getFrequencies().then(function (data) {
+                if (data) {
+                   scope.order.image_frequency_id = data[0].id;
+                   scope.frequencies = data;
+                } else {
+                   scope.generalError = true;
+                }
+    }, function(reason) {
+  				scope.generalError = true;
+	});
+
+
+	scope.getSensorTypes = ServerService.getSensorTypes().then(function (data) {
+                if (data) {
+                   scope.sensorTypes = data;
+                } else {
+                   scope.generalError = true;
+                }
+    }, function(reason) {
+  				scope.generalError = true;
+	});
+
+	rootScope.evaluated = false;
+	rootScope.evaluatedError = false;
+	rootScope.evaluationAvailable = true;
+	scope.evaluate = function () {
+		ServerService.evaluateOrder(scope.clientId, rootScope.estimateOrder).then(function (data) {
+                if (data) {
+                   scope.estimatedPrice = data.value;
+                   scope.currency = data.currency;
+                   rootScope.evaluationAvailable = false;
+                   rootScope.evaluated = true;
+                } else {
+                   rootScope.evaluationAvailable = false;
+                   rootScope.evaluated = false;
+                   rootScope.evaluatedError = true;
+                }
+    	}, function(reason) {
+    			rootScope.evaluationAvailable = false;
+                rootScope.evaluated = false;
+                rootScope.evaluatedError = true;
+		});
+	}
+
+	scope.orderPlaced = false;
+	scope.orderSuccess = false;
+	scope.placeOrder = function () {
+		var orderToPlace = rootScope.estimateOrder;
+
+		alert(scope.clientId);
+		alert(angular.toJson(orderToPlace));
+
+		ServerService.placeOrder(scope.clientId, orderToPlace).then(function (data) {
+                if (data) {
+                   scope.orderPlaced = true;
+				   scope.orderSuccess = true;
+                } else {
+                  	scope.orderSuccess = false;
+                }
+    	}, function(reason) {
+  				scope.orderSuccess = false;
+		});
+		
+	}
+
+
+	scope.order = {
+		"name" : "",
+		"description" : "",
+		"image_frequency_id" : "",
+		"imageTypes" : [],
+		"polygons": [],
+		"sensors" : []
+	}
+
+
+
 	scope.polygonSurface = 0;
 	scope.polygonSurfaceFixed = 0;
-	scope.sensors = [];
+
 
 	scope.polygonNotSelected = true;
 	scope.markerNotSelected = true;
-
-	scope.orderName = "";
-	scope.dateFrom = "";
-	scope.dateTo = "";
-
-	scope.estimatedPrice = "620EUR";
 	
 	scope.typeChange = function () {
 		console.log(scope.sensors);
 	}
-	
-	scope.sensortypes = [
-		{id: 0, name:"Temperatura"},
-		{id: 1, name:"Vlaznost"},
-		{id: 2, name:"Tip 3"}
-	];
 
-	scope.multiselectmodel = [];
-	scope.multiselectdata = [
-    	{id: 1, label: "Tip 1 snimanja"},
-    	{id: 2, label: "Tip 2 snimanja"},
-    	{id: 3, label: "Tip 3 snimanja"},
-    	{id: 4, label: "Tip 4 snimanja"},
-    	{id: 5, label: "Tip 5 snimanja"}
-    ];
-
-	scope.multiselectsettings = {
-	    smartButtonMaxItems: 1,
-	    smartButtonTextConverter: function(itemText, originalItem) {
-	        if (itemText === 'Jhon') {
-	        return 'Jhonny!';
-	        }
-
-	        return itemText;
-	    }
-	};
-		
-	scope.date = '2015-07-10';
-	scope.datepickerOptions = {
-    	format: 'yyyy-mm-dd',
-    	language: 'en',
-    	autoclose: true,
-    	weekStart: 0,
-	}
 
 
 	scope.estimate = function() {
@@ -147,106 +310,54 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 		google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
 			// Get bounds in CAP <area> format
 			if (event.type == google.maps.drawing.OverlayType.MARKER) {
-				insertBoundsIntoDOM(event.overlay.position, mapDataId);
+				//insertBoundsIntoDOM(event.overlay.position, mapDataId);
 				mapOverlays.push(event.overlay);
 				var sensor = event.overlay.position;
 				var infowindow = new google.maps.InfoWindow({
-					content: "Senzor " + (scope.sensors.length+1) 
+					content: "Senzor " + (scope.order.sensors.length+1) 
 				});
 				infowindow.open(map, event.overlay);
 				google.maps.event.addListener(event.overlay, 'click', function() {
 					infowindow.open(map,event.overlay);
 				});
 				var sensorInfo = {
-					"id" : (scope.sensors.length+1),
-					"data" : sensor,
-					"type" : -1
+					"latitude" : sensor.G,
+					"longitude" : sensor.K,
+					"description" : "",
+					"uom_id" : "",
+					"type_id" : ""
 				};
-				scope.sensors.push(sensorInfo);
-				console.log("sensors " + scope.sensors.length);
+				scope.order.sensors.push(sensorInfo);
+				console.log("sensors " + scope.order.sensors.length);
 				if (scope.markerNotSelected == true) {
 					scope.markerNotSelected = false;
 				}
 			} else {
-				var bounds = event.overlay.toCapArea();
 				var paths = event.overlay.getPath();
-				// Store geo data in DOM
-				insertBoundsIntoDOM(bounds, mapDataId);
-				// Store overlay in global array
+				var myCoordArray = event.overlay.toCapAreaArray();
 				mapOverlays.push(event.overlay);
 				var area = google.maps.geometry.spherical.computeArea(paths);
 				var polygon = area/10000;
-				scope.polygons.push(polygon);
-				//alert (area/10000);
+				var polygonInfo = {
+					"coordinates" : [],
+					"surface": 0
+				};
+				for (var i = myCoordArray.length - 1; i >= 0; i--) {
+					polygonInfo.coordinates.push(myCoordArray[i]);
+				}
 				scope.polygonSurface = scope.polygonSurface + polygon;
 				scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
+				polygonInfo.surface = parseFloat(scope.polygonSurfaceFixed);
 				console.log("polygonSurfaceFixed " + scope.polygonSurfaceFixed);
-				console.log("polygon " + scope.polygons.length);
+				scope.order.polygons.push(polygonInfo);
 				if (scope.polygonNotSelected == true) {
 					scope.polygonNotSelected = false;
 				}
+				scope.setMultiselectIN();
 			}
-			// Get states intersecting the bounds
-//			getTerritoriesFromGeom(event.overlay.toGeom(), 'los_estados', function(states, error) {
-//				if (error) {
-//					console.log(error);
-//					return false;
-//				}
-//				// Store states in DOM
-//				insertTerritoriesIntoDOM(states.toString(), 'states', mapDataId);
-//			});
-//			// Get municipalities intersecting the bounds
-//			getTerritoriesFromGeom(event.overlay.toGeom(), 'los_municipios', function(municipalities, error) {
-//				if (error) {
-//					console.log(error);
-//					return false;
-//				}
-//				// Store municipalities in DOM
-//				insertTerritoriesIntoDOM(municipalities.toString(), 'municipalities', mapDataId);
-//			});
 		});
 
 	});
-
-
-	/*** DOM Operations ***/
-
-
-	/**
-	 * Inserts geo-data into DOM.
-	 * <div id='map-data'>
-	 *   <input name='area' value='28.381735043223106,-106.875 591.9281072234887'>
-	 *   <input name='area' value='23.40,-98.34 18.47,-103.27 20.87,-92.81'>
-	 * </div>
-	 *
-	 */
-	function insertBoundsIntoDOM(bounds, domElementId) {
-		console.log('insertBoundsIntoDOM("' + bounds + '")');
-		/*var $input = $(document.createElement('input')).attr({
-			name: 'area',
-			value: bounds
-		});
-		$('#' + domElementId).append('<br />Regi�n:',$input);*/
-	}
-
-
-	/**
-	 * Inserts mexican geopolitical data into DOM.
-	 * <div id='map-data'>
-	 *   <input name='states' value='Baja California, Sonora'>
-	 *   <input name='municipalities' value='Mexicali, Ensenada, Hermosillo'>
-	 * </div>
-	 *
-	 */
-	function insertTerritoriesIntoDOM(territories, key, domElementId) {
-		console.log('insertTerritoriesIntoDOM("' + territories + '")');
-		var $input = $(document.createElement('input')).attr({
-			name: key,
-			value: territories
-		});
-		$('#' + domElementId).append($input); 
-	}
-
 
 	/**
 	 * Removes map overlays and DOM elements with map data
@@ -258,8 +369,8 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 		scope.markerNotSelected = true;
 		scope.polygonSurface = 0;
 		scope.polygonSurfaceFixed = 0;
-		scope.polygons = [];
-		scope.sensors = [];
+		scope.order.polygons = [];
+		scope.order.sensors = [];
 	}
 
 
@@ -328,6 +439,19 @@ angular.module('userApp').controller("testCtrl", ["$scope", "$http", "$filter", 
 		});
 		var start = this.getPath().getAt(0);
 		capArea += start.lat() + ',' + start.lng();
+		return capArea;
+	};
+
+	google.maps.Polygon.prototype.toCapAreaArray = function () {
+		var capArea = [];
+		this.getPath().forEach(function (element, index) {
+			var coord = {
+				"latitude" : element.lat().toString(),
+				"longitude" : element.lng().toString()
+			}
+			capArea.push(coord);
+		});
+		var start = this.getPath().getAt(0);
 		return capArea;
 	};
 

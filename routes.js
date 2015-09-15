@@ -48,6 +48,12 @@ angular.module("userApp").config(['$routeProvider', function(routeProvider) {
 		resolve: {
 		}
 	})
+	.when("/images/:id/", {
+		templateUrl: "partials/images.html",
+		controller: "imagesCtrl",
+		resolve: {
+		}
+	})
 	.otherwise({redirectTo: '/login'});
 
 }]);

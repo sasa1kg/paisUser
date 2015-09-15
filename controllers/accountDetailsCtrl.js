@@ -1,17 +1,42 @@
-angular.module('userApp').controller("accountDetailsCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
+angular.module('userApp').controller("accountDetailsCtrl", ["$scope", "$http", "$filter", "ServerService",  function (scope, http, filter, ServerService) {
 
 	console.log("accountDetailsCtrl!");
 	scope.msg = "accountDetailsCtrl!";
 
-	scope.name = "Marko";
-	scope.lastname = "Markovic";
-	scope.email = "marko@markovprovajder.rs";
-	scope.address = "Bul. Cara Lazara 5";
-	scope.postcode = "21000";
-	scope.city = "Novi Sad";
-	scope.phone = "+38163101101";
-	scope.password = "nekipassword";
-	scope.dob = "1/7/1960";
+	scope.testUserId = 22;
+	scope.updateSuccess = true;
+	scope.updateDone = false;
+  scope.retrieve = true;
+
+
+	 scope.getUser =	ServerService.getClient(scope.testUserId).then(function (data) {
+                if (data) {
+                   console.log("Ctrl res " + data.username);
+                   scope.user = data;
+                } else {
+                   alert("Data null");
+                }
+        });
+
+	scope.updateUser = function () {
+		ServerService.updateClient(scope.user).then(function (data) {
+                if (data) {
+                   console.log("Ctrl res " + data.username);
+                   scope.updateDone = true;
+                   scope.updateSuccess = true;
+                   scope.user = data;
+                } else {
+                   scope.updateDone = true;
+                   scope.updateSuccess = false;
+                   alert("Data null");
+                }
+        }, function(reason) {
+        	    scope.updateDone = true;
+                scope.updateSuccess = false;
+  				alert('Failed: ' + reason);
+		});
+	}
+
 
 
 }]);

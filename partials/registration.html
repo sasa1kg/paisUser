@@ -1,96 +1,106 @@
 <div class="container holder">
 
-
 	<div class="panel panel-default">
-	    <div class="panel-heading">
-	      <h2 class="panel-title">REGISTRACIJA <a class="panel-title pull-right cursorchg">ZA FIRME</a></h2>
-	    </div>
-	    <div class="panel-body">
-	     	<div class="col-sm-6">
-	     		<dl>
-	     				<dt><label>E-MAIL: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>LOZINKA: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="Lozinka" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>IME: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="Ime" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>PREZIME: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="Prezime" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>ADRESA: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-					</dl>
-			</div>
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ 'REGISTER' | translate }} <a class="pull-right" href="#/login">{{ 'BACK_TO_LOGIN' | translate }}</a></h2>
+        </div>
+        <form name="reg_form" class="panel-body" ng-show="!error && !registered && !backendLoadingError" cg-busy="{promise:getAccountConfiguration,message:'Loading...',backdrop:true}">
+            <div class="col-sm-6">
+                <dl>
+                    <dt><label>{{ 'USERNAME' | translate }}:  </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input class="form-control" type="text" name="input" placeholder="{{ 'USERNAME' | translate }}" ng-model="user.username" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'PASSWORD' | translate }}:  </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input type="password" name="input" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="user.password" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'EMAIL' | translate }}:  </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input type="email" name="input" class="form-control" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'NAME' | translate }}: </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input class="form-control" type="text" name="input" placeholder="{{ 'NAME' | translate }}" ng-model="user.first_name" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'SURNAME' | translate }}: </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input class="form-control" type="text" name="input" placeholder="{{ 'SURNAME' | translate }}" ng-model="user.last_name" reuired>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                </dl>
+            </div>
 
-			<div class="col-sm-6">
-				<dl>
-						<dt><label>POŠTANSKI BROJ: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>OPŠTINA: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>KONTAKT TELEFON: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>
-						</br>
-						<hr>
-						<dt><label>DATUM ROĐENJA: </label></dt>
-						<dd>
-							<div class="col-xs-10">
-								<input class="form-control" placeholder="E-mail" ng-model="">
-							</div>
-						</dd>			
-				</dl>
-			</br>
-			<div class="col-xs-10 pulltopbutton">
-				<a class="btn-lg btn-primary pull-right" type="button" href="#/login">REGISTRUJ SE</a>
-			</div>
-			</div>
-	    	</div>
-	    </div>
-	    </div>
-	</div>
+            <div class="col-sm-6">
+                <dl>
+                    <dt><label>{{ 'ACCOUNT_TYPE' | translate }}</label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <select class="form-control" id="account_type" ng-options="accountType.id as accountType.name for accountType in accountTypes" ng-model="user.type_id">
+						  	</select>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'PHONE' | translate }}: </label></dt>
+                    <dd>
+                        <div class="col-xs-10">
+                            <input class="form-control" type="text" name="input" placeholder="{{ 'PHONE' | translate }}" ng-model="user.phone" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'COUNTRY' | translate }}: </label></dt>
+                    <dd>
+                    	<div class="col-xs-10">
+                             <select class="form-control" id="country" ng-options="country.id as country.name for country in countries" ng-model="user.country_code">
+						  	</select>
+						</div>
+					</dd>
+                    </br>
+                    <hr>
+                </dl>
+                </br>
+                <div class="col-xs-10 pulltopbutton">
+                    <submit class="btn-lg btn-primary pull-right cursorchg" type="submit" ng-click="register()" ng-disabled="reg_form.$invalid">{{ 'CREATE' | translate }}</submit>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="alert alert-success" ng-show="registered && !error">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REGISTER_SUCCESS' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="!registered && error">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REGISTER_ERROR' | translate }}
+    </div>
+
+        <div class="alert alert-danger" ng-show="backendLoadingError">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'BACKEND_ERROR' | translate }}
+    </div>
+</div>
+</div>
 </div>

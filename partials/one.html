@@ -3,54 +3,79 @@
     </nav>
 
 
+    <div class="alert alert-danger" ng-show="generalError">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'ERROR_GEN' | translate }}</strong> {{ 'ERROR_GEN_DET' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARNING_IMG_DESC' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_IMG_TYPES' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_NAME' | translate }}
+    </div>
+
     <!-- Modal -->
-    <div id="estimateModal" class="modal fade" role="dialog">
+    <div id="estimateModal" class="modal" role="dialog" data-backdrop="">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Informacije</h4>
+                    <h4 class="modal-title">{{ 'INFORMATIONS' | translate }}</h4>
                 </div>
                 <div class="modal-body">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Odabrane usluge</h3>
+                            <h3 class="panel-title">{{ 'CHOOSEN_SERVICES' | translate }}</h3>
                         </div>
                         <div class="panel-body">
-                            <p>Obeležili ste površina {{polygons.length}}, sa ukupnom površinom {{polygonSurfaceFixed}}
-                                hektara.</p>
+                            <p>{{ 'CHOOSEN_NO_T' | translate }} {{estimateOrder.polygons.length}}. <p>{{ 'CHOOSEN_NO_T_SURFACE' | translate }} {{estimateSurface}}
+                                ha.</p>
 
-                            <p>Obeležili ste senzora {{sensors.length}}</p>
+                            <p>{{ 'CHOOSEN_NO_SENSORS' | translate }} {{estimateOrder.sensors.length}}</p>
                         </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Procena vrednosti</h3>
+                            <h3 class="panel-title">{{ 'EVALUATION' | translate }}</h3>
                         </div>
-                        <div class="panel-body">
-                            <p>Približna vrednost obeleženih usluga je {{estimatedPrice}}</p>
+                        <div class="panel-body" ng-show="evaluationAvailable && !evaluated && !evaluatedError">
+                            <button type="button" class="btn btn-primary" ng-click="evaluate()">{{ 'EVALUATE_CLICK' | translate }}</button>
+                        </div>
+                        <div class="panel-body" ng-show="!evaluationAvailable && evaluated && !evaluatedError">
+                            <p>{{ 'APPROX_VALUE' | translate }} {{estimatedPrice}} {{currency}}</p>
                             <hr>
-                            <p>NAPOMENA: Procenjena vrednost je samo približno izračunata i može varirati od tačne cene.
-                                Po potvrdi narudžbine bićete kontaktirani od strane našeg tima koji će vas upoznati sa
-                                tačnom cenom, načinom i dinamikom plaćanja.</p>
+                            <p>{{ 'ESTIMATE_ALERT' | translate }}</p>
+                        </div>
+                        <div class="panel-body" ng-show="!evaluationAvailable && !evaluated && evaluatedError">
+                            <p>Error</p>
+                            <hr>
                         </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Pravne informacije</h3>
+                            <h3 class="panel-title">{{ 'LEGAL_NOTE' | translate }}</h3>
                         </div>
                         <div class="panel-body">
-                            <p>Naručivanjem obeleženih usluga prihvatam uslove korišćenja.</p>
+                            <p>{{ 'ACCEPT_TOS' | translate }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#placeOrderModal">
-                        Potvrdi narudžbinu
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#placeOrderModal" ng-show="!evaluationAvailable && evaluated && !evaluatedError" ng-click="placeOrder()">
+                        {{ 'CONFIRM_ORDER' | translate }}
                     </button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Nazad</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'CANCEL_ORDER' | translate }}</button>
                 </div>
             </div>
 
@@ -59,21 +84,21 @@
 
 
     <!-- Modal -->
-    <div id="placeOrderModal" class="modal fade" role="dialog">
+    <div id="placeOrderModal" class="modal" role="dialog" data-backdrop="">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Informacije</h4>
+                    <h4 class="modal-title">{{ 'INFORMATIONS' | translate }}</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Narudžbina je uspešno poslata. Očekujte da budete kontaktirani preko kontakt brojeva koji se
-                        nalaze u vašem profilu.</p>
+                    <p ng-show="orderPlaced && orderSuccess">{{ 'ORDER_SUCCESS' | translate }}</p>
+                    <p ng-show="orderPlaced && !orderSuccess">{{ 'ORDER_FAILED' | translate }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    <a type="button" class="btn btn-primary" href="#/orders">{{ 'MY_ORDERS' | translate }}</a>
                 </div>
             </div>
 
@@ -83,90 +108,86 @@
  
 
 
-<div class="container-fluid holder" ng-controller="testCtrl">
+<div class="container-fluid holder" ng-controller="testCtrl" ng-show="!generalError">
 	<div class="row backopacity">
 
 		<div class="col-sm-6 map">
 			<div class="google-map-canvas" id="map-canvas"></div>
 		</div>
 
-		<div class="col-sm-5 col-sm-offset-1">
-
-			<h3>{{ 'ORDER' | translate }}</h3>
+		<div class="col-sm-6">
 
 			<form class="form-horizontal">
-				<div class="form-group">
-					<div class="col-xs-10">
-						<input class="form-control" placeholder="{{ 'NAME_ORDER' | translate }}" ng-model="orderName">
-					</div>
-				</div>
-				<hr>
-				<h4>{{ 'IMAGE_SETTINGS' | translate }}</h4>
 
-				<dl>
-					<dt><label>{{ 'NO_TERITORIES' | translate }}</label></dt>
-					<dd>
+                <div class="panel panel-default pulltoppanel panelBorder">
+                    <div class="panel-heading panelBig">
+                        <h4>{{ 'ORDER' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="{{ 'NAME_ORDER' | translate }}" ng-model="order.name">
+                                <textarea class="form-control separateFive" rows="2" placeholder="{{ 'DESCRIPTION' | translate }}" ng-model="order.description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<hr>
+                <div class="panel panel-default panelBorder">
+                    <div class="panel-heading panelBig">
+				        <h4>{{ 'IMAGE_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+					<dt ng-show="!polygonNotSelected"><label>{{ 'NO_TERITORIES' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
 						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygons.length" ng-disabled="true">
+							<input class="form-control" ng-model="order.polygons.length" ng-disabled="true">
 						</div>
 					</dd>
-					<dt><label>{{ 'SURFACE' | translate }}</label></dt>
-					<dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'SURFACE' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
 						<div class="col-xs-10">
-							<input class="form-control" placeholder="Niste odabrali nijednu površinu" ng-model="polygonSurfaceFixed" ng-disabled="true">
+							<input class="form-control" ng-model="polygonSurfaceFixed" ng-disabled="true">
 						</div>
 					</dd>
-					<dt><label>{{ 'IMAGE_TYPES' | translate }}</label></dt>
-					<dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'IMAGE_TYPES' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
 						<div class="col-xs-10 fullwidth">
-							<div class="fullwidth" ng-dropdown-multiselect="" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings" ng-disabled="polygonNotSelected">Izaberi</div>
+							<div class="fullwidth" ng-dropdown-multiselect="" translation-texts="msTranslate" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings">Izaberi</div>
 						</div>
 					</dd>
-					<dt><label>{{ 'IMAGE_START' | translate }}</label></dt>
-					<dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'IMAGE_FREQ' | translate }} </label></dt>
+					<dd ng-show="!polygonNotSelected">
 						<div class="col-xs-10">
-							<input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom" ng-disabled="polygonNotSelected">
-						</div>
-					</dd>
-					<dt><label>{{ 'IMAGE_END' | translate }}</label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<input class="form-control" type="date" min="2015-07-01" ng-model="dateTo" ng-disabled="polygonNotSelected">
-						</div>
-					</dd>
-					<dt><label>{{ 'IMAGE_FREQ' | translate }} </label></dt>
-					<dd>
-						<div class="col-xs-10">
-							<select class="form-control" id="selFrequency" ng-disabled="polygonNotSelected">
-						    <option>{{ 'SEVEN_DAYS' | translate }}</option>
-						    <option>{{ 'FIFTEEN_DAYS' | translate }}</option>
-						    <option>{{ 'MONTH' | translate }}</option>
-						    <option>{{ 'TWO_MONTHS' | translate }}</option>
+							<select class="form-control" id="selFrequency" ng-model="order.image_frequency_id" ng-options="freq.id as freq.name for freq in frequencies" ng-disabled="polygonNotSelected">
 						  </select>
 						</div>
 					</dd>
-					</br>
-					<hr>
-					<h4>{{ 'SENSOR_SETTINGS' | translate }}</h4>
-					</br>
-					<table class="table-responsive col-xs-10">
-						<tbody ng-repeat="sensor in sensors">
-						<td><label>{{ 'SENSOR' | translate }} {{sensor.id}}</label></td>
-						<td>
-							<select class="form-control" id="selSensors" ng-model="sensor.type" ng-disabled="markerNotSelected" ng-change="typeChange()">
-						    <option ng-repeat="type in sensortypes" ng-value="type.id">{{type.name}}</option>
-							</select>
-						 </td>
-						</tbody>
-					</table>
-					</br>
-				</dl>
-				</br>
-				<hr>
+                </div>
+            </div>
+            <hr>
+            <div class="panel panel-default panelBorder">
+                    <div class="panel-heading panelBig">
+					   <h4>{{ 'SENSOR_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                                <div class="panel panel-default panelSmallBorder" ng-repeat="sensor in order.sensors">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'SENSOR' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <select class="form-control" id="selSensors" ng-disabled="markerNotSelected" ng-model="sensor.type_id" ng-init="sensor.type_id=sensorTypes[0].id" ng-options="type.id as type.name for type in sensorTypes">
+                                        </select>
+                                        <textarea class="form-control separateFive" rows="2" ng-model="sensor.description" placeholder="{{ 'SENSOR_DESCRIPTION' | translate }}"></textarea>
+                                    </div>
+                                </div>
+                    </div>
+            </div>
 				<div class="form-group">
 					<div class="col-xs-10">
-						<button class="btn btn-primary pull-right" type="button" data-toggle="modal" data-target="#estimateModal">{{ 'ESTIMATE' | translate}}</button>
+						<button class="btn btn-primary btn-lg pull-right" type="button" data-toggle="modal" ng-click="injectToRoot()" data-target="#estimateModal" ng-disabled="order.name.length==0">{{ 'ESTIMATE' | translate}}</button>
 					</div>
+					<button ng-click="test()">TEST</button>
 				</div>
 			</form>
 		</div>
