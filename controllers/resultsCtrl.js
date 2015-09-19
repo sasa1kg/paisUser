@@ -1,18 +1,45 @@
-angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
-	scope.activeState = 2;
+angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter", "ServerService",  function (scope, http, filter, ServerService) {
 	console.log("Results!");
 	scope.msg = "User results!";
 
+    scope.clientId = 22;
+
 	var myLatlng = new google.maps.LatLng(44, 20.461414);
 	scope.map = "";
-	var sensors = 
-    [
-      ['Senzor temperature', 44.1, 20.461414, 1],
-      ['Senzor temperature', 44, 20.261414, 2],
-      ['Senzor vlaznosti', 43.9, 20.661414, 3],
-      ['Senzor vlaznosti', 44.05, 20.861414, 4],
-      ['Senzor vlaznosti', 44, 20.461414, 5]
-    ];
+    scope.generalError = false;
+
+    scope.getOrders = ServerService.clientOrders(scope.clientId).then(function (data) {
+                if (data) {
+                   console.log("Accounts " + data.length);
+                   scope.accounts = data;
+                   scope.select(data[0].order_id);
+                } else {
+                   scope.generalError = true;
+                }
+    }, function(reason) {
+                scope.generalError = true;
+    });
+
+    scope.select = function (accountId) {
+        scope.loaded = false;
+        for (var i = scope.accounts.length - 1; i >= 0; i--) {
+            if (scope.accounts[i].order_id == accountId) {
+                ServerService.clientOrderDetailed(scope.clientId, accountId).then(function (data) {
+                        if (data) {
+                           scope.selectedAccount = data;
+                           scope.loaded = true;
+                           setMarkers(scope.map, scope.selectedAccount.sensors, scope.selectedAccount.order_id);
+                        } else {
+                           scope.generalError = true;
+                        }
+                }, function(reason) {
+                        scope.generalError = true;
+                });
+            }
+        };
+    };
+
+
     scope.recordings = [
     		{
     			"name" : "A_slika_Op1_Absa",
@@ -41,6 +68,7 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
     ];
 
     scope.order = "date";
+
     scope.orderByName = function () {
     	scope.order = "name";
     }
@@ -51,53 +79,23 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
     	scope.order = "date";
     }
 
-	scope.selectedOrder = "njiva";
-
 	scope.isActive = function (order) {
-    	return scope.selectedOrder === order;
+        if (scope.selectedAccount != null) {
+    	   return scope.selectedAccount.order_id == order;
+        } else {
+           return false;
+        }
   	}
-	scope.accounts = [
-		{
-			"id" : 0,
-			"name" : "njiva",
-			"recordings" : 6,
-			"sensors" : 2
-		},
-		{
-			"id" : 1,
-			"name" : "livada",
-			"recordings" : 2,
-			"sensors" : 1
-		},
-		{
-			"id" : 2,
-			"name" : "vocnjak",
-			"recordings" : 1,
-			"sensors" : 1
-		},
-		{
-			"id" : 3,
-			"name" : "malinjak",
-			"recordings" : 4,
-			"sensors" : 2
-		},
-		{
-			"id" : 4,
-			"name" : "jos nesto",
-			"recordings" : 3,
-			"sensors" : 0
-		}
-	];
 
-	scope.selectOrder = function (account) {
-		for (var i = scope.accounts.length - 1; i >= 0; i--) {
-			if (scope.accounts[i].id == account) {
-				scope.selectedOrder = scope.accounts[i].name;
-				break;
-			}
-		};
-		setMarkers(scope.map, sensors, scope.recordings);
-	};
+    scope.getSensorTypes = ServerService.getSensorTypes().then(function (data) {
+                if (data) {
+                    scope.sensor_types = data;
+                } else {
+                    scope.generalError = true;
+                }
+    }, function(reason) {
+         scope.generalError = true;       
+    });
 
 
 	$(document).ready(function () {
@@ -114,24 +112,43 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
 			}
         }
 		scope.map = new google.maps.Map(document.getElementById(mapCanvasId), myOptions);
-		setMarkers(scope.map, sensors, scope.recordings);
 	});
 
 
-	function setMarkers(map, sensorLocations, imageLocations) {
+	function setMarkers(map, sensors, order_id) {
+    for (var i = scope.sensorsOnMap.length - 1; i >= 0; i--) {
+            scope.sensorsOnMap[i].setMap(null);
+        };    
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < sensorLocations.length; i++) 
-    {
-            var sensors = sensorLocations[i];
-            var coords = new google.maps.LatLng(sensors[1], sensors[2]);
-            var contentString = sensors[0] +" <br/> <a href='#/sensor/" + sensors[3] + "/'> <b>MERENJA</b> </a><br/>";
+    for (var i = 0; i < sensors.length; i++) 
+        {
+            var sensor = sensors[i];
+            var title = "N/A";
+            var getType = function () {
+                for (var i = scope.sensor_types.length - 1; i >= 0; i--) {
+                    console.log(scope.sensor_types[i].name);
+                    if (scope.sensor_types[i].id == sensor.type_id) {
+                        title = scope.sensor_types[i].name;
+                    }
+                };
+
+            };
+
+            getType();
+
+            var coords = new google.maps.LatLng(sensor.latitude, sensor.longitude);
+            var contentString = sensor.description + " <br/> <hr>" + 
+            title + " <br/> " +
+            " <a href='#/sensor/" + scope.clientId +"/" + order_id + "/measurement/" + sensor.sensor_id + "/'> <b>MERENJA</b> </a><br/>";
             var infowindow = new google.maps.InfoWindow({content: contentString});
             
+
+
             var marker = new google.maps.Marker({
                 position: coords,
                 map: map,
                 icon: "img/waterfilter.png",
-                title: sensors[0]
+                title: title
             });
             google.maps.event.addListener(marker, 'click', 
                 function (infowindow, marker) {
@@ -140,32 +157,26 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
                     };
                 }(infowindow, marker)
             );
+            scope.sensorsOnMap.push(marker);
             bounds.extend(coords);
             scope.map.fitBounds(bounds);
+        }
     }
-    /*for (var i = 0; i < imageLocations.length; i++) 
-    {
-        var image = imageLocations[i];
-        var coords = new google.maps.LatLng(image.lat, image.longitude);
-        var contentString = image.name +" <br/> <a href='#/recording/" + image.id + "/'> <b>SLIKA</b> </a><br/>";
-        var infowindow = new google.maps.InfoWindow({content: contentString});
-        var marker = new google.maps.Marker({
-                position: coords,
-                map: map,
-                icon: "img/camera.png",
-                title: image.name
-        });
-        google.maps.event.addListener(marker, 'click', 
-                function (infowindow, marker) {
-                    return function () {
-                        infowindow.open(map, marker);
-                    };
-                }(infowindow, marker)
-            );
-        bounds.extend(coords);
-        scope.map.fitBounds(bounds);
-    }*/
-}
 
- 
+    scope.sensorsOnMap = [];
+
+    scope.getTypeName = function (id) {
+        ServerService.getSensorType(id).then(function (data) {
+                if (data) {
+                   return data.sensor_type_name;
+                } else {
+                   return "N/A";
+                }
+        }, function(reason) {
+            return "N/A";
+        });
+    }
+
+
+
 }]);

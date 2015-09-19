@@ -11,14 +11,14 @@
                   </ul>
             </div>
             <div class="form-group">
-                <input type="text" class="form-control input-lg" id="inputEmail" placeholder="{{ 'LOGIN_USERNAME' | translate}}">
+                <input type="text" class="form-control input-lg" id="inputEmail" placeholder="{{ 'LOGIN_USERNAME' | translate}}" ng-model="username">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control input-lg" id="inputPassword" placeholder="{{ 'LOGIN_PASSWORD' | translate}}">
+                <input type="password" class="form-control input-lg" id="inputPassword" placeholder="{{ 'LOGIN_PASSWORD' | translate}}" ng-model="password">
             </div>
             <div>
                 <a href="#/registration"> {{ 'REGISTER' | translate}}</a>
-                <a class="btn btn-primary submitbutton btn-lg pull-right" role="button" href="#/orders">
+                <a class="btn btn-primary submitbutton btn-lg pull-right" role="button" ng-click="login()">
 
                     {{ 'LOGIN' | translate}}</a>
               
@@ -30,6 +30,12 @@
                         scope="public">
                 </oauth>  -->
             </div>
+
         </form>
+
+        <div class="alert alert-danger" ng-show="loginFailed">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'LOGIN' | translate }}</strong> {{ 'ERROR_LOGIN' | translate }}
+    </div>
 <div>
 </div>

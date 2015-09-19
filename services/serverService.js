@@ -1,14 +1,44 @@
 var ServerService = angular.module('ServerService', [])
-	.service('ServerService', ["$q", "$http", function (q, http) {
+	.service('ServerService', ["$q", "$http", "$location", function (q, http, location) {
 
 	var serverurl = 'http://195.220.224.164/';
 
-  this.user = "";
+  var user = "";
 
 
     /*-------------------------- USER OPERATIONS----------------------------*/
 
+  this.login = function (username, password) {
+      var deffered = q.defer();
+      http.get(serverurl + "pais/clients/" + username).
+              success(function(data, status) {
+                //var result = JSON.stringify(data);
+                //var dataJSON = JSON.parse(result);
+                if (status == 200) {
+                    if (data.id == username && data.password == password) {
+                      user = username;
+                      deffered.resolve(true);
+                    } else {
+                      deffered.reject("Error");
+                    }
+                } else {
+                   console.log("Status not OK " + status);
+                   deffered.reject("Error");
+                }
+                
+              }).
+              error(function(data, status) {
+                   console.log("Error " + status);
+                   deffered.reject("Error");
+              });
+
+      return deffered.promise;
+  }
+
   this.updateClient = function (user) {
+    if (user == "" || user == undefined) {
+      location.path("/login");
+    }
     var deffered = q.defer();
        console.log("updateClient " + JSON.stringify(user));
        http.put(serverurl + "pais/clients", user).
@@ -34,6 +64,9 @@ var ServerService = angular.module('ServerService', [])
 
 
 	this.getClient = function (id) {
+      if (user == "" || user == undefined) {
+        location.path("/login");
+      }
 		 var deffered = q.defer();
     	 console.log("getClient " + id);
     	 http.get(serverurl + "pais/clients/" + id).
@@ -43,7 +76,6 @@ var ServerService = angular.module('ServerService', [])
                 if (status == 200) {
                     console.log("Status OK " + status) ;
                     console.log(JSON.stringify(data));
-                    this.user = data;
                     deffered.resolve(data);
                 } else {
                    console.log("Status not OK " + status);
@@ -133,7 +165,7 @@ var ServerService = angular.module('ServerService', [])
 
   this.getSensorTypes = function () {
       var deffered = q.defer();
-      http.get(serverurl + "pais/sensorTypes").
+      http.get(serverurl + "pais/sensorTypesDetailed").
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -152,7 +184,7 @@ var ServerService = angular.module('ServerService', [])
 
   this.getSensorType = function (id) {
       var deffered = q.defer();
-      http.get(serverurl + "pais/sensorType/" + id).
+      http.get(serverurl + "pais/sensorTypes/" + id).
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -211,8 +243,11 @@ var ServerService = angular.module('ServerService', [])
   /*---------------------- ORDER OPERATIONS --------------------------------*/
 
   this.clientOrder = function (clientId, orderId) {
+      if (user == "" || user == undefined) {
+        location.path("/login");
+      }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + clientId + "/orders/" + orderId).
+      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId).
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -230,8 +265,11 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.clientOrders = function (clientId) {
+      if (user == "" || user == undefined) {
+        location.path("/login");
+      }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + clientId + "/orders").
+      http.get(serverurl + "pais/clients/" + user + "/orders").
               success(function(data, status) {
                 console.log("clientOrders " + JSON.stringify(data));
                 if (status == 200) {
@@ -250,8 +288,11 @@ var ServerService = angular.module('ServerService', [])
  
 
   this.clientOrderDetailed = function (clientId, orderId) {
+      if (user == "" || user == undefined) {
+        location.path("/login");
+      }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + clientId + "/orders/" + orderId + "/details").
+      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId + "/details").
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -269,8 +310,11 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.clientOrderSensors = function (clientId, orderId, sensorId) {
+      if (user == "" || user == undefined) {
+        location.path("/login");
+      }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + clientId + "/orders/" + orderId + "/sensors/" + sensorId).
+      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId + "/sensors/" + sensorId).
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -289,9 +333,12 @@ var ServerService = angular.module('ServerService', [])
 
 
   this.evaluateOrder = function (clientId, order) {
+    if (user == "" || user == undefined) {
+        location.path("/login");
+    }
     var deffered = q.defer();
       console.log("evaluateOrder " + clientId);
-       http.post(serverurl + "pais/clients/" + clientId+ "/evaluateOrder", order).
+       http.post(serverurl + "pais/clients/" + user + "/evaluateOrder", order).
               success(function(data, status) {
                 if (status == 200) {
                     console.log("Status OK");
@@ -309,9 +356,12 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.placeOrder = function (clientId, order) {
+    if (user == "" || user == undefined) {
+      location.path("/login");
+    }
     var deffered = q.defer();
-      console.log("evaluateOrder " + clientId);
-       http.post(serverurl + "pais/clients/" + clientId+ "/orders", order).
+      console.log("evaluateOrder " + user);
+       http.post(serverurl + "pais/clients/" + user + "/orders", order).
               success(function(data, status) {
                 if (status == 200) {
                     console.log("Status OK");

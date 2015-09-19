@@ -122,7 +122,9 @@ userApp.config(function($translateProvider) {
     WARN_NAME: 'Order name must contain at least 3 alpha-numerical characters.',
     WARN_IMG_TYPES: 'At least one image type must be selected.',
     WARNING_GEN : 'WARNING',
-    WARNING_IMG_DESC: 'Order description cannot have more than 100 characters.'
+    WARNING_IMG_DESC: 'Order description cannot have more than 100 characters.',
+    ERROR_LOGIN : 'Please check your username and try again',
+    TIME_FILTER: 'Time filter'
     })
     .translations('rs', {
       NEW_ORDER: 'Nova porudžbina',
@@ -221,7 +223,9 @@ userApp.config(function($translateProvider) {
     WARN_NAME: 'Ime narudžbine mora sadržati minimalno 3 karaktera.',
     WARN_IMG_TYPES: 'Minimalno jedan tip snimanja mora biti odabran.',
     WARNING_GEN : 'UPOZORENJE',
-    WARNING_IMG_DESC: 'Opis narudžbine može imati maksimalno 100 karaktera.'
+    WARNING_IMG_DESC: 'Opis narudžbine može imati maksimalno 100 karaktera.',
+    ERROR_LOGIN : 'Proverite podatke i pokušajte ponovo',
+    TIME_FILTER: 'Vremenski filter'
     });
     $translateProvider.preferredLanguage('en');
 });

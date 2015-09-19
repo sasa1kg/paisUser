@@ -30,7 +30,7 @@ angular.module("userApp").config(['$routeProvider', function(routeProvider) {
 		resolve: {
 		}
 	})
-	.when("/sensor/:id/", {
+	.when("/sensor/:client_id/:order_id/measurement/:id/", {
 		templateUrl: "partials/sensorReadings.html",
 		controller: "sensorReadingsCtrl",
 		resolve: {

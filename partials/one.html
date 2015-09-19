@@ -178,6 +178,8 @@
                                     <div class="panel-body">
                                         <select class="form-control" id="selSensors" ng-disabled="markerNotSelected" ng-model="sensor.type_id" ng-init="sensor.type_id=sensorTypes[0].id" ng-options="type.id as type.name for type in sensorTypes">
                                         </select>
+                                        <select class="form-control separateFive" id="selSensorsUoms" ng-disabled="markerNotSelected" ng-model="sensor.uom_id" ng-options="uom.id as uom.name for uom in reloadUOMS(sensor, sensor.type_id)">
+                                        </select>
                                         <textarea class="form-control separateFive" rows="2" ng-model="sensor.description" placeholder="{{ 'SENSOR_DESCRIPTION' | translate }}"></textarea>
                                     </div>
                                 </div>

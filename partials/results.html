@@ -2,8 +2,13 @@
     <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
     </nav>
 
+    <div class="alert alert-danger" ng-show="generalError">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'ERROR_GEN' | translate }}</strong> {{ 'ERROR_GEN_DET' | translate }}
+    </div>
 
-    <div class="col-lg-4">
+
+    <div class="col-lg-4" ng-show="!generalError" cg-busy="{promise:getOrders,message:'Loading...',backdrop:true}">
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -12,17 +17,18 @@
             <div class="panel-body">
                 <ul class="list-group">
                     <a class="list-group-item hoverblue" ng-repeat="account in accounts"
-                       ng-click="selectOrder(account.id)" id="{{account.id}}"
-                       ng-class="{'active' : isActive(account.name)}">{{account.name}} <span class="badge pull-right">{{account.recordings + account.sensors}}</span></a>
+                       ng-click="select(account.order_id)" id="{{account.order_id}}"
+                       ng-class="{'active' : isActive(account.order_id)}">{{account.name}}</a>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-8">
+
+    <div class="col-lg-8" ng-show="!generalError">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{{selectedOrder}} | {{'IMAGES' | translate}}</h3>
+                <h3 class="panel-title">{{selectedAccount.name}} | {{'IMAGES' | translate}}</h3>
             </div>
             <div class="panel-body">
                 <table class="table table-striped table-hover">
@@ -47,7 +53,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{{selectedOrder}} | {{ 'SENSORS' | translate}}</h3>
+                <h3 class="panel-title">{{selectedAccount.name}} | {{ 'SENSORS' | translate}}</h3>
             </div>
             <div class="panel-body">
                 <div class="google-map-canvas" id="map-canvas-results"></div>

@@ -1,13 +1,38 @@
 
 angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", 
-	"$filter", "$routeParams", "OrdersService",   
-	function (scope, http, filter, rootParams, OrdersService) {
+	"$filter", "$routeParams", "ServerService",  
+	function (scope, http, filter, rootParams, ServerService) {
 
 
 	console.log("Sensor Readings! " + rootParams.id);
+	console.log("Sensor Readings! " + rootParams.client_id);
+	console.log("Sensor Readings! " + rootParams.order_id);
 	scope.msg = "Sensor Readings Here";
 
 	scope.sensorId = rootParams.id;
+	scope.clientId = rootParams.client_id;
+	scope.orderId = rootParams.order_id;
+
+	scope.getSensor = ServerService.clientOrderSensors(scope.clientId, scope.orderId, scope.sensorId).then(function (data) {
+                if (data) {
+                	alert(angular.toJson(data));
+                	scope.sensor = data;
+                	ServerService.getSensorType(data.type_id).then(function (data1) {
+                		if (data) {
+                			alert(angular.toJson(data1));
+                			scope.sensorType = data1;
+                		} else {
+                   			scope.generalError = true;
+               			}
+               		}, function(reason) {
+  						scope.generalError = true;
+					});
+                } else {
+                   scope.generalError = true;
+                }
+    }, function(reason) {
+  				scope.generalError = true;
+	});
 
 	scope.options = {
             chart: {
@@ -94,43 +119,28 @@ angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http",
 		series: ['Temperatura [Celzijus]', 'Vlažnost[%]'],
 		data: [
 			{
-				x: "1/7/2015",
+				x: "1/7/2015 20:00",
 				y: [31, 45]
 			},
 			{
-				x: "2/7/2015",
+				x: "2/7/2015 10:00",
 				y: [32, 55]
 			},
 			{
-				x: "3/7/2015",
+				x: "3/7/2015 13:15",
 				y: [33, 51]
 			},
 			{
-				x: "4/7/2015",
+				x: "4/7/2015 16:07",
 				y: [26, 71]
 			},
 			{
-				x: "5/7/2015",
+				x: "5/7/2015 21:02",
 				y: [28, 49]
 			},
 		]
 	}
 
-
-	scope.data2 = {
-		series: ['Keyboards', 'Laptops', 'TVs'],
-		data: [{
-			x: "Sales",
-			y: [100, 500, 0],
-			tooltip: "this is tooltip"
-		}, {
-			x: "Income",
-			y: [300, 100, 100]
-		}, {
-			x: "Expense",
-			y: [351, 50, 25]
-		}]
-	}
 
 	scope.chartType = 'line';
 

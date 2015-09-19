@@ -15,12 +15,13 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		scope.orderImgTypeInvalid = false;
 		scope.orderDescInvalid = false;
 
-		scope.setMultiselectIN();
+		//scope.setMultiselectIN();
 	}
 
 	scope.init();
 
 
+	scope.sensorTypes = [];
 
 	scope.multiselectmodel = [];
     scope.multiselectdata = [];
@@ -29,7 +30,6 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 	};
 
 	scope.setMultiselectIN = function () {
-		alert(rootScope.getLanguage());
 		if (rootScope.getLanguage() === 'en') {
 			scope.msTranslate = {
 				'buttonDefaultText' : 'Select',
@@ -41,7 +41,6 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 				'dynamicButtonTextSuffix' : 'checked'
 			}
 		} else {
-			alert("serbian");
 			scope.msTranslate = {
 				'buttonDefaultText' : 'Izaberi',
 				'uncheckAll' : 'Isključi sve',
@@ -80,17 +79,18 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		} 
 	}
 
+	scope.validateUOMs = function () {
+		for (var i = scope.order.sensors.length - 1; i >= 0; i--) {
+			if (scope.order.sensors[i].uom_id == undefined || 
+				scope.order.sensors[i].uom_id == "") {
+				return false;
+			}
+		};
+		return true;
+	}
+
 
 	scope.injectToRoot = function() {
-		// if (scope.order.name == undefined || scope.order.name.length < 3) {
-		// 	alert("Enter name");
-		// 	return;
-		// } 
-		// if (scope.order.polygons.length != 0 && scope.order.imageTypes.length == 0) {
-		// 	alert("Select image types");
-		// 	return;
-		// }
-
 
 		for (var i = scope.multiselectmodel.length - 1; i >= 0; i--) {
 			scope.order.imageTypes.push({
@@ -115,11 +115,16 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 
 	scope.test = function () {
 		alert(angular.toJson(scope.order));
-		alert (angular.toJson(scope.multiselectmodel));
+		//alert (angular.toJson(scope.multiselectmodel));
 		//alert(angular.toJson(scope.order.polygons));
 		//$('#estimateModal').show();
+		//alert(angular.toJson(scope.sensorTypes));
 	}
 
+	/*
+	Method for pulling all image types from ServerService
+	-> all image types are put in multiselect objects for multiselect dropdown component
+	*/
 	scope.getImageTypes = ServerService.getImageTypes().then(function (data) {
                 if (data) {
                 	for (var i = data.length - 1; i >= 0; i--) {
@@ -137,6 +142,9 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
   				scope.generalError = true;
 	});
 
+	/*
+	Method for pulling all frequencies from ServerService
+	*/
 	scope.getFrequencies = ServerService.getFrequencies().then(function (data) {
                 if (data) {
                    scope.order.image_frequency_id = data[0].id;
@@ -148,10 +156,20 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
   				scope.generalError = true;
 	});
 
+	scope.reloadUOMS = function (sensor, type) {
+		for (var i = scope.sensorTypes.length - 1; i >= 0; i--) {
+		 	if (scope.sensorTypes[i].id == type) {
+		 		return scope.sensorTypes[i].uoms;
+		 	}
+		 }; 
+	};
 
+	/*
+	Method for pulling all sensor types from ServerService
+	*/
 	scope.getSensorTypes = ServerService.getSensorTypes().then(function (data) {
                 if (data) {
-                   scope.sensorTypes = data;
+                	 scope.sensorTypes = data;
                 } else {
                    scope.generalError = true;
                 }
@@ -159,12 +177,28 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
   				scope.generalError = true;
 	});
 
+
+	/*
+	Flags for showing result of estimation process.
+	-> evaluated marks when evaluation process is finished
+	-> evaluatedError marks error occured
+	-> evaluationAvailable marks that result is available
+	-> -> NOTE: rootScope 
+	*/
 	rootScope.evaluated = false;
 	rootScope.evaluatedError = false;
 	rootScope.evaluationAvailable = true;
+	/*
+	Method for evaluating current Order. 
+	-> order must be written to root scope first because modal does not see scope from view
+	-> modal and the rest of view exchange data using rootScope elements [use of Service maybe?]
+	*/
 	scope.evaluate = function () {
 		ServerService.evaluateOrder(scope.clientId, rootScope.estimateOrder).then(function (data) {
                 if (data) {
+                	/*
+                	Received estimation
+                	*/	
                    scope.estimatedPrice = data.value;
                    scope.currency = data.currency;
                    rootScope.evaluationAvailable = false;
@@ -181,8 +215,16 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		});
 	}
 
+
+	/*
+	Flags for placing order status
+	*/
 	scope.orderPlaced = false;
 	scope.orderSuccess = false;
+	/*
+	Method for placing an order.
+	NOTE: Order is now being backdroped from rootScope to scope.
+	*/
 	scope.placeOrder = function () {
 		var orderToPlace = rootScope.estimateOrder;
 
@@ -202,7 +244,9 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		
 	}
 
-
+	/*
+	ORDER element.
+	*/
 	scope.order = {
 		"name" : "",
 		"description" : "",
@@ -213,11 +257,15 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 	}
 
 
-
+	/*
+	Two elements that sum total surface area in ha.
+	*/
 	scope.polygonSurface = 0;
 	scope.polygonSurfaceFixed = 0;
 
-
+	/*
+	Flags for showing and hiding panels
+	*/
 	scope.polygonNotSelected = true;
 	scope.markerNotSelected = true;
 	
@@ -231,12 +279,9 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		$('#warning').show();
 	}
 
-	/**
-	 * A library to draw overlays on top of Google Maps to get geospatial info
-	 * Author: @rodowi
-	 * Updated: 2014-03
-	 * TODO: draggable, editable
-	 */
+	/*
+	Options and methods for gmaps settings
+	*/
 	var mapOverlays = [],
 	mapDataId = 'map-data',
 	mapOverlayStyle = {
@@ -245,11 +290,9 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 			strokeWeight: 0.95
 	};
 
-
-	/**
-	 * Upon page load, setup map and bind listeners
-	 *
-	 */
+	/*
+	On page load setup map and bind listeners
+	*/
 	$(document).ready(function () {
 
 		// Variables and definitions
@@ -266,6 +309,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		});
 
 		// Setup drawing manager
+		// NOTE: this is where you tell how map looks like
 		var drawingManager = new google.maps.drawing.DrawingManager({
 			drawingControl: true,
 			drawingControlOptions: {
@@ -324,7 +368,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 					"latitude" : sensor.G,
 					"longitude" : sensor.K,
 					"description" : "",
-					"uom_id" : "",
+					"uom_id" : scope.sensorTypes[0].uoms[0].id,
 					"type_id" : ""
 				};
 				scope.order.sensors.push(sensorInfo);
@@ -347,7 +391,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 				}
 				scope.polygonSurface = scope.polygonSurface + polygon;
 				scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
-				polygonInfo.surface = parseFloat(scope.polygonSurfaceFixed);
+				polygonInfo.surface = scope.polygonSurface.round(2);
 				console.log("polygonSurfaceFixed " + scope.polygonSurfaceFixed);
 				scope.order.polygons.push(polygonInfo);
 				if (scope.polygonNotSelected == true) {
@@ -358,6 +402,14 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		});
 
 	});
+
+	/*
+	Helper method for rounding up numbers to two decimals
+	*/
+	Number.prototype.round = function(p) {
+	  p = p || 10;
+	  return parseFloat( this.toFixed(p) );
+	};
 
 	/**
 	 * Removes map overlays and DOM elements with map data
@@ -391,8 +443,6 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 	function removeMapData() { $('#' + mapDataId).empty() }
 
 
-	/*** CartoDB API operations ***/
-
 
 	/**
 	 * Requests CartoDB API to retrieve a list of mexican territories intersecting a geometry.
@@ -419,19 +469,9 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		});
 	}
 
-
-	/*** Maps extensions ***/
-
-
-	/**
-	 * Both methods return a string with geospatial info of a map overlay formatted for CAP <area> elements
-	 * Note: As of Maps API v3.exp radius is given in meters and CAP v1.2 use KM
-	 * https://developers.google.com/maps/documentation/javascript/reference#Circle
-	 * http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html
-	 * Note: first and last pair of coordinates should be equal
-	 *
-	 */
-
+	/*
+	Helper methods that extract data from polygon selected 
+	*/
 	google.maps.Polygon.prototype.toCapArea = function () {
 		var capArea = '';
 		this.getPath().forEach(function (element, index) {
@@ -455,22 +495,13 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 		return capArea;
 	};
 
+	/*
+	Ne daj boza da nam krug zatreba
+	*/
 	google.maps.Circle.prototype.toCapArea = function() {
 		return this.getCenter().lat() + ',' + this.getCenter().lng() + ' ' + this.getRadius() / 1000;
 	};
 
-
-	/**
-	 * Both methods return a string representing a PostGIS geometry of a map overlay
-	 * Note: EWKT format (used in PostGIS) inverts lat/lng order, e.g. SRID=4326;POINT(-44.3 60.1)
-	 * to locate a longitude/latitude coordinate using the WGS 84 reference coordinate system.
-	 * http://en.wikipedia.org/wiki/Well-known_text
-	 * Note: first and last pair of coordinates should be equal
-	 * Note: PostGIS doesn't support WKT for circles yet
-	 * http://postgis.refractions.net/documentation/manual-1.4/ch04.html
-	 * http://gis.stackexchange.com/questions/10352/how-to-create-a-circle-in-postgis
-	 *
-	 */
 
 	google.maps.Polygon.prototype.toGeom = function() {
 		var wkt = "ST_GeomFromText('POLYGON ((";
@@ -489,38 +520,19 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 
 
 
-
-	scope.map = {   center: { 
-		latitude: 45, 
-		longitude: -73 }, 
+	/*
+	MAP SETTINGS
+	*/
+	scope.map = {   
+		center: { 
+			latitude: 45, 
+			longitude: -73 
+		}, 
 		zoom: 8,
 		polys: [],
 		draw: undefined,
 		refresh: false,
 		options: [],
-		events: []};
-
-	/*
-	scope.init = function  () {
-
-		alert("Initialize map");
-
-		var mapOptions = {
-				center: new google.maps.LatLng(51.503454,-0.119562),
-				zoom: 8,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-		};
-
-
-
-		var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
+		events: []
 	};
-
-	google.maps.event.addDomListener(window, 'load', scope.init);*/
-
-
-
-
-
 }]);
