@@ -1,10 +1,50 @@
 var ServerService = angular.module('ServerService', [])
-	.service('ServerService', ["$q", "$http", "$location", function (q, http, location) {
+	.service('ServerService', ["$q", "$http", "$location", 'localStorageService', 
+    function (q, http, location, localStorageService) {
 
 	var serverurl = 'http://195.220.224.164/';
-
   var user = "";
 
+    /*-------------------------- LOCAL STORAGE ----------------------------*/
+
+  var putUserInStorage = function (user) {
+    localStorageService.set("userObject", user);
+  }
+
+  this.clearUserInStorage = function () {
+        var keys = localStorageService.keys();
+        for (var i = keys.length - 1; i >= 0; i--) {
+              localStorageService.remove(keys[i]);
+        };
+  }
+
+  var getUserInStorage = function () {
+    var keys = localStorageService.keys();
+    if (keys.length == 0) {
+      return null;
+    }
+    for (var i = keys.length - 1; i >= 0; i--) {
+      if (keys[i] == "userObject") {
+        var userObj = localStorageService.get(keys[i]);
+        return userObj;
+      }
+    };
+    return null;
+  }
+
+  this.getUserInStorage = function () {
+    var keys = localStorageService.keys();
+    if (keys.length == 0) {
+      return null;
+    }
+    for (var i = keys.length - 1; i >= 0; i--) {
+      if (keys[i] == "userObject") {
+        var userObj = localStorageService.get(keys[i]);
+        return userObj;
+      }
+    };
+    return null;
+  }
 
     /*-------------------------- USER OPERATIONS----------------------------*/
 
@@ -12,11 +52,9 @@ var ServerService = angular.module('ServerService', [])
       var deffered = q.defer();
       http.get(serverurl + "pais/clients/" + username).
               success(function(data, status) {
-                //var result = JSON.stringify(data);
-                //var dataJSON = JSON.parse(result);
                 if (status == 200) {
                     if (data.id == username && data.password == password) {
-                      user = username;
+                      putUserInStorage(data);
                       deffered.resolve(true);
                     } else {
                       deffered.reject("Error");
@@ -36,7 +74,8 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.updateClient = function (user) {
-    if (user == "" || user == undefined) {
+    var userLS = getUserInStorage();
+    if (userLS == null) {
       location.path("/login");
     }
     var deffered = q.defer();
@@ -46,11 +85,9 @@ var ServerService = angular.module('ServerService', [])
                 var result = JSON.stringify(data);
                 var dataJSON = JSON.parse(result);
                 if (status == 200) {
-                    console.log("Status OK " + status) ;
-                    console.log(JSON.stringify(data));
+                    putUserInStorage(data);
                     deffered.resolve(data);
                 } else {
-                   console.log("Status not OK " + status);
                    deffered.reject("Error");
                 }
                 
@@ -64,18 +101,18 @@ var ServerService = angular.module('ServerService', [])
 
 
 	this.getClient = function (id) {
-      if (user == "" || user == undefined) {
+      var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
       }
 		 var deffered = q.defer();
-    	 console.log("getClient " + id);
-    	 http.get(serverurl + "pais/clients/" + id).
+    	 http.get(serverurl + "pais/clients/" + userLS.id).
               success(function(data, status) {
                 //var result = JSON.stringify(data);
                 //var dataJSON = JSON.parse(result);
                 if (status == 200) {
-                    console.log("Status OK " + status) ;
                     console.log(JSON.stringify(data));
+                    putUserInStorage(data);
                     deffered.resolve(data);
                 } else {
                    console.log("Status not OK " + status);
@@ -100,7 +137,7 @@ var ServerService = angular.module('ServerService', [])
                 //var result = JSON.stringify(data);
                 //var dataJSON = JSON.parse(result);
                 if (status == 200) {
-                    console.log("Status OK");
+                    putUserInStorage(data);
                     deffered.resolve(data);
                 } else {
                    console.log("Status not OK");
@@ -243,44 +280,41 @@ var ServerService = angular.module('ServerService', [])
   /*---------------------- ORDER OPERATIONS --------------------------------*/
 
   this.clientOrder = function (clientId, orderId) {
-      if (user == "" || user == undefined) {
+      var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
       }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId).
+      http.get(serverurl + "pais/clients/" + userLS.id + "/orders/" + orderId).
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
                 } else {
-                   console.log("Status not OK " + status);
                    deffered.reject("Error");
                 }
                 
               }).
               error(function(data, status) {
-                   console.log("Error " + status);
                    deffered.reject("Error");
               });
        return deffered.promise;
   }
 
   this.clientOrders = function (clientId) {
-      if (user == "" || user == undefined) {
+      var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
       }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + user + "/orders").
+      http.get(serverurl + "pais/clients/" + userLS.id + "/orders").
               success(function(data, status) {
-                console.log("clientOrders " + JSON.stringify(data));
                 if (status == 200) {
                     deffered.resolve(data);
                 } else {
-                   console.log("Status not OK " + status);
                    deffered.reject("Error");
                 }
               }).
               error(function(data, status) {
-                   console.log("Error " + status);
                    deffered.reject("Error");
               });
        return deffered.promise;
@@ -288,11 +322,12 @@ var ServerService = angular.module('ServerService', [])
  
 
   this.clientOrderDetailed = function (clientId, orderId) {
-      if (user == "" || user == undefined) {
+      var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
       }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId + "/details").
+      http.get(serverurl + "pais/clients/" + userLS.id + "/orders/" + orderId + "/details").
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -310,11 +345,12 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.clientOrderSensors = function (clientId, orderId, sensorId) {
-      if (user == "" || user == undefined) {
+      var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
       }
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + user + "/orders/" + orderId + "/sensors/" + sensorId).
+      http.get(serverurl + "pais/clients/" + userLS.id + "/orders/" + orderId + "/sensors/" + sensorId).
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
@@ -333,12 +369,13 @@ var ServerService = angular.module('ServerService', [])
 
 
   this.evaluateOrder = function (clientId, order) {
-    if (user == "" || user == undefined) {
+    var userLS = getUserInStorage();
+      if (userLS == null) {
         location.path("/login");
-    }
+      }
     var deffered = q.defer();
       console.log("evaluateOrder " + clientId);
-       http.post(serverurl + "pais/clients/" + user + "/evaluateOrder", order).
+       http.post(serverurl + "pais/clients/" + userLS.id + "/evaluateOrder", order).
               success(function(data, status) {
                 if (status == 200) {
                     console.log("Status OK");
@@ -356,12 +393,13 @@ var ServerService = angular.module('ServerService', [])
   }
 
   this.placeOrder = function (clientId, order) {
-    if (user == "" || user == undefined) {
-      location.path("/login");
-    }
+    var userLS = getUserInStorage();
+      if (userLS == null) {
+        location.path("/login");
+      }
     var deffered = q.defer();
       console.log("evaluateOrder " + user);
-       http.post(serverurl + "pais/clients/" + user + "/orders", order).
+       http.post(serverurl + "pais/clients/" + userLS.id + "/orders", order).
               success(function(data, status) {
                 if (status == 200) {
                     console.log("Status OK");

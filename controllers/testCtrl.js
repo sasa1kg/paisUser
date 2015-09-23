@@ -228,8 +228,8 @@ angular.module('userApp').controller("testCtrl", ["$rootScope" ,"$scope", "$http
 	scope.placeOrder = function () {
 		var orderToPlace = rootScope.estimateOrder;
 
-		alert(scope.clientId);
-		alert(angular.toJson(orderToPlace));
+		//alert(scope.clientId);
+		//alert(angular.toJson(orderToPlace));
 
 		ServerService.placeOrder(scope.clientId, orderToPlace).then(function (data) {
                 if (data) {

@@ -15,11 +15,9 @@ angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http",
 
 	scope.getSensor = ServerService.clientOrderSensors(scope.clientId, scope.orderId, scope.sensorId).then(function (data) {
                 if (data) {
-                	alert(angular.toJson(data));
                 	scope.sensor = data;
                 	ServerService.getSensorType(data.type_id).then(function (data1) {
                 		if (data) {
-                			alert(angular.toJson(data1));
                 			scope.sensorType = data1;
                 		} else {
                    			scope.generalError = true;

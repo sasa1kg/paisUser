@@ -1,4 +1,5 @@
-angular.module('userApp').controller("accountDetailsCtrl", ["$scope", "$http", "$filter", "ServerService",  function (scope, http, filter, ServerService) {
+angular.module('userApp').controller("accountDetailsCtrl", ["$rootScope", "$scope", "$http", "$filter", "ServerService",  
+  function (rootScope, scope, http, filter, ServerService) {
 
 	console.log("accountDetailsCtrl!");
 	scope.msg = "accountDetailsCtrl!";
@@ -14,8 +15,7 @@ angular.module('userApp').controller("accountDetailsCtrl", ["$scope", "$http", "
                    console.log("Ctrl res " + data.username);
                    scope.user = data;
                 } else {
-                   alert("Data null");
-                }
+                   rootScope.logout();                }
         });
 
 	scope.updateUser = function () {

@@ -1,6 +1,6 @@
-var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 
+var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'LocalStorageModule',
 	'angularjs-dropdown-multiselect', 'angularCharts', 
-	'ngMagnify', 'nvd3', 'OrdersService', 'ngSanitize','pascalprecht.translate', 'ServerService', 'cgBusy']);
+	'ngMagnify', 'nvd3', 'ngSanitize','pascalprecht.translate', 'ServerService', 'cgBusy']);
 
 
 userApp.config(function($sceDelegateProvider) {
@@ -12,13 +12,23 @@ userApp.config(function($sceDelegateProvider) {
   ]);
 });
 
-userApp.run(function($rootScope, $translate) {
+userApp.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('paisUser');
+});
+
+
+userApp.run(function($rootScope, $translate, ServerService, $location) {
         $rootScope.translate = function(lang) {
 			     $translate.use(lang);
         };
         $rootScope.getLanguage = function () {
           return $translate.use();
         };
+        $rootScope.logout = function () {
+          ServerService.clearUserInStorage();
+          $location.path('/login');
+        }
 });
 
 

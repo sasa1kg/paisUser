@@ -22,7 +22,7 @@
 			<li><a ng-click="translate('rs')" class="hover"><img src="img/flag_serbian.gif"></img></a></li>
 			<li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
             <li><a href="#/userDetails">{{ 'MY_PROFILE' | translate }}</a></li>
-            <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> {{ 'EXIT' | translate }}</a></li>
+            <li><a ng-click="logout()" class="hover"><span class="glyphicon glyphicon-log-out"></span> {{ 'EXIT' | translate }}</a></li>
         </ul>
     </div>
 </div>

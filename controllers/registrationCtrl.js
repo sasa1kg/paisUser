@@ -52,7 +52,7 @@ angular.module('userApp').controller("registrationCtrl", ["$scope", "$http", "$f
 
 	scope.register = function () {
 		if (scope.validate()) {
-			/*ServerService.registerUser(scope.user).then(function (data) {
+			ServerService.registerUser(scope.user).then(function (data) {
 				if (data) {
 					scope.registered = true;
 	            } else {
@@ -60,7 +60,7 @@ angular.module('userApp').controller("registrationCtrl", ["$scope", "$http", "$f
 	            }
 	        }, function(reason) {
 	  				scope.error = true;
-	  		});*/
+	  		});
 		}
 	}
 
@@ -95,7 +95,7 @@ angular.module('userApp').controller("registrationCtrl", ["$scope", "$http", "$f
 			alert("phone error");
 			return false;
 		}
-		alert("all pass");
+
 		return true;
 	}
 

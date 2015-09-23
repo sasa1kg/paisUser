@@ -1,4 +1,5 @@
-angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter", "ServerService",  function (scope, http, filter, ServerService) {
+angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter", "ServerService",  
+    function (scope, http, filter, ServerService) {
 	console.log("Results!");
 	scope.msg = "User results!";
 

@@ -1,4 +1,5 @@
-angular.module('userApp').controller("imagesCtrl", ["$scope", "$http", "$filter",  function (scope, http, filter) {
+angular.module('userApp').controller("imagesCtrl", ["$scope", "$http", "$filter",  
+	function (scope, http, filter) {
 
 	var myLatlng = new google.maps.LatLng(44, 20.461414);
 
