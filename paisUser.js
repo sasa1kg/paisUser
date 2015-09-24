@@ -1,6 +1,6 @@
 var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'LocalStorageModule',
 	'angularjs-dropdown-multiselect', 'angularCharts', 
-	'ngMagnify', 'nvd3', 'ngSanitize','pascalprecht.translate', 'ServerService', 'cgBusy']);
+	'ngMagnify', 'nvd3', 'ngSanitize','pascalprecht.translate', 'ServerService', 'cgBusy','ui.bootstrap']);
 
 
 userApp.config(function($sceDelegateProvider) {
