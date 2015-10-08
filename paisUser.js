@@ -1,6 +1,6 @@
 var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'LocalStorageModule',
 	'angularjs-dropdown-multiselect', 'angularCharts', 
-	'ngMagnify', 'nvd3', 'ngSanitize','pascalprecht.translate', 'ServerService', 'cgBusy','ui.bootstrap']);
+	'ngMagnify', 'nvd3', 'ngSanitize', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ServerService', 'cgBusy','ui.bootstrap']);
 
 
 userApp.config(function($sceDelegateProvider) {
@@ -134,7 +134,23 @@ userApp.config(function($translateProvider) {
     WARNING_GEN : 'WARNING',
     WARNING_IMG_DESC: 'Order description cannot have more than 100 characters.',
     ERROR_LOGIN : 'Please check your username and try again',
-    TIME_FILTER: 'Time filter'
+    TIME_FILTER: 'Time filter',
+    TERRITORY: 'Territory',
+    TER_DESC: 'Territory description or additional remarks',
+    TERITORIES : 'Territories',
+    TER_ID : 'Territory ID',
+    TER_SURFACE: 'Territory surface',
+    ACTIVATION: 'ACTIVATION',
+    ACTIVATION_ACCOUNT: 'Account ',
+    ACTIVATION_SUCCESS: ' successfully activated.',
+    BACK_TO_LOGIN_CAPS: 'BACK TO LOGIN',
+    ACTIVATION_ERROR: 'Error occured in activating account. Please contact our support team.',
+    CONTACT_US: 'Contact us',
+    ABOUT: 'About PAIS',
+    TOF: 'Terms of Service',
+    PENDING: 'PENDING',
+    INVOICE: 'INVOICE',
+    OPEN_INVOICE: 'Open invoice',
     })
     .translations('rs', {
       NEW_ORDER: 'Nova porudžbina',
@@ -235,7 +251,23 @@ userApp.config(function($translateProvider) {
     WARNING_GEN : 'UPOZORENJE',
     WARNING_IMG_DESC: 'Opis narudžbine može imati maksimalno 100 karaktera.',
     ERROR_LOGIN : 'Proverite podatke i pokušajte ponovo',
-    TIME_FILTER: 'Vremenski filter'
+    TIME_FILTER: 'Vremenski filter',
+    TERRITORY: 'Teritorija',
+    TER_DESC: 'Opis teritorije ili dodatne napomene',
+    TERITORIES : 'Teritorije',
+    TER_ID : 'ID teritorije',
+    TER_SURFACE: 'Površina teritorije',
+    ACTIVATION: 'AKTIVACIJA',
+    ACTIVATION_ACCOUNT: 'Nalog ',
+    ACTIVATION_SUCCESS: ' je uspešno aktiviran.',
+    BACK_TO_LOGIN_CAPS: 'NAZAD NA PRIJAVU',
+    ACTIVATION_ERROR: 'Dogodila se greška prilikom aktiviranja naloga. Kontaktirajte našu podršku.',
+    CONTACT_US: 'Kontakt',
+    ABOUT: 'O PAIS-u',
+    TOF: 'Uslovi korišćenja',
+    PENDING: 'NA ČEKANJU',
+    INVOICE: 'PREDRAČUN',
+    OPEN_INVOICE: 'Prikaži predračun',
     });
     $translateProvider.preferredLanguage('en');
 });

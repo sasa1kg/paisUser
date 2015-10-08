@@ -54,6 +54,22 @@ angular.module("userApp").config(['$routeProvider', function(routeProvider) {
 		resolve: {
 		}
 	})
+	.when("/activation/:client_id/", {
+		templateUrl: "partials/activateAccount.html",
+		controller: "activateAccountCtrl",
+		resolve: {
+		}
+	})
+	.when("/about", {
+		templateUrl: "partials/about.html"
+	})
+	.when("/termsOfService", {
+		templateUrl: "partials/termsOfService.html"
+	})
+	.when("/contact", {
+		templateUrl: "partials/contactUs.html",
+		controller: "contactCtrl",
+	})
 	.otherwise({redirectTo: '/login'});
 
 }]);

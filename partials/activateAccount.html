@@ -1,0 +1,27 @@
+<div class="container holder">
+
+	<div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ 'ACTIVATION' | translate }} </h2>
+        </div>
+  
+        <div class="panel-body">
+        		<p ng-show="!activated && !generalError">Loading... Please wait...</p>
+                <div class="alert alert-success" ng-show="activated && !generalError">
+			        <strong>{{ 'ACTIVATION' | translate }}</strong> {{ 'ACTIVATION_ACCOUNT' | translate }} {{user.username}} {{ 'ACTIVATION_SUCCESS' | translate }} <a class="pull-right" href="#/login"><strong>{{ 'BACK_TO_LOGIN_CAPS' | translate }}</strong></a>
+			    </div> 
+			    <div class="alert alert-danger" ng-show="!activated && generalError">
+			        <strong>{{ 'ACTIVATION' | translate }}</strong> {{ 'ACTIVATION_ERROR' | translate }} <a class="pull-right" href="#/login"><strong>{{ 'BACK_TO_LOGIN_CAPS' | translate }}</strong></a>
+			    </div>   
+        </div>
+
+         
+    </div>
+
+
+
+    
+
+</div>
+</div>
+</div>

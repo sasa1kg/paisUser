@@ -3,8 +3,14 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
 
         scope.msg = "PAIS user! " + new Date();
 
+        scope.timeInit = function () {
+            $('[type="date"].min-today').prop('min', function(){
+                    return new Date().toJSON().split('T')[0];
+             }); 
+        }
+
         scope.init = function () {
-            scope.clientId = 22;
+
 
             rootScope.evaluated = false;
             rootScope.evaluatedError = false;
@@ -16,9 +22,11 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
             scope.orderDescInvalid = false;
 
             //scope.setMultiselectIN();
+             scope.timeInit();
         }
 
         scope.init();
+
 
 
         scope.sensorTypes = [];
@@ -346,7 +354,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
                     }
                     scope.polygonSurface = scope.polygonSurface + polygon;
                     scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
-                    polygonInfo.surface = scope.polygonSurface.round(2);
+                    polygonInfo.surface = polygon.round(2);
                     console.log("polygonSurfaceFixed " + scope.polygonSurfaceFixed);
                     scope.order.polygons.push(polygonInfo);
                     if (scope.polygonNotSelected == true) {

@@ -18,7 +18,7 @@
             <div class="panel-body">
                 <ul class="list-group">
                     <a class="list-group-item hoverblue" ng-repeat="account in accounts" ng-click="select(account.order_id)"
-                       id="{{account.order_id}}" ng-class="{'active' : isActive(account.order_id)}">{{account.name}} <span class="badge activeBadge" ng-if="account.status==1">{{ 'ACTIVE' | translate}}</span> <span class="badge inactiveBadge" ng-if="account.status==0">{{ 'INACTIVE' | translate}}</span></a>
+                       id="{{account.order_id}}" ng-class="{'active' : isActive(account.order_id)}">{{account.name}} <span class="badge activeBadge" ng-if="account.status==2">{{ 'ACTIVE' | translate}}</span> <span class="badge inactiveBadge" ng-if="account.status==0">{{ 'INACTIVE' | translate}}</span> <span class="badge" ng-if="account.status==1">{{ 'PENDING' | translate}}</span></a>
                 </ul>
             </div>
         </div>
@@ -34,6 +34,9 @@
     </div>
 
     <div class="col-lg-8" ng-if="accounts.length>0" cg-busy="{promise:getFrequencies,message:'Loading...',backdrop:true}" ng-show="loaded">
+        <div class="alert alert-success" ng-if="selectedAccount.status==1">
+            <strong> <a class="cursorchg" ng-click="showInvoice()" class="alert-link"> {{ 'OPEN_INVOICE' | translate}}</a> </strong>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">{{ 'DETAILS' | translate}}</h3>
@@ -47,58 +50,52 @@
                         <label>{{selectedAccount.description}} </label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <dl>
-                        <dt><label>{{ 'NO_TERITORIES' | translate}} </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control"
-                                       ng-model="selectedAccount.polygons.length" ng-disabled="true">
+                    <div class="panel panel-default" ng-show="selectedAccount.polygons.length>0">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">{{ 'IMAGES' | translate}}</h4>
                             </div>
-                        </dd>
-                        <dt><label>{{ 'SURFACE' | translate}}</label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" 
-                                       ng-model="totalSurface" ng-disabled="true">
-                            </div>
-                        </dd>
-                        </br>
-                        <hr>
-                        <dt><label>{{ 'IMAGE_TYPES' | translate}} </label></dt>
-                        <dd>
-                            <div class="col-xs-10 fullwidth">
-                                <ul class="list-group">
-                                    <a class="list-group-item hoverblue" ng-repeat="imageType in selectedAccount.imageTypes">{{imageType.image_type_name}}</a>
+                            <div class="panel-body">
+                                {{ 'CREATED_AT' | translate}} {{selectedAccount.created_at}}
+                                <p ng-show="selectedAccount.start_date != null">{{ 'FROM' | translate}} {{selectedAccount.start_date}}</p>
+                                <p ng-show="selectedAccount.end_date != null">{{ 'TO' | translate}} {{selectedAccount.end_date}}</p>
+                                </br>
+                                {{ 'NO_TERITORIES' | translate}} {{selectedAccount.polygons.length}} 
+                                </br>
+                                {{ 'SURFACE' | translate}} {{totalSurface}}
+                                </br>
+                                <hr>
+                                {{ 'IMAGE_TYPES' | translate}}
+                                <ul>
+                                    <li ng-repeat="imageType in selectedAccount.imageTypes">{{imageType.image_type_name}}</li>
                                 </ul>
+                                {{ 'IMAGE_FREQ' | translate}} {{frequencyName}} 
+                                <hr>
+                                <div class="panel panel-default panelSmallBorder" ng-repeat="polygon in selectedAccount.polygons">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'TER_ID' | translate }} {{polygon.polygon_id}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        {{ 'TER_SURFACE' | translate}}
+                                        <input class="form-control" ng-disabled="true" ng-value="polygon.surface">
+                                        <textarea class="form-control separateFive" ng-disabled="true" rows="2" ng-model="polygon.description" placeholder="{{ 'TER_DESC' | translate }}"></textarea>
+                                    </div>
+                                </div>
                             </div>
-                        </dd>
-                        <dt><label>{{ 'IMAGE_FREQ' | translate}} </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" ng-model="frequencyName" ng-disabled="true">
+                    </div>
+                     <div class="panel panel-default" ng-show="selectedAccount.sensors.length>0">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">{{ 'SENSORS' | translate}}</h4>
                             </div>
-                        </dd>
-                        </br>
-                        <hr>
-                        <dt><label>{{ 'CREATED_AT' | translate}} </label></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control" type="text" ng-model="selectedAccount.created_at"
-                                       ng-disabled="true">
+                            <div class="panel-body">
+                                {{ 'NO_SENSORS' | translate}}: {{selectedAccount.sensors.length}} 
+                                </br>
+                                <span class="badge activeBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'ACTIVE_SENSORS' | translate}} {{activeSensors}}</span><span class="badge inactiveBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'INACTIVE_SENSORS' | translate}} {{nonActiveSensors}}</span></dt>
                             </div>
-                        </dd>
-                        <br>
-                        <hr>
-                        <dt class="col-xs-10"><label>{{ 'NO_SENSORS' | translate}} </label>
-                            <span class="badge activeBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'ACTIVE_SENSORS' | translate}} {{activeSensors}}</span>
-                            <span class="badge inactiveBadge pull-right" ng-if="selectedAccount.sensors.length > 0">{{ 'INACTIVE_SENSORS' | translate}} {{nonActiveSensors}}</span></dt>
-                        <dd>
-                            <div class="col-xs-10">
-                                <input class="form-control"
-                                       ng-model="selectedAccount.sensors.length" ng-disabled="true" >
-                            </div>
-                        </dd>
+                    </div>
+
+                   
+                      
+        
                 </div>
             </div>
         </div>

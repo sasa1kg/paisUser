@@ -1,0 +1,38 @@
+<div class="container holder">
+
+	<div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ 'CONTACT_US' | translate}} <a class="pull-right" href="#/login"><span class="glyphicon glyphicon-log-in"></span> <strong> {{ 'BACK_TO_LOGIN_CAPS' | translate}}</strong></a></h2>
+        </div>
+  
+        <div class="panel-body">
+        	<div class="panel panel-default">
+        		<div class="panel-heading">
+        			<h4><span class="glyphicon glyphicon-earphone"></span> {{'PHONE' | translate}}</h4>
+        		</div>
+        		<div class="panel-body">
+        			<p>Serbia <span class="glyphicon glyphicon-phone"></span> +38164111111</p>
+        			<p>Serbia <span class="glyphicon glyphicon-phone-alt"></span> +381212222222</p>
+        		</div>
+        	</div>
+			<div class="panel panel-default">
+        	    <div class="panel-heading">
+        			<h4><span class="glyphicon glyphicon-envelope"></span> {{'EMAIL' | translate}}</h4>
+        		</div>
+        		<div class="panel-body">
+        			<a ng-repeat="admin in mailToArray" href="{{admin.mailto}}" target="_top"><span class="glyphicon glyphicon-globe"></span> {{admin.mail}}</a>
+        		</div>
+        	</div>
+        		
+        </div>
+
+         
+    </div>
+
+
+
+    
+
+</div>
+</div>
+</div>

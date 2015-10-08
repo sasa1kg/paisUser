@@ -21,18 +21,63 @@
                     </div>
                     <div class="panel-body">
                                 <label class="labelwidth">{{ 'FROM' | translate }}: </label>
-                                <div class="col-xs-10">
-                                    <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom">
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control">
+                                            <option 
+                                                    ng-repeat="hour in hours"
+                                                    value="{{hour.value}}">
+                                              {{hour.display}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control">
+                                        
+                                            <option 
+                                                    ng-repeat="min in minutes"
+                                                    value="{{min.value}}">
+                                              {{min.display}}
+                                            </option>
+                                        
+                                        </select>
+                                    </div>
                                 </div>
                                 <label class="labelwidth">{{ 'TO' | translate }}: </label>
-                                <div class="col-xs-10">
-                                    <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo">
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control">
+                                            <option 
+                                                    ng-repeat="hour in hours"
+                                                    value="{{hour.value}}">
+                                              {{hour.display}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control">
+                                        
+                                            <option 
+                                                    ng-repeat="min in minutes"
+                                                    value="{{min.value}}">
+                                              {{min.display}}
+                                            </option>
+                                        
+                                        </select>
+                                    </div>
                                 </div>
+                                <button class="btn btn-primary">FILTER</button>
                     </div>
             </div>
         </div>
 
         <div class="col-lg-12">
-            <nvd3 options="options" data="data3"></nvd3>
+            <nvd3 options="options" data="results" config="{refreshDataOnly: true}"></nvd3>
         </div>
     </div>

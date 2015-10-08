@@ -13,7 +13,9 @@ angular.module('userApp').controller("resultsCtrl", ["$scope", "$http", "$filter
                 if (data) {
                    console.log("Accounts " + data.length);
                    scope.accounts = data;
-                   scope.select(data[0].order_id);
+                   if (data.length > 0) {
+                        scope.select(data[0].order_id);
+                   }
                 } else {
                    scope.generalError = true;
                 }

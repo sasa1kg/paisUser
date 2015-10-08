@@ -12,7 +12,7 @@ angular.module('userApp').controller("loginCtrl", ["$scope", "$location", "$filt
 	scope.init = function () {
 		var userLS = ServerService.getUserInStorage();
 		if (userLS != null) {
-					scope.username = userLS.id;
+					scope.username = userLS.username;
                 	scope.password = userLS.password;
 		} else {
 					scope.username = "";
@@ -23,7 +23,10 @@ angular.module('userApp').controller("loginCtrl", ["$scope", "$location", "$filt
 
 	scope.login = function () {
 		scope.loginFailed = false;
-		ServerService.login(scope.username, scope.password).then(function (data) {
+		ServerService.login({
+			"username" : scope.username,
+			"password" : scope.password
+		}).then(function (data) {
                 if (data) {
                 	location.path("/orders");
                 } else {

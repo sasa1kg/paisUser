@@ -1,4 +1,5 @@
-angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filter", "ServerService",  function (scope, http, filter, ServerService) {
+angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filter", "ServerService",  
+	function (scope, http, filter, ServerService) {
 	scope.activeState = 1;
 	console.log("Accounts!");
 	scope.msg = "User accounts!";
@@ -90,5 +91,15 @@ angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filte
     }, function(reason) {
   				alert('Failed: ' + reason);
 	});
+
+
+	scope.showInvoice = function () {
+    	http.get('http://195.220.224.164/pais/clients/'+ scope.selectedAccount.client_id + '/orders/'+ scope.selectedAccount.order_id + '/getInvoice', {responseType: 'arraybuffer'})
+       .success(function (data) {
+           var file = new Blob([data], {type: 'application/pdf'});
+           var fileURL = URL.createObjectURL(file);
+           window.open(fileURL);
+    });
+    }
 
 }]);

@@ -48,17 +48,13 @@ var ServerService = angular.module('ServerService', [])
 
     /*-------------------------- USER OPERATIONS----------------------------*/
 
-  this.login = function (username, password) {
+  this.login = function (object) {
       var deffered = q.defer();
-      http.get(serverurl + "pais/clients/" + username).
+      http.post(serverurl + "pais/clients/login", object).
               success(function(data, status) {
                 if (status == 200) {
-                    if (data.id == username && data.password == password) {
                       putUserInStorage(data);
                       deffered.resolve(true);
-                    } else {
-                      deffered.reject("Error");
-                    }
                 } else {
                    console.log("Status not OK " + status);
                    deffered.reject("Error");
@@ -88,6 +84,72 @@ var ServerService = angular.module('ServerService', [])
                     putUserInStorage(data);
                     deffered.resolve(data);
                 } else {
+                   deffered.reject("Error");
+                }
+                
+              }).
+              error(function(data, status) {
+                   console.log("Error " + status);
+                   deffered.reject("Error");
+              });
+       return deffered.promise;
+  }
+
+  this.activateAccount = function (user) {
+    var deffered = q.defer();
+       console.log("updateClient " + JSON.stringify(user));
+       http.put(serverurl + "pais/clients", user).
+              success(function(data, status) {
+                var result = JSON.stringify(data);
+                var dataJSON = JSON.parse(result);
+                if (status == 200) {
+                    putUserInStorage(data);
+                    deffered.resolve(data);
+                } else {
+                   deffered.reject("Error");
+                }
+                
+              }).
+              error(function(data, status) {
+                   console.log("Error " + status);
+                   deffered.reject("Error");
+              });
+       return deffered.promise;
+  }
+
+  this.getUserForActivatingAccount = function (user) {
+    var deffered = q.defer();
+       http.get(serverurl + "pais/clients/" + user).
+              success(function(data, status) {
+                //var result = JSON.stringify(data);
+                //var dataJSON = JSON.parse(result);
+                if (status == 200) {
+                    console.log(JSON.stringify(data));
+                    putUserInStorage(data);
+                    deffered.resolve(data);
+                } else {
+                   console.log("Status not OK " + status);
+                   deffered.reject("Error");
+                }
+                
+              }).
+              error(function(data, status) {
+                   console.log("Error " + status);
+                   deffered.reject("Error");
+              });
+       return deffered.promise;
+  }
+
+  this.getAdministrators = function () {
+    var deffered = q.defer();
+       http.get(serverurl + "pais/administrators").
+              success(function(data, status) {
+                //var result = JSON.stringify(data);
+                //var dataJSON = JSON.parse(result);
+                if (status == 200) {
+                    deffered.resolve(data);
+                } else {
+                   console.log("Status not OK " + status);
                    deffered.reject("Error");
                 }
                 
@@ -263,6 +325,30 @@ var ServerService = angular.module('ServerService', [])
               success(function(data, status) {
                 if (status == 200) {
                     deffered.resolve(data);
+                } else {
+                   console.log("Status not OK " + status);
+                   deffered.reject("Error");
+                }
+                
+              }).
+              error(function(data, status) {
+                   console.log("Error " + status);
+                   deffered.reject("Error");
+              });
+       return deffered.promise;
+  } 
+
+    this.getSensorResults = function (orderId, sensorId, resultObject) {
+      var userLS = getUserInStorage();
+      var deffered = q.defer();
+      http.post(serverurl + "pais/clients/" + userLS.id + "/orders/"+ orderId +"/results/sensors/" + sensorId, resultObject).
+              success(function(data, status) {
+                if (status == 200) {
+                    console.log("Received 200");
+                    deffered.resolve(data);
+                } else if (status == 404) {
+                    console.log("Received 404");
+                    deffered.reject("NA");
                 } else {
                    console.log("Status not OK " + status);
                    deffered.reject("Error");

@@ -151,6 +151,7 @@
 							<input class="form-control" ng-model="polygonSurfaceFixed" ng-disabled="true">
 						</div>
 					</dd>
+
 					<dt ng-show="!polygonNotSelected"><label>{{ 'IMAGE_TYPES' | translate }}</label></dt>
 					<dd ng-show="!polygonNotSelected">
 						<div class="col-xs-10 fullwidth">
@@ -164,6 +165,36 @@
 						  </select>
 						</div>
 					</dd>
+                </br ng-if="!polygonNotSelected">
+                    </br ng-if="!polygonNotSelected">
+                    <dt ng-show="!polygonNotSelected"><label>{{ 'FROM' | translate }}</label></dt>
+                    <dd ng-show="!polygonNotSelected">
+
+                        <div class="col-xs-10">
+                            <input class="form-control" type="date" ng-model="order.start_date">
+                        </div>
+                    </dd>
+                    </br ng-if="!polygonNotSelected">
+                    </br ng-if="!polygonNotSelected">
+                    <dt ng-show="!polygonNotSelected"><label>{{ 'FROM' | translate }}</label></dt>
+                    <dd ng-show="!polygonNotSelected">
+
+                        <div class="col-xs-10">
+                            <input class="form-control" type="date" ng-model="order.end_date">
+                        </div>
+                    </dd>
+                    </br ng-if="!polygonNotSelected">
+                    <hr ng-if="!polygonNotSelected">
+                    <div class="panel panel-default panelSmallBorder" ng-repeat="polygon in order.polygons">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'TERRITORY' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <p>{{ 'SURFACE' | translate }}</p>
+                                        <input class="form-control" ng-disabled="true" ng-value="polygon.surface">
+                                        <textarea class="form-control separateFive" rows="2" ng-model="polygon.description" placeholder="{{ 'TER_DESC' | translate }}"></textarea>
+                                    </div>
+                    </div>
                 </div>
             </div>
             <hr>

@@ -1,7 +1,7 @@
 <div class="container">
 
 <div class="col-lg-6 col-lg-offset-6 pulltop loginform">
-        <form class="insideloginform">
+        <div class="insideloginform">
             <div class="navbar-brand brandlogin">
             </div>
             <div>
@@ -10,17 +10,14 @@
                     <li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
                   </ul>
             </div>
-            <div class="form-group">
-                <input type="text" class="form-control input-lg" id="inputEmail" placeholder="{{ 'LOGIN_USERNAME' | translate}}" ng-model="username">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control input-lg" id="inputPassword" placeholder="{{ 'LOGIN_PASSWORD' | translate}}" ng-model="password">
-            </div>
-            <div>
-                <a href="#/registration"> {{ 'REGISTER' | translate}}</a>
-                <a class="btn btn-primary submitbutton btn-lg pull-right" role="button" ng-click="login()">
+     
+            <input type="text" class="form-control input-lg pulltop20" id="inputEmail" placeholder="{{ 'LOGIN_USERNAME' | translate}}" ng-model="username">
 
-                    {{ 'LOGIN' | translate}}</a>
+
+            <input type="password" class="form-control input-lg pulltop20" id="inputPassword" placeholder="{{ 'LOGIN_PASSWORD' | translate}}" ng-model="password">
+  
+            <div class="pulltop20">
+                <a class="btn btn-primary submitbutton btn-lg pull-right" role="button" ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> {{ 'LOGIN' | translate}}</a>
               
                   <!--<oauth
                         site="http://oauth-ng-server.herokuapp.com."
@@ -31,11 +28,21 @@
                 </oauth>  -->
             </div>
 
-        </form>
+        </div>
 
         <div class="alert alert-danger" ng-show="loginFailed">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>{{ 'LOGIN' | translate }}</strong> {{ 'ERROR_LOGIN' | translate }}
+            <strong>{{ 'LOGIN' | translate }}</strong> {{ 'ERROR_LOGIN' | translate }}
+        </div>
+</div>
+
+
+<div class="col-lg-6 col-lg-offset-6 pulltop20 loginform2">
+    <div class="insideloginform2">
+        <a class="btn btn-primary" href="#/registration"><span class="glyphicon glyphicon-user"></span> {{ 'REGISTER' | translate}}</a>
+        <a class="btn btn-success" href="#/contact"><span class="glyphicon glyphicon-envelope"></span> {{ 'CONTACT_US' | translate}}</a>
+        <a class="btn btn-info" href="#/about"><span class="glyphicon glyphicon-info-sign"></span> {{ 'ABOUT' | translate}}</a>
+        <a class="btn btn-danger" href="#/termsOfService"><span class="glyphicon glyphicon-briefcase"></span> {{ 'TOF' | translate}}</a>
     </div>
-<div>
+</div>
+
 </div>

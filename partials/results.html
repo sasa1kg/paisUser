@@ -14,7 +14,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{ 'ORDERS' | translate }}</h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" ng-show="accounts.length>0">
                 <ul class="list-group">
                     <a class="list-group-item hoverblue" ng-repeat="account in accounts"
                        ng-click="select(account.order_id)" id="{{account.order_id}}"
@@ -26,7 +26,11 @@
 
 
     <div class="col-lg-8" ng-show="!generalError">
-        <div class="panel panel-default">
+                <div class="alert alert-warning" ng-if="accounts.length==0">
+                    <strong>{{ 'ORDERS' | translate }}</strong> {{ 'NO_ORDERS' | translate }} 
+                    <a href="#/newOrder"class="alert-link"> {{ 'NEW_ORDER' | translate}}</a>
+                </div>
+        <div class="panel panel-default" ng-show="accounts.length>0">
             <div class="panel-heading">
                 <h3 class="panel-title">{{selectedAccount.name}} | {{'IMAGES' | translate}}</h3>
             </div>
@@ -51,7 +55,7 @@
                 </table>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="accounts.length>0">
             <div class="panel-heading">
                 <h3 class="panel-title">{{selectedAccount.name}} | {{ 'SENSORS' | translate}}</h3>
             </div>

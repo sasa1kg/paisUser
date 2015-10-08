@@ -1,0 +1,201 @@
+<div class="container">
+    <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
+    </nav>
+
+
+    <div class="alert alert-danger" ng-show="generalError">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'ERROR_GEN' | translate }}</strong> {{ 'ERROR_GEN_DET' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARNING_IMG_DESC' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_IMG_TYPES' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_NAME' | translate }}
+    </div>
+
+    <!-- Modal -->
+    <div id="estimateModal" class="modal" role="dialog" data-backdrop="">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{ 'INFORMATIONS' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ 'CHOOSEN_SERVICES' | translate }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ 'CHOOSEN_NO_T' | translate }} {{estimateOrder.polygons.length}}. <p>{{ 'CHOOSEN_NO_T_SURFACE' | translate }} {{estimateSurface}}
+                                ha.</p>
+
+                            <p>{{ 'CHOOSEN_NO_SENSORS' | translate }} {{estimateOrder.sensors.length}}</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ 'EVALUATION' | translate }}</h3>
+                        </div>
+                        <div class="panel-body" ng-show="evaluationAvailable && !evaluated && !evaluatedError">
+                            <button type="button" class="btn btn-primary" ng-click="evaluate()">{{ 'EVALUATE_CLICK' | translate }}</button>
+                        </div>
+                        <div class="panel-body" ng-show="!evaluationAvailable && evaluated && !evaluatedError">
+                            <p>{{ 'APPROX_VALUE' | translate }} {{estimatedPrice}} {{currency}}</p>
+                            <hr>
+                            <p>{{ 'ESTIMATE_ALERT' | translate }}</p>
+                        </div>
+                        <div class="panel-body" ng-show="!evaluationAvailable && !evaluated && evaluatedError">
+                            <p>Error</p>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ 'LEGAL_NOTE' | translate }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ 'ACCEPT_TOS' | translate }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#placeOrderModal" ng-show="!evaluationAvailable && evaluated && !evaluatedError" ng-click="placeOrder()">
+                        {{ 'CONFIRM_ORDER' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'CANCEL_ORDER' | translate }}</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="placeOrderModal" class="modal" role="dialog" data-backdrop="">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{ 'INFORMATIONS' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <p ng-show="orderPlaced && orderSuccess">{{ 'ORDER_SUCCESS' | translate }}</p>
+                    <p ng-show="orderPlaced && !orderSuccess">{{ 'ORDER_FAILED' | translate }}</p>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-primary" href="#/orders">{{ 'MY_ORDERS' | translate }}</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+ 
+
+
+<div class="container-fluid holder" ng-controller="testCtrl" ng-show="!generalError">
+	<div class="row backopacity">
+
+		<div class="col-sm-6 map">
+			<div class="google-map-canvas" id="map-canvas"></div>
+		</div>
+
+		<div class="col-sm-6">
+
+			<form class="form-horizontal">
+
+                <div class="panel panel-default pulltoppanel panelBorder">
+                    <div class="panel-heading panelBig">
+                        <h4>{{ 'ORDER' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="{{ 'NAME_ORDER' | translate }}" ng-model="order.name">
+                                <textarea class="form-control separateFive" rows="2" placeholder="{{ 'DESCRIPTION' | translate }}" ng-model="order.description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<hr>
+                <div class="panel panel-default panelBorder">
+                    <div class="panel-heading panelBig">
+				        <h4>{{ 'IMAGE_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+					<dt ng-show="!polygonNotSelected"><label>{{ 'NO_TERITORIES' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
+						<div class="col-xs-10">
+							<input class="form-control" ng-model="order.polygons.length" ng-disabled="true">
+						</div>
+					</dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'SURFACE' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
+						<div class="col-xs-10">
+							<input class="form-control" ng-model="polygonSurfaceFixed" ng-disabled="true">
+						</div>
+					</dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'IMAGE_TYPES' | translate }}</label></dt>
+					<dd ng-show="!polygonNotSelected">
+						<div class="col-xs-10 fullwidth">
+							<div class="fullwidth" ng-dropdown-multiselect="" translation-texts="msTranslate" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings">Izaberi</div>
+						</div>
+					</dd>
+					<dt ng-show="!polygonNotSelected"><label>{{ 'IMAGE_FREQ' | translate }} </label></dt>
+					<dd ng-show="!polygonNotSelected">
+						<div class="col-xs-10">
+							<select class="form-control" id="selFrequency" ng-model="order.image_frequency_id" ng-options="freq.id as freq.name for freq in frequencies" ng-disabled="polygonNotSelected">
+						  </select>
+						</div>
+					</dd>
+                </div>
+            </div>
+            <hr>
+            <div class="panel panel-default panelBorder">
+                    <div class="panel-heading panelBig">
+					   <h4>{{ 'SENSOR_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                                <div class="panel panel-default panelSmallBorder" ng-repeat="sensor in order.sensors">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'SENSOR' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <select class="form-control" id="selSensors" ng-disabled="markerNotSelected" ng-model="sensor.type_id" ng-init="sensor.type_id=sensorTypes[0].id" ng-options="type.id as type.name for type in sensorTypes">
+                                        </select>
+                                        <select class="form-control separateFive" id="selSensorsUoms" ng-disabled="markerNotSelected" ng-model="sensor.uom_id" ng-options="uom.id as uom.name for uom in reloadUOMS(sensor, sensor.type_id)">
+                                        </select>
+                                        <textarea class="form-control separateFive" rows="2" ng-model="sensor.description" placeholder="{{ 'SENSOR_DESCRIPTION' | translate }}"></textarea>
+                                    </div>
+                                </div>
+                    </div>
+            </div>
+				<div class="form-group">
+					<div class="col-xs-10">
+						<button class="btn btn-primary btn-lg pull-right" type="button" data-toggle="modal" ng-click="injectToRoot()" data-target="#estimateModal" ng-disabled="order.name.length==0">{{ 'ESTIMATE' | translate}}</button>
+					</div>
+					<!--<button ng-click="test()">TEST</button>-->
+				</div>
+			</form>
+		</div>
+		<!--/col-5-->
+
+	</div>
+</div>
+
+</div>

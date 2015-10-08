@@ -75,11 +75,11 @@ angular.module('userApp').controller("registrationCtrl", ["$scope", "$http", "$f
 			alert("password error");
 			return false;
 		}
-		if (scope.user.email == undefined || !scope.email.test(scope.user.email)) {
-			scope.form_error = "";
-			alert("email error");
-			return false;
-		}
+		// if (scope.user.email == undefined || !scope.email.test(scope.user.email)) {
+		// 	scope.form_error = "";
+		// 	alert("email error");
+		// 	return false;
+		// }
 		if (scope.user.first_name == undefined || scope.user.first_name.length < 2) {
 			scope.form_error = "";
 			alert("first_name error");
