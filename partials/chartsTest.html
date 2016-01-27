@@ -1,0 +1,144 @@
+ <div id="wrapper">
+
+ 	<div ng-include="'partials/navigation.html'">
+ 	</div>
+
+ 	<!-- Modal -->
+	<script type="text/ng-template" id="sensorStats.html">
+	<div>
+
+	<!-- Modal content-->
+	<div>
+	<div class="modal-header">
+	<button type="button" class="close" ng-click="dismissModal()">&times;</button>
+	<h4 class="modal-title">{{ 'STATISTICS' | translate }} | {{selectedSensor.selectedSensor.type}}</h4>
+	</div>
+	<div class="modal-body">
+	<div class="alert alert-success" ng-style="{'color': selectedSensor.selectedSensor.color, 'background-color' : selectedSensor.selectedSensor.color, 'border-color' : selectedSensor.selectedSensor.color, 'opacity' : 0.7}" role="alert" ng-show="selectedSensor.selectedSensor.description.length>0">
+		<p class="descText">{{selectedSensor.selectedSensor.description}}</p>
+	</div>
+
+	<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+			<div class="col-lg-6 text-center">
+				<p class="statsCardTextSmallDate">From</p>
+				<p class="statsCardTextDate">1/1/2015</p>
+			</div>
+			<div class="col-lg-6 text-center vcenter">
+				<p class="statsCardTextSmallDate">To</p>
+				<p class="statsCardTextDate">10/11/2015</p>
+			</div>
+	</div>
+	<hr>
+
+	<div class="alert alert-warning" role="alert" ng-show="selectedSensor.selectedSensor.stats == null">
+		<strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'NO_DATA' | translate }}
+	</div>
+
+	<div ng-show="selectedSensor.selectedSensor.stats != null">
+		<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+			<div class="col-lg-6 text-center">
+				<i class="fa fa-sort-numeric-asc statsCardIcon"></i>
+				<p class="statsCardTextSmall">Number of measurements</p>
+			</div>
+			<div class="col-lg-6 text-center vcenter">
+				<p class="statsCardText">265</p>
+			</div>
+		</div>
+		<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+			<div class="col-lg-6 text-center">
+				<i class="fa fa-arrows-h statsCardIcon"></i>
+				<p class="statsCardTextSmall">Mean value</p>
+			</div>
+			<div class="col-lg-6 text-center vcenter">
+				<p class="statsCardText">28.5</p>
+			</div>
+		</div>
+		<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+			<div class="col-lg-6 text-center">
+				<i class="fa fa-arrow-up statsCardIcon"></i>
+				<p class="statsCardTextSmall">Maximum</p>
+			</div>
+			<div class="col-lg-6 text-center vcenter">
+				<p class="statsCardText">28.5</p>
+			</div>
+		</div>
+		<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+			<div class="col-lg-6 text-center">
+				<i class="fa fa-arrow-down statsCardIcon"></i>
+				<p class="statsCardTextSmall">Minimum</p>
+			</div>
+			<div class="col-lg-6 text-center vcenter">
+				<p class="statsCardText">28.5</p>
+			</div>
+		</div>
+	</div>
+
+	</div>
+	<div class="modal-footer">
+	<a type="button" class="btn btn-danger" ng-click="saveSelection()"><span class="glyphicon glyphicon-remove"></span> {{ 'CANCEL' | translate }}</a>
+	</div>
+	</div>
+
+	</div>
+	</script>
+
+ 	<div id="page-wrapper">
+
+ 		<div class="container-fluid">
+
+ 			<!-- Page Heading -->
+ 			<div class="row">
+ 				<div class="col-lg-12">
+ 					<h1 class="page-header">
+ 						{{ 'SENSOR' | translate }} <small>{{ 'DETAILS' | translate }}</small>
+ 					</h1>
+ 				</div>
+ 			</div>
+ 			<!-- removeFromSelected(sensor.sensor_id)/.row -->
+
+ 			<div class="col-lg-12">
+ 				<div class="row">
+					<div class="col-lg-4 col-md-4" ng-repeat="sensor in selectedSensors">
+						<label><a class="cursorchg" ng-click="removeFromSelected(sensor.sensor_id)" ng-style="{'color' : sensor.color, 'opacity' : '0.7'}"><span class="glyphicon glyphicon-remove"></span> {{ 'REMOVE' | translate }}</a></label>
+						<div class="panel" ng-style="{'border-color': sensor.color}">
+							<div class="panel-heading" ng-style="{'background-color': sensor.color, 'color' : 'white', 'opacity' : '0.7'}">
+								<div class="row">
+									<div class="col-xs-3">
+										<i class="fa fa-5x" ng-class="{'fa-umbrella' : sensor.type_id==1, 'fa-sun-o' : sensor.type_id==0, 'fa-area-chart' : sensor.type_id > 1}"></i>
+									</div>
+									<div class="col-xs-9 text-right">
+										<div class="huge mycard">{{sensor.type}}</div>
+										<div>{{sensor.description | limitTo:60}}</div>
+									</div>
+								</div>
+							</div>
+							<a>
+								<div class="panel-footer" ng-style="{'color': sensor.color}">
+									<div>
+										<span class="pull-left cursorchg" ng-click="sensorStats(sensor.sensor_id, sensor.order_id)">{{ 'SHOW_STATS' | translate }}</span>
+										<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+										<div class="clearfix"></div>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+ 			</div>	
+ 				
+ 		</div>
+ 	</div>      
+ </div>
+
+ <!-- /.row -->
+
+
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- /#page-wrapper -->
+
+</div>
+    <!-- /#wrapper -->

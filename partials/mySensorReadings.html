@@ -1,0 +1,176 @@
+ <div id="wrapper">
+
+ 	<div ng-include="'partials/navigation.html'">
+ 	</div>
+
+ 	<div id="page-wrapper">
+
+ 		<div class="container-fluid">
+
+ 			<!-- Page Heading -->
+ 			<div class="row">
+ 				<div class="col-lg-12">
+ 					<h1 class="page-header">
+ 						{{ 'SENSOR' | translate }} <small>{{ 'DETAILS' | translate }}</small>
+ 					</h1>
+ 				</div>
+ 			</div>
+ 			<!-- /.row -->
+
+ 			<div class="row">
+ 				<div class="col-lg-12">
+ 					<div class="col-sm-6">
+ 						<div class="panel panel-default panelBorder">
+ 							<div class="panel-heading panelBig">
+ 								<h5>{{ 'SENSOR_ID' | translate }}: {{sensorId}} | {{sensorType.sensor_type_name}}</h5>
+ 							</div>
+ 							<div class="panel-body">
+ 								{{sensor.description}}
+ 							</div>
+ 						</div>
+ 						<div class="panel panel-default panelBorder" ng-show="sensor.min_value != null || sensor.max_value != null">
+ 							<div class="panel-heading panelBig">
+ 								<h5>{{ 'ALARM_VALUES' | translate }}</h5>
+ 							</div>
+ 							<div class="panel-body">
+ 								<div class="input-group separateFive" ng-show="sensor.min_value != null">
+			                      <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></span>
+			                      <input type="number" ng-disabled="true" class="form-control" placeholder="{{'ALARM_MINIMUM' | translate}}" aria-describedby="basic-addon1" ng-model="sensor.min_value">
+			                      <span class="input-group-addon">{{uom_symbol}}</span>
+			                    </div>
+			                    <div class="input-group separateFive" ng-show="sensor.max_value != null">
+			                      <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></span>
+			                      <input type="number" ng-disabled="true" class="form-control" placeholder="{{'ALARM_MAXIMUM' | translate}}" aria-describedby="basic-addon1" ng-model="sensor.max_value">
+			                      <span class="input-group-addon">{{uom_symbol}}</span>
+			                    </div>
+ 							</div>
+ 						</div>
+ 					</div>
+ 					<div class="col-sm-6">
+ 						<div class="panel panel-default panelBorder">
+ 							<div class="panel-heading panelBig">
+ 								<h5>{{ 'TIME_FILTER' | translate }}</h5>
+ 							</div>
+ 							<div class="panel-body margin">
+ 								<label class="labelwidth">{{ 'FROM' | translate }}: </label>
+ 								<div class="form-group row">
+ 									<div class="dropdown">
+ 										<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown">
+ 											<div class="input-group"><input type="text" class="form-control"
+ 												data-ng-model="dateFrom | date:'dd.MM.yyyy HH:mm'">
+ 												<span
+ 												class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>
+ 											</span>
+ 										</div>
+ 									</a>
+ 									<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+ 										<datetimepicker data-ng-model="dateFrom" 
+ 										data-on-set-time="onTimeSetFrom(newDate, oldDate)"
+ 										data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+ 									</ul>
+ 								</div>
+ 							</div>
+ 							<label class="labelwidth">{{ 'TO' | translate }}: </label>
+ 							<div class="form-group row">
+ 								<div class="dropdown">
+ 									<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown">
+ 										<div class="input-group"><input type="text" class="form-control"
+ 											data-ng-model="dateTo | date:'dd.MM.yyyy HH:mm'">
+ 											<span
+ 											class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>
+ 										</span>
+ 									</div>
+ 								</a>
+ 								<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+ 									<datetimepicker data-ng-model="dateTo" 
+ 									data-on-set-time="onTimeSetFrom(newDate, oldDate)"
+ 									data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+ 								</ul>
+ 							</div>
+ 						</div>
+ 						<button class="btn btn-primary btn-lg full-btn" ng-click="filter()"><span class="glyphicon glyphicon-indent-right"></span> FILTER</button>
+ 					</div>
+ 				</div>
+ 			</div>
+
+
+ 			<div class="col-lg-12">
+ 				<div class="panel panel-default panelBorder">
+ 					<div class="panel-heading panelBig">
+ 						<h5>{{ 'STAT_PER' | translate }} <p class="pull-right">{{ 'STAT_NUM' | translate }} {{data.data.length}}</p></h5>
+ 					</div>
+ 					<div class="panel-body" ng-show="!loading">
+ 						<div class="col-lg-3 ">
+ 							<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+ 								<div class="col-lg-6 text-center">
+ 									<i class="fa fa-arrows-h statsCardIcon"></i>
+ 									<p class="statsCardTextSmall">{{ 'STAT_MEAN' | translate }}</p>
+ 								</div>
+ 								<div class="col-lg-6 text-center vcenter">
+ 									<p class="statsCardText">{{roundDoubleTwo(statistics.avg_value)}} {{uom_symbol}}</p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 						<div class="col-lg-3 ">
+ 							<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+ 								<div class="col-lg-6 text-center">
+ 									<i class="fa fa-arrow-up statsCardIcon"></i>
+ 									<p class="statsCardTextSmall">{{ 'STAT_MAX' | translate }}</p>
+ 								</div>
+ 								<div class="col-lg-6 text-center vcenter">
+ 									<p class="statsCardText">{{roundDoubleTwo(statistics.max_value)}} {{uom_symbol}}</p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 						<div class="col-lg-3 ">
+ 							<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+ 								<div class="col-lg-6 text-center">
+ 									<i class="fa fa-arrow-down statsCardIcon"></i>
+ 									<p class="statsCardTextSmall">{{ 'STAT_MIN' | translate }}</p>
+ 								</div>
+ 								<div class="col-lg-6 text-center vcenter">
+ 									<p class="statsCardText">{{roundDoubleTwo(statistics.min_value)}} {{uom_symbol}}</p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 						 <div class="col-lg-3 ">
+ 							<div class="statsCard" ng-style="{'color': selectedSensor.selectedSensor.color, 'opacity' : 0.7}">
+ 								<div class="col-lg-6 text-center">
+ 									<i class="fa fa-sort-numeric-asc statsCardIcon"></i>
+ 									<p class="statsCardTextSmall">{{ 'STAT_STD' | translate }}</p>
+ 								</div>
+ 								<div class="col-lg-6 text-center vcenter">
+ 									<p class="statsCardText">{{roundDoubleTwo(statistics.std_value)}}</p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 					</div>
+ 					<div class="panel-body" ng-show="loading">
+ 						<div class="alert alert-info" role="alert" ng-show="loading"><strong>{{ 'LOADING' | translate}}</strong></div>
+ 					</div>
+ 				</div>
+ 			</div>
+
+ 			<div class="col-lg-12">
+ 				<div class="alert alert-info" role="alert" ng-show="loading"><strong>{{ 'LOADING' | translate}}</strong></div>
+ 				<!--<nvd3 options="options" data="results" config="{refreshDataOnly: true}" ng-show="!loading"></nvd3> -->
+ 				<!--<div class="full">
+ 					<linechart data="dataNum" options="options" height="" width=""></linechart>
+ 				</div>-->
+ 				<div id="containerhc" class="containerhc"></div>
+ 			</div>
+ 		</div>      
+ 	</div>
+
+ 	<!-- /.row -->
+
+
+
+ </div>
+ <!-- /.container-fluid -->
+
+</div>
+<!-- /#page-wrapper -->
+
+</div>
+    <!-- /#wrapper -->

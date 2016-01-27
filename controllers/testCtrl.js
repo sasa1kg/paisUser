@@ -3,39 +3,77 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
 
         scope.msg = "PAIS user! " + new Date();
 
-        scope.timeInit = function () {
-            $('[type="date"].min-today').prop('min', function(){
-                    return new Date().toJSON().split('T')[0];
-             }); 
+        scope.manual = function () {
+            if (rootScope.getLanguage() == "en") {
+                window.open("/newOrderManual_en.pdf");
+            } else {
+                window.open("/newOrderManual_rs.pdf");
+            } 
         }
 
-        scope.init = function () {
-
-
-            rootScope.evaluated = false;
-            rootScope.evaluatedError = false;
-            rootScope.evaluationAvailable = true;
-            scope.generalError = false;
-
-            scope.orderNameInvalid = false;
-            scope.orderImgTypeInvalid = false;
-            scope.orderDescInvalid = false;
-
-            //scope.setMultiselectIN();
-             scope.timeInit();
-        }
-
-        scope.init();
-
-
-
-        scope.sensorTypes = [];
-
-        scope.multiselectmodel = [];
-        scope.multiselectdata = [];
-        scope.multiselectsettings = {
-            smartButtonMaxItems: 2,
+        scope.fillAllSensors = function () {
+            var retArray = [];
+             for (var i = scope.sensorTypes.length - 1; i >= 0; i--) {
+                 var sensor = {
+                    "type" : scope.sensorTypes[i].name,
+                    "id" : parseInt(scope.sensorTypes[i].id),
+                    "uom_id" : scope.getTypeUOMS(scope.sensorTypes[i].id)[0].id,
+                    "min_value" : '',
+                    "max_value" : '',
+                    "checked" : true
+                 };
+                 retArray.push(sensor);
+             };
+             return retArray;  
         };
+
+        scope.setHoverTitle = function () {
+            if (rootScope.getLanguage() == "en") {
+                $("#fromTooltip").tooltip({
+                    title: "<h4><img src='../img/info.png' style='width:26px;' alt='Smiley'> Required date of commencement (of the service)</h4>",   
+                    html: true, 
+                });
+                $("#toTooltip").tooltip({
+                    title: "<h4><img src='../img/info.png' style='width:26px;' alt='Smiley'> Required completion date</h4>",   
+                    html: true, 
+                });   
+            } else {
+                $("#fromTooltip").tooltip({
+                    title: "<h4><img src='../img/info.png' style='width:26px;' alt='Smiley'> Željeni datum početka servisa</h4>",   
+                    html: true, 
+                });
+                $("#toTooltip").tooltip({
+                    title: "<h4><img src='../img/info.png' style='width:26px;' alt='Smiley'> Željeni datum završetka</h4>",   
+                    html: true, 
+                });  
+
+            }
+        }
+
+        scope.setHoverTitle();
+
+
+        /*
+         ORDER element.
+         */
+        scope.order = {
+            "name": "",
+            "description": "",
+            "image_frequency_id": "",
+            "imageTypes": [],
+            "polygons": [],
+            "stations": [],
+            "start_date" : new Date(),
+            "end_date" : new Date() 
+        }
+
+        scope.orderStations = [];
+
+        scope.setStartDate = function () {
+            scope.order.end_date.setTime(scope.order.start_date.getTime() + 30 * 24 * 60 * 60 * 1000);
+        }
+
+        scope.setStartDate();
 
         scope.setMultiselectIN = function () {
             if (rootScope.getLanguage() === 'en') {
@@ -62,6 +100,37 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
         };
 
 
+        scope.init = function () {
+            scope.generalError = false;
+
+            scope.orderNameInvalid = false;
+            scope.orderImgTypeInvalid = false;
+            scope.orderDescInvalid = false;
+
+            scope.setMultiselectIN();
+        }
+
+        scope.init();
+
+
+
+        scope.sensorTypes = [];
+
+        scope.multiselectmodel = [];
+        scope.multiselectdata = [];
+        scope.multiselectsettings = {
+            smartButtonMaxItems: 2,
+        };
+
+        scope.multiselectmodelSensor = [];
+        scope.multiselectdataSensor = [];
+        scope.multiselectsettings = {
+            smartButtonMinItems: 1,
+        };
+
+        
+
+
         scope.validateName = function () {
             if (scope.order.name == undefined || scope.order.name.length < 3) {
                 return false;
@@ -71,7 +140,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
         }
 
         scope.validatePolygons = function () {
-            if (scope.order.polygons.length != 0 && scope.order.imageTypes.length == 0) {
+            if (scope.order.polygons.length != 0 && scope.multiselectmodel.length == 0) {
                 return false;
             } else {
                 return true;
@@ -87,55 +156,147 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
         }
 
         scope.validateUOMs = function () {
-            for (var i = scope.order.sensors.length - 1; i >= 0; i--) {
-                if (scope.order.sensors[i].uom_id == undefined ||
-                    scope.order.sensors[i].uom_id == "") {
-                    return false;
-                }
-            }
-            ;
+            for (var i = scope.order.stations.length - 1; i >= 0; i--) {
+                for (var f = scope.order.stations[i].sensors.length - 1; f >= 0; f--) {
+                    
+                    if (scope.order.stations[i].sensors[f].uom_id == undefined ||
+                    scope.order.stations[i].sensors[f].uom_id == "") {
+                        return false;
+                    }
+                };
+            };
             return true;
         }
 
 
         scope.injectToRootAndOpenEstimateModal = function () {
 
-            for (var i = scope.multiselectmodel.length - 1; i >= 0; i--) {
-                scope.order.imageTypes.push({
-                    "image_type_id": parseInt(scope.multiselectmodel[i].id)
-                });
+
+            scope.order.stations = [];
+
+            for (var b = scope.orderStations.length - 1; b >= 0; b--) {
+                var sensorStation = {
+                    "latitude" : scope.orderStations[b].latitude,
+                    "longitude" : scope.orderStations[b].longitude,
+                    "description" : scope.orderStations[b].description,
+                    "sensors" : []
+                };
+                for (var m = scope.orderStations[b].sensors.length - 1; m >= 0; m--) {
+                    if (scope.orderStations[b].sensors[m].checked) {
+                        var sensorSingle = {
+                            "type_id": scope.orderStations[b].sensors[m].id,
+                            "uom_id" : scope.orderStations[b].sensors[m].uom_id,
+                            "description" : "",
+                            "min_value" : scope.orderStations[b].sensors[m].min_value,
+                            "max_value" : scope.orderStations[b].sensors[m].max_value
+                        };
+                        sensorStation.sensors.push(sensorSingle);
+                    }
+                };
+                if (sensorStation.sensors.length == 0) {
+                    alert("Sensor station must have at least one sensor selected.");
+                    return;
+                }
+                scope.order.stations.push(sensorStation);
+            };
+
+            if (!scope.validateName()) {
+                alert("Please enter order name. Order name must have at least 3 characters.");
+                return;
             }
-            ;
+
+            if (!scope.validateDescription()) {
+                alert("Order description must have maximum of 100 characters.");
+                return;
+            }
+
+            if (!scope.validatePolygons()) {
+                alert("You must select at least one image type.");
+                return;
+            }
+
+            if (!scope.validateUOMs()) {
+                alert("Please select Unit of measurement for all sensors.");
+                return;
+            }
+
+            scope.order.imageTypes = [];
+            for (var i = scope.multiselectmodel.length - 1; i >= 0; i--) {
+                var add = true;
+                for (var k = scope.order.imageTypes.length - 1; k >= 0; k--) {
+                    if (scope.order.imageTypes[k].image_type_id == parseInt(scope.multiselectmodel[i].id)) {
+                        add = false;
+                    }
+                };
+                if (add) {
+                    scope.order.imageTypes.push({
+                        "image_type_id": parseInt(scope.multiselectmodel[i].id)
+                    });
+                }
+            };
+            scope.order.start_date.setTime(scope.order.start_date.getTime() - scope.order.start_date.getTimezoneOffset() * 60 * 1000);
+            scope.order.end_date.setTime(scope.order.end_date.getTime() - scope.order.end_date.getTimezoneOffset() * 60 * 1000);
+
 
             scope.order.image_frequency_id = parseInt(scope.order.image_frequency_id);
 
-
-            rootScope.evaluated = false;
-            rootScope.evaluatedError = false;
-            rootScope.evaluationAvailable = true;
             rootScope.estimateOrder = scope.order;
             rootScope.estimateSurface = scope.polygonSurfaceFixed;
             if (rootScope.estimateOrder.polygons.length == 0) {
                 rootScope.estimateOrder.imageTypes = [];
                 rootScope.estimateOrder.image_frequency_id = "";
+            } else {
+                for (var i = rootScope.estimateOrder.polygons.length - 1; i >= 0; i--) {
+                    if (rootScope.estimateOrder.polygons[i].description == undefined || rootScope.estimateOrder.polygons[i].description == null) {
+                        rootScope.estimateOrder.polygons[i].description = "";
+                    }
+                };
             }
 
             var estimateModalInstance = modal.open({
                 animation: true,
                 templateUrl: 'estimateModal.html',
-                controller: 'EstimateModalInstanceCtrl'
+                controller: 'EstimateModalInstanceCtrl',
+                resolve: {
+                    sensorTypes: function() {
+                        return scope.sensorTypes;
+                    },
+                    imageTypes : function () {
+                        return scope.imageTypesData;
+                    },
+                    frequencies : function () {
+                        return scope.frequencies;
+                    }
+                }
             });
 
 
         }
 
 
+        scope.onTimeSetFrom = function (newDate, oldDate)  {
+            var now = new Date();
+            if (scope.order.start_date.getTime() < now.getTime()) {
+                scope.order.start_date.setTime(now.getTime());
+            } else {
+                scope.order.start_date.setTime(newDate.getTime());
+            }
+            if (scope.order.end_date.getTime() < scope.order.start_date.getTime()) {
+                scope.order.end_date.setTime(newDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+            }
+        }
+
+        scope.onTimeSetTo = function (newDate, oldDate)  {
+            var now = new Date();
+            scope.order.end_date.setTime(newDate.getTime());
+            if (scope.order.end_date.getTime() < now.getTime() || scope.order.end_date.getTime() < scope.order.start_date.getTime()) {
+                scope.order.end_date.setTime(scope.order.start_date.getTime() + 30 * 24 * 60 * 60 * 1000);
+            } else {
+                scope.order.end_date.setTime(newDate.getTime());
+            }
+        }
+
         scope.test = function () {
-            alert(angular.toJson(scope.order));
-            //alert (angular.toJson(scope.multiselectmodel));
-            //alert(angular.toJson(scope.order.polygons));
-            //$('#estimateModal').show();
-            //alert(angular.toJson(scope.sensorTypes));
         }
 
         /*
@@ -144,20 +305,25 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
          */
         scope.getImageTypes = ServerService.getImageTypes().then(function (data) {
             if (data) {
+                scope.imageTypesData = data;
                 for (var i = data.length - 1; i >= 0; i--) {
-                    var type = {
-                        id: data[i].id,
-                        label: data[i].name
-                    };
-                    scope.multiselectdata.push(type);
-                    scope.multiselectmodel.push(type);
+                    if (data[i].active == "1") {
+                        var type = {
+                            id: data[i].id,
+                            label: data[i].name
+                        };
+                        scope.multiselectdata.push(type);
+                        scope.multiselectmodel.push({
+                            "id" : data[i].id
+                        });
+                    }
                 }
                 ;
             } else {
-                scope.generalError = true;
+                rootScope.errorOccured();
             }
         }, function (reason) {
-            scope.generalError = true;
+            rootScope.errorOccured();
         });
 
         /*
@@ -168,10 +334,10 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
                 scope.order.image_frequency_id = data[0].id;
                 scope.frequencies = data;
             } else {
-                scope.generalError = true;
+                rootScope.errorOccured();
             }
         }, function (reason) {
-            scope.generalError = true;
+            rootScope.errorOccured();
         });
 
         scope.reloadUOMS = function (sensor, type) {
@@ -183,6 +349,15 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
             ;
         };
 
+
+        scope.getTypeUOMS = function (type) {
+            for (var i = scope.sensorTypes.length - 1; i >= 0; i--) {
+                if (scope.sensorTypes[i].id == type) {
+                    return scope.sensorTypes[i].uoms;
+                }
+            };
+        }
+
         /*
          Method for pulling all sensor types from ServerService
          */
@@ -190,11 +365,13 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
             if (data) {
                 scope.sensorTypes = data;
             } else {
-                scope.generalError = true;
+                rootScope.errorOccured();
             }
         }, function (reason) {
-            scope.generalError = true;
+            rootScope.errorOccured();
         });
+
+
 
 
         /*
@@ -208,17 +385,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
         rootScope.evaluatedError = false;
         rootScope.evaluationAvailable = true;
 
-        /*
-         ORDER element.
-         */
-        scope.order = {
-            "name": "",
-            "description": "",
-            "image_frequency_id": "",
-            "imageTypes": [],
-            "polygons": [],
-            "sensors": []
-        }
+
 
 
         /*
@@ -318,27 +485,38 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
                 // Get bounds in CAP <area> format
                 if (event.type == google.maps.drawing.OverlayType.MARKER) {
                     //insertBoundsIntoDOM(event.overlay.position, mapDataId);
+                    //console.log(event);
+                    //console.log(event.overlay.getPosition().lng());
+                    //console.log(event.overlay.getPosition().lat());
                     mapOverlays.push(event.overlay);
                     var sensor = event.overlay.position;
                     var infowindow = new google.maps.InfoWindow({
-                        content: "Senzor " + (scope.order.sensors.length + 1)
+                        content: "Sensor station (Senz. stanica) " + (scope.orderStations.length + 1)
                     });
                     infowindow.open(map, event.overlay);
                     google.maps.event.addListener(event.overlay, 'click', function () {
                         infowindow.open(map, event.overlay);
                     });
-                    var sensorInfo = {
-                        "latitude": sensor.G,
-                        "longitude": sensor.K,
+                    /*var sensorInfo = {
+                        "latitude": event.overlay.getPosition().lat(),
+                        "longitude": event.overlay.getPosition().lng(),
                         "description": "",
                         "uom_id": scope.sensorTypes[0].uoms[0].id,
                         "type_id": ""
                     };
                     scope.order.sensors.push(sensorInfo);
                     console.log("sensors " + scope.order.sensors.length);
+                    console.log(angular.toJson(scope.order.sensors));*/
                     if (scope.markerNotSelected == true) {
                         scope.markerNotSelected = false;
                     }
+                    var weatherStationInfo = {
+                        "latitude": event.overlay.getPosition().lat(),
+                        "longitude": event.overlay.getPosition().lng(),
+                        "description": "",
+                        "sensors" : scope.fillAllSensors()
+                    };
+                    scope.orderStations.push(weatherStationInfo);
                 } else {
                     var paths = event.overlay.getPath();
                     var myCoordArray = event.overlay.toCapAreaArray();
@@ -353,9 +531,8 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
                         polygonInfo.coordinates.push(myCoordArray[i]);
                     }
                     scope.polygonSurface = scope.polygonSurface + polygon;
-                    scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(2);
-                    polygonInfo.surface = polygon.round(2);
-                    console.log("polygonSurfaceFixed " + scope.polygonSurfaceFixed);
+                    scope.polygonSurfaceFixed = scope.polygonSurface.toFixed(4);
+                    polygonInfo.surface = polygon.round(4);
                     scope.order.polygons.push(polygonInfo);
                     if (scope.polygonNotSelected == true) {
                         scope.polygonNotSelected = false;
@@ -385,7 +562,7 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
             scope.polygonSurface = 0;
             scope.polygonSurfaceFixed = 0;
             scope.order.polygons = [];
-            scope.order.sensors = [];
+            scope.orderStations = [];
         }
 
 
@@ -500,24 +677,86 @@ angular.module('userApp').controller("testCtrl", ["$rootScope", "$scope", "$http
         };
     }]);
 
-angular.module('userApp').controller('EstimateModalInstanceCtrl', function ($scope, $modalInstance, $location, $modal, ServerService, $rootScope) {
+angular.module('userApp').controller('EstimateModalInstanceCtrl', function ($scope, $modalInstance, $location, $modal, ServerService, $rootScope, sensorTypes, imageTypes, frequencies) {
+
+    $scope.sensorTypes = sensorTypes;
+    $scope.imageTypes = imageTypes;
+    $scope.frequencies = frequencies;
+
+
+    $scope.placingLoading = false;
+
+    $scope.tof = function () {
+        var lang = $rootScope.getLanguage();
+        if (lang == "en") {
+            window.open("/tof_en.pdf");
+        } else {
+            window.open("/tof_rs.pdf");
+        }
+    }
+
+    $scope.getFrequencyName = function (freq_id) {
+        for (var i = $scope.frequencies.length - 1; i >= 0; i--) {
+            if ($scope.frequencies[i].id == freq_id) {
+                return $scope.frequencies[i].name;
+            }
+        };
+    }
+
+    $scope.getSensorTypeName = function (type_id) {
+        for (var i = $scope.sensorTypes.length - 1; i >= 0; i--) {
+            if ($scope.sensorTypes[i].id == type_id) {
+                return $scope.sensorTypes[i].name;
+            }
+        };
+    }
+
+    $scope.getUOMName = function (type_id, uom_id) {
+        for (var i = $scope.sensorTypes.length - 1; i >= 0; i--) {
+            if ($scope.sensorTypes[i].id == type_id) {
+                for (var j = $scope.sensorTypes[i].uoms.length - 1; j >= 0; j--) {
+                    if ($scope.sensorTypes[i].uoms[j].id == uom_id) {
+                        return $scope.sensorTypes[i].uoms[j].name;
+                    }
+                };
+            }
+        };
+    }
+
+    $scope.getUOMSymbol = function (type_id, uom_id) {
+        for (var i = $scope.sensorTypes.length - 1; i >= 0; i--) {
+            if ($scope.sensorTypes[i].id == type_id) {
+                for (var j = $scope.sensorTypes[i].uoms.length - 1; j >= 0; j--) {
+                    if ($scope.sensorTypes[i].uoms[j].id == uom_id) {
+                        return $scope.sensorTypes[i].uoms[j].symbol;
+                    }
+                };
+            }
+        };
+    }
+
+    $scope.getImageTypeName = function (image_type_id) {
+        for (var i = $scope.imageTypes.length - 1; i >= 0; i--) {
+            if ($scope.imageTypes[i].id == image_type_id) {
+                return $scope.imageTypes[i].name;
+            } 
+        };
+    }
 
     /*
      Flags for placing order status
      */
     $scope.orderPlaced = false;
     $scope.orderSuccess = false;
-    $scope.clientId = 22;
+
+    $scope.agreeTos = false;
     /*
      Method for placing an order.
      NOTE: Order is now being backdroped from rootScope to scope.
      */
     $scope.placeOrder = function () {
+        $scope.placingLoading = true;
         var orderToPlace = $rootScope.estimateOrder;
-
-        //alert(scope.clientId);
-        //alert(angular.toJson(orderToPlace));
-
         ServerService.placeOrder($scope.clientId, orderToPlace).then(function (data) {
             if (data) {
 
@@ -526,6 +765,7 @@ angular.module('userApp').controller('EstimateModalInstanceCtrl', function ($sco
             } else {
                 $scope.orderSuccess = false;
             }
+            $scope.placingLoading = false;
             $scope.showConfirmModal();
         }, function (reason) {
             $scope.orderSuccess = false;
@@ -533,36 +773,59 @@ angular.module('userApp').controller('EstimateModalInstanceCtrl', function ($sco
         });
 
     }
-    /*Method for evaluating current Order.
-     -> order must be written to root scope first because modal does not see scope from view
-     -> modal and the rest of view exchange data using rootScope elements [use of Service maybe?]
-     */
-    $scope.evaluate = function () {
-        ServerService.evaluateOrder($scope.clientId, $rootScope.estimateOrder).then(function (data) {
-            if (data) {
-                /*
-                 Received estimation
-                 */
-                $scope.estimatedPrice = data.value;
-                $scope.currency = data.currency;
-                $rootScope.evaluationAvailable = false;
-                $rootScope.evaluated = true;
-            } else {
-                $rootScope.evaluationAvailable = false;
-                $rootScope.evaluated = false;
-                $rootScope.evaluatedError = true;
-            }
-        }, function (reason) {
-            $rootScope.evaluationAvailable = false;
-            $rootScope.evaluated = false;
-            $rootScope.evaluatedError = true;
-        });
 
-    }
 
     $scope.dismissModal = function () {
         $modalInstance.dismiss('cancel');
     };
+
+    $scope.showAdditionModal = function (station, sensor) {
+        var additionalSettingsModal = $modal.open({
+            animation: true,
+            templateUrl: 'additionalSensorSettingsModal.html',
+            controller: 'SensorAddSettingsCtrl',
+            resolve: {
+                station: function() {
+                    for (var i = $rootScope.estimateOrder.stations.length - 1; i >= 0; i--) {
+                        if ($rootScope.estimateOrder.stations[i].latitude == station.latitude &&
+                            $rootScope.estimateOrder.stations[i].longitude == station.longitude) {
+                            return $rootScope.estimateOrder.stations[i];
+                        }
+                    }
+                },
+                sensor: function () {
+                    return sensor;
+                },
+                sensorTypeName : function () {
+                    return $scope.getSensorTypeName(sensor.type_id);
+                },
+                uomName : function () {
+                    return $scope.getUOMName(sensor.type_id, sensor.uom_id);
+                },
+                uomSymbol : function () {
+                    return $scope.getUOMSymbol(sensor.type_id, sensor.uom_id);
+                }
+            }
+        });
+
+        additionalSettingsModal.result.then(function (resultObject) {
+            if (resultObject != null) {
+                for (var y = $rootScope.estimateOrder.stations.length - 1; y >= 0; y--) {
+                    if ($rootScope.estimateOrder.stations[y].latitude == resultObject.station.latitude &&
+                        $rootScope.estimateOrder.stations[y].longitude == resultObject.station.longitude) {
+                        for (var t = $rootScope.estimateOrder.stations[y].sensors.length - 1; t >= 0; t--) {
+                            if ($rootScope.estimateOrder.stations[y].sensors[t].type_id == resultObject.sensor.type_id) {
+                                $rootScope.estimateOrder.stations[y].sensors[t].description = resultObject.sensor.description;
+                                $rootScope.estimateOrder.stations[y].sensors[t].min_value = resultObject.sensor.min_value;
+                                $rootScope.estimateOrder.stations[y].sensors[t].max_value = resultObject.sensor.max_value;
+                            }
+                        };
+                    }
+                };
+            }
+        });
+
+    }
 
     $scope.showConfirmModal = function(){
         var placeOrderModalInstance = $modal.open({
@@ -592,7 +855,6 @@ angular.module('userApp').controller('PlaceOrderModalInstanceCtrl', function ($s
     $scope.orderSuccess = orderSuccess;
     $scope.orderPlaced = orderPlaced;
 
-    console.log("2 P " + $scope.orderPlaced+" S " +$scope.orderSuccess);
     $scope.goToMyOrders = function () {
         $modalInstance.close(true);
     }
@@ -601,4 +863,38 @@ angular.module('userApp').controller('PlaceOrderModalInstanceCtrl', function ($s
         $modalInstance.dismiss('cancel');
 
     };
+});
+
+
+angular.module('userApp').controller('SensorAddSettingsCtrl', function ($scope, $modalInstance, $location, station, sensor, sensorTypeName, uomName, uomSymbol) {
+
+    $scope.station = station;
+    $scope.sensor = sensor;
+    $scope.uomName = uomName;
+    $scope.uomSymbol = uomSymbol;
+    $scope.desc = $scope.sensor.description;
+    $scope.alarm_min = $scope.sensor.min_value;
+    $scope.alarm_max = $scope.sensor.max_value;
+    $scope.sensorTypeName = sensorTypeName;
+    
+
+    $scope.save = function () {
+        console.log("Save changes");
+        $scope.sensor.description = $scope.desc;
+        $scope.sensor.min_value = $scope.alarm_min;
+        $scope.sensor.max_value = $scope.alarm_max;
+        $modalInstance.close({
+            "station" : $scope.station,
+            "sensor" : $scope.sensor
+        });
+    };
+
+    $scope.dismissModal = function () {
+        $modalInstance.dismiss(null);
+    };
+
+    $scope.test = function () {
+        alert("Just a test...");
+    };
+
 });

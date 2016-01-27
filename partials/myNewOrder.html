@@ -1,0 +1,474 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ 'ORDER' | translate }} <small>{{ 'NEW_ORDER' | translate }} <a class="btn btn-info pull-right" ng-click="manual()"><i class="fa fa-file-pdf-o"></i> {{ 'MANUAL' | translate }}</a></small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-12">
+                            <div class="alert alert-success" ng-show="!register && reg_success">
+                                <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>{{selected.email}}</strong> User created
+                            </div>
+                        <div class="alert alert-danger" ng-show="generalError">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'ERROR_GEN' | translate }}</strong> {{ 'ERROR_GEN_DET' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARNING_IMG_DESC' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_IMG_TYPES' | translate }}
+    </div>
+
+    <div class="alert alert-warning" ng-show="false">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ 'WARNING_GEN' | translate }}</strong> {{ 'WARN_NAME' | translate }}
+    </div>
+
+    <!-- Modal -->
+
+
+    <script type="text/ng-template" id="estimateModal.html">
+        <div>
+
+            <!-- Modal content-->
+            <div>
+                <div class="modal-header">
+                    <button type="button" ng-disabled="placingLoading" class="close" ng-click="dismissModal()">&times;</button>
+                    <h4 class="modal-title">{{ 'ORDER_OVERVIEW' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default panelSmallBorder">
+                        <div class="panel-heading panelSmall">
+                            <h3 class="panel-title">{{ 'CHOOSEN_SERVICES' | translate }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div ng-show="estimateOrder.stations.length > 0">
+                            <p>{{ 'SENSOR_STATIONS' | translate }} (Total {{estimateOrder.stations.length}})</p>
+                            <div class="alert alert-info">
+                                <div> <span class="glyphicon glyphicon-tags"></span>  {{ 'SENS_ST_DESC' | translate }}</div> </br>
+                                <div> <span class="glyphicon glyphicon-sort"></span>  {{ 'SENS_ST_ALARM' | translate }}</div>
+                            </div>
+                                <div ng-repeat="station in estimateOrder.stations">
+                                <p>{{ 'SENSOR_STATION' | translate }} {{$index + 1 }}</p>
+                                    <div id="no-more-lists">
+                                            <div ng-repeat="sensor in station.sensors">
+                                                <ul class="list-group" >
+                                                  <li class="list-group-item">
+                                                    {{getUOMName(sensor.type_id, sensor.uom_id)}}
+                                                  </li>
+                                                  <li class="list-group-item">
+                                                    <a class="btn btn-primary" ng-click="showAdditionModal(station, sensor)"><span class="glyphicon glyphicon-equalizer"></span> {{ 'SENS_ST_ADD_SETTINGS' | translate }}</a>
+                                                  </li>
+                                                </ul>
+                                                <hr>
+                                            </div>
+                                         </div>
+                                <table id="no-more-tables" class="table table-striped table-hover table-responsive table-bordered" >
+                                        <thead>
+                                        <tr>
+                                            <th>{{ 'SENSOR_TYPE' | translate }}</th>
+                                            <th>{{ 'UOM' | translate }}</th>
+                                            <th>{{ 'DESCRIPTION' | translate }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="sensor in station.sensors">
+                                            <td>
+                                                <span class="glyphicon glyphicon-tags" ng-show="sensor.description.length > 0"></span> <span class="glyphicon glyphicon-sort" ng-show="sensor.min_value != '' || sensor.max_value != ''"></span>  {{getSensorTypeName(sensor.type_id)}}
+                                            </td>
+                                            <td>
+                                               {{getUOMName(sensor.type_id, sensor.uom_id)}}
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" ng-click="showAdditionModal(station, sensor)"><span class="glyphicon glyphicon-equalizer"></span> {{ 'SENS_ST_ADD_SETTINGS' | translate }}</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                            </div>
+                            <hr ng-show="estimateOrder.polygons.length > 0">
+                            <div ng-show="estimateOrder.polygons.length > 0">
+                            <p>{{ 'TERITORIES' | translate }}</p>
+                            <div class="col-sm-6">
+                                <table class="table table-striped table-hover table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>{{ 'TER_ID' | translate }}</th>
+                                                <th>{{ 'CHOOSEN_NO_T_SURFACE' | translate }} [ha]</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="poly in estimateOrder.polygons">
+                                                <td>
+                                                    {{$index + 1}}
+                                                </td>
+                                                <td>
+                                                    {{(poly.surface)}}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-6">
+                            <p>{{ 'IMAGE_TYPES' | translate}}</p>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item form-control" ng-repeat="type in estimateOrder.imageTypes">{{getImageTypeName(type.image_type_id)}}</li>
+                                                </ul>
+                            <p>{{'IMAGE_FREQ' | translate}}</p>
+                            <li class="list-group-item form-control">{{getFrequencyName(estimateOrder.image_frequency_id)}}</li>
+                            </div>
+                            <hr>
+                            <div class="col-sm-12">
+                            <p>{{ 'CHOOSEN_NO_T_SURFACE' | translate }} {{roundDouble(estimateSurface)}}
+                                ha.</p>
+                            </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                    <div class="panel panel-default panelSmallBorder">
+                        <div class="panel-heading panelSmall">
+                            <h3 class="panel-title">{{ 'PRICE_AND_PAY' | translate }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ 'INVOICE_VALUE' | translate }}</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default panelSmallBorder">
+                        <div class="panel-heading panelSmall">
+                            <h3 class="panel-title">{{ 'LEGAL_NOTE' | translate }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <input type="checkbox" ng-model="acceptTos"> {{ 'ACCEPT_TOS' | translate }} <a ng-click="tof()">{{ 'ACCEPT_TOS_LINK' | translate}}</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-disabled="!acceptTos || placingLoading" ng-click="placeOrder()">
+                        <div ng-show="!placingLoading">
+                            <span class="glyphicon glyphicon-ok"></span> {{ 'CONFIRM_ORDER' | translate }}
+                        </div>
+                        <div ng-show="placingLoading">
+                            {{ 'LOADING' | translate }}
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-disabled="placingLoading" ng-click="dismissModal()"><span class="glyphicon glyphicon-remove"></span> {{ 'CANCEL_ORDER' | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+    <!-- Modal -->
+    <script type="text/ng-template" id="placeOrderModal.html">
+        <div>
+
+            <!-- Modal content-->
+            <div>
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="dismissModal()">&times;</button>
+                    <h4 class="modal-title">{{ 'INFORMATIONS' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <p ng-show="orderPlaced && orderSuccess">{{ 'ORDER_SUCCESS' | translate }}</p>
+                    <p ng-show="!orderSuccess">{{ 'ORDER_FAILED' | translate }}</p>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-primary" href="#/orders" ng-click="goToMyOrders()"><span class="glyphicon glyphicon-log-in"></span> {{ 'MY_ORDERS' | translate }}</a>
+                </div>
+            </div>
+
+        </div>
+        </script>
+
+
+        <!-- Modal -->
+    <script type="text/ng-template" id="additionalSensorSettingsModal.html">
+        <div>
+
+            <!-- Modal content-->
+            <div>
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="dismissModal()">&times;</button>
+                    <h4 class="modal-title">{{ 'SENS_ST_ADD_SETTINGS' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <strong>{{sensorTypeName}}</strong>
+                    <input class="form-control" ng-model="desc" placeholder="{{ 'SENSOR_DESCRIPTION' | translate }}"/>
+                    <hr>
+                    <strong>{{ 'ALARM_VALUES' | translate }}</strong>
+                    <div class="alert alert-warning">
+                      {{ 'ALARM_VALUES_INFO' | translate }}
+                    </div>
+                    <div class="alert alert-info separateFive">
+                      {{ 'SENS_ST_UOM_INFO' | translate }} <strong>{{uomName}}</strong>
+                    </div>
+                    <div class="input-group input-group-lg separateFive">
+                      <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></span>
+                      <input type="number" class="form-control" placeholder="{{ 'ALARM_MINIMUM' | translate }}" aria-describedby="basic-addon1" ng-model="alarm_min">
+                      <span class="input-group-addon">{{uomSymbol}}</span>
+                    </div>
+                    <div class="input-group input-group-lg separateFive">
+                      <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></span>
+                      <input type="number" class="form-control" placeholder="{{ 'ALARM_MAXIMUM' | translate }}" aria-describedby="basic-addon1" ng-model="alarm_max">
+                      <span class="input-group-addon">{{uomSymbol}}</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-primary" ng-click="save()">
+                        <span class="glyphicon glyphicon-log-in"></span> {{ 'SAVE' | translate }}
+                    </a>
+                    <a type="button" class="btn btn-default" ng-disabled="placingLoading" ng-click="dismissModal()"><span class="glyphicon glyphicon-remove"></span> {{ 'CANCEL' | translate }}</a>
+                </div>
+            </div>
+
+        </div>
+    </script>
+
+ 
+
+
+<div class="container-fluid holder" ng-controller="testCtrl" ng-show="!generalError">
+    <div class="row backopacity">
+
+        <div class="col-sm-12 col-md-12 col-lg-6 map">
+            <div class="google-map-canvas" id="map-canvas"></div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-6">
+
+            <form class="form-horizontal">
+
+                <div class="panel panel-default pulltoppanel panelBorder">
+                    <div class="panel-heading panelBig">
+                        <h4><span class="glyphicon glyphicon-list-alt"></span> {{ 'ORDER' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-xs-10">
+                                <input class="form-control" placeholder="{{ 'NAME_ORDER' | translate }}" ng-model="order.name">
+                                <textarea class="form-control separateFive" rows="2" placeholder="{{ 'DESCRIPTION' | translate }}" ng-model="order.description"></textarea>
+
+                                <p>{{'FROM' | translate}} 
+                                    <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" id="fromTooltip"></span></p>
+                                <div>
+                                    <div class="dropdown">
+                                    <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown">
+                                        <div class="input-group"><input type="text" class="form-control"
+                                                                        data-ng-model="order.start_date | date:'dd.MM.yyyy'">
+                                            <span
+                                                class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <datetimepicker data-ng-model="order.start_date" 
+                                        data-on-set-time="onTimeSetFrom(newDate, oldDate)"
+                                                        data-datetimepicker-config="{ minView:'day', dropdownSelector: '#dropdown2' }"/>
+                                    </ul>
+                                    </div>
+                                </div>
+                                <p>{{ 'TO' | translate }} 
+                                    <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" id="toTooltip"></span>
+                                </p>
+                                <div>
+                                     <div class="dropdown">
+                                            <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown">
+                                                <div class="input-group"><input type="text" class="form-control"
+                                                                                data-ng-model="order.end_date | date:'dd.MM.yyyy'"><span
+                                                        class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                </div>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                <datetimepicker data-ng-model="order.end_date"
+                                                    data-on-set-time="onTimeSetTo(newDate, oldDate)"
+                                                                data-datetimepicker-config="{ minView:'day', dropdownSelector: '#dropdown3' }"/>
+                                            </ul>
+                                    </div>
+                                </div>
+                  
+                    
+                   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="panel panel-default panelBorder" ng-show="!polygonNotSelected">
+                    <div class="panel-heading panelBig">
+                        <h4><span class="glyphicon glyphicon-eye-open"></span> {{ 'IMAGE_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                    <p>{{ 'NO_TERITORIES' | translate }}</p>
+
+                        <div class="col-xs-10">
+                            <input class="form-control" ng-model="order.polygons.length" ng-disabled="true">
+                        </div>
+                    </br>
+                    </br>
+                    <p>{{ 'SURFACE' | translate }}</p>
+                    
+                        <div class="col-xs-10">
+                            <input class="form-control" ng-model="polygonSurfaceFixed" ng-disabled="true">
+                        </div>
+                   
+                    </br>
+                    </br>
+                    <p>{{ 'IMAGE_TYPES' | translate }}</p>
+
+                        <div class="col-xs-10 fullwidth">
+                            <div class="fullwidth" ng-dropdown-multiselect="" translation-texts="msTranslate" options="multiselectdata" selected-model="multiselectmodel" extra-settings="multiselectsettings">Izaberi</div>
+                        </div>
+                    </br>
+                    <p>{{ 'IMAGE_FREQ' | translate }} </p>
+                    
+                        <div class="col-xs-10">
+                            <select class="form-control" id="selFrequency" ng-model="order.image_frequency_id" ng-options="freq.id as freq.name for freq in frequencies" ng-disabled="polygonNotSelected">
+                          </select>
+                        </div>
+                    </br>
+                    <hr>
+                    <div class="panel panel-default panelSmallBorder" ng-repeat="polygon in order.polygons">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'TERRITORY' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <p>{{ 'SURFACE' | translate }}</p>
+                                        <input class="form-control" ng-disabled="true" ng-value="polygon.surface">
+                                        <textarea class="form-control separateFive" rows="2" ng-model="polygon.description" placeholder="{{ 'TER_DESC' | translate }}"></textarea>
+                                    </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="panel panel-default panelBorder" ng-show="orderStations.length > 0">
+                <div class="panel-heading panelBig">
+                       <h4><span class="glyphicon glyphicon-map-marker"></span> {{ 'SENSOR_STATION_SETTINGS' | translate }}</h4>
+                </div>
+                <div class="panel-body">
+                                <div class="panel panel-default panelSmallBorder" ng-repeat="station in orderStations">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'SENSOR_STATION' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                         <div id="no-more-lists">
+                                            <div ng-repeat="sensor in station.sensors">
+                                                <ul class="list-group" >
+                                                  <li class="list-group-item" ng-class="{'ul-success' : sensor.checked}">
+                                                    <label><input type="checkbox" ng-model="sensor.checked"> {{sensor.type}}</label>
+                                                  </li>
+                                                  <li class="list-group-item" ng-class="{'ul-success' : sensor.checked}">
+                                                    <select class="form-control separateFive" id="selSensorsUoms" ng-disabled="!sensor.checked" ng-model="sensor.uom_id" ng-options="uom.id as uom.name for uom in getTypeUOMS(sensor.id)">
+                                                           </select>
+                                                  </li>
+                                                </ul>
+                                                <hr>
+                                            </div>
+                                         </div>
+                                         <table id="no-more-tables" class="col-lg-12 table table-striped table-responsive table-hover table-bordered cf">
+                                                <thead class="cf">
+
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>{{ 'SENSOR_TYPE' | translate }}</th>
+                                                        <th>{{ 'UOM' | translate }}</th>
+                                                    </tr>
+                                    
+                                                <tbody>
+                                                    <tr ng-repeat="sensor in station.sensors" ng-class="{'success' : sensor.checked}">
+                                                        <td data-title="      ">
+                                                            <div class="checkbox">
+                                                                  <label><input type="checkbox" ng-model="sensor.checked"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="{{ 'SENSOR_TYPE' | translate }}">
+                                                           {{sensor.type}}
+                                                        </td>
+                                                        <td data-title="{{ 'UOM' | translate }}">
+                                                           <select class="form-control separateFive" id="selSensorsUoms" ng-disabled="!sensor.checked" ng-model="sensor.uom_id" ng-options="uom.id as uom.name for uom in getTypeUOMS(sensor.id)">
+                                                           </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                </thead>
+                                            </table>
+
+                                            <textarea class="form-control separateFive" rows="2" ng-model="station.description" placeholder="{{ 'SENSOR_STATION_DESC' | translate }}"></textarea>
+                                    </div>
+                                </div>
+                </div>
+            </div>
+            <!--<div class="panel panel-default panelBorder" ng-show="order.sensors.length > 0">
+                    <div class="panel-heading panelBig">
+                       <h4><span class="glyphicon glyphicon-map-marker"></span> {{ 'SENSOR_SETTINGS' | translate }}</h4>
+                    </div>
+                    <div class="panel-body">
+                                <div class="panel panel-default panelSmallBorder" ng-repeat="sensor in order.sensors">
+                                    <div class="panel-heading panelSmall">
+                                        <h5>{{ 'SENSOR' | translate }} {{$index + 1}}<h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <!-- <p>Sensors</p>
+
+                                            <div class="col-xs-10 fullwidth">
+                                                <div class="fullwidth" ng-dropdown-multiselect="" translation-texts="msTranslate" options="multiselectdataSensor" selected-model="multiselectmodelSensor" extra-settings="multiselectsettings">Izaberi</div>
+                                            </div>
+                                        </br> 
+                                        <select class="form-control separateFive" id="selSensors" ng-disabled="markerNotSelected" ng-model="sensor.type_id" ng-init="sensor.type_id=sensorTypes[0].id" ng-options="type.id as type.name for type in sensorTypes">
+                                        </select>
+                                        <select class="form-control separateFive" id="selSensorsUoms" ng-disabled="markerNotSelected" ng-model="sensor.uom_id" ng-options="uom.id as uom.name for uom in reloadUOMS(sensor, sensor.type_id)">
+                                        </select>
+                                        <textarea class="form-control separateFive" rows="2" ng-model="sensor.description" placeholder="{{ 'SENSOR_DESCRIPTION' | translate }}"></textarea>
+                                    </div>
+                                </div>
+                    </div>
+            </div>-->
+                <div class="form-group">
+                   
+                        <!--<button ng-click="test()">TEST</button>-->
+                        <button class="btn btn-primary btn-lg pull-right btn-right-pull" type="button" ng-click="injectToRootAndOpenEstimateModal()" ng-disabled="order.polygons.length==0 && orderStations.length==0" ng-show="orderStations.length > 0 || order.polygons.length>0"><span class="glyphicon glyphicon-star"></span> {{ 'ESTIMATE' | translate}}</button>
+                    
+                </div>
+            </form>
+        </div>
+        <!--/col-5-->
+
+    </div>
+                    </div>
+                </div>
+               
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

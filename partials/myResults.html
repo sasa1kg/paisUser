@@ -1,0 +1,158 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ 'MY_RESULTS' | translate }} <small>{{ 'DETAILS' | translate }}</small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+	                <div class="col-lg-12">
+	                	<div class="alert alert-danger" ng-show="generalError">
+					        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+					        <strong>{{ 'ERROR_GEN' | translate }}</strong> {{ 'ERROR_GEN_DET' | translate }}
+					    </div>
+
+
+					    <div class="col-lg-4" ng-show="!generalError" cg-busy="{promise:getOrders,message:'Loading...',backdrop:true}">
+
+					        <div class="panel panel-default panelSmallBorder">
+					            <div class="panel-heading panelSmall">
+					                <h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> {{ 'ORDERS' | translate }}</h3>
+					            </div>
+					            <div class="panel-body" ng-show="accounts.length>0">
+					                <ul class="list-group">
+					                    <a class="list-group-item hoverblue" ng-repeat="account in accounts"
+					                       ng-click="select(account.order_id)" id="{{account.order_id}}"
+					                       ng-class="{'active' : isActive(account.order_id)}">{{account.name}}</a>
+					                </ul>
+					            </div>
+					        </div>
+					    </div>
+
+
+					    <div class="col-lg-8" ng-show="!generalError">
+					                <div class="alert alert-warning" ng-if="accounts.length==0">
+					                    <strong>{{ 'ORDERS' | translate }}</strong> {{ 'NO_ORDERS' | translate }} 
+					                    <a href="#/newOrder"class="alert-link"> {{ 'NEW_ORDER' | translate}}</a>
+					                </div>
+					        <div class="panel panel-default panelSmallBorder" ng-show="kmls.length > 0">
+					        	<div class="panel-heading panelSmall">
+					                <h3 class="panel-title">{{selectedAccount.name}} | {{ 'FLIGHT_PLANS' | translate }} <a class="pull-right cursorchg" ng-click="toogleKmlPanel()" ng-show="kmlPanelOpen"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'MINIMIZE' | translate }}</a><a class="pull-right cursorchg" ng-click="toogleKmlPanel()" ng-show="!kmlPanelOpen"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'MAXIMIZE' | translate }}</a></h3>
+					            </div>
+					            <div class="panel-body imagePanel" ng-show="kmlPanelOpen">
+					            	<div id="no-more-lists">
+                                            <div ng-repeat="kml in kmls | orderBy : order">
+                                                <ul class="list-group" >
+                                                  <li class="list-group-item">
+                                                    {{kml.document_name}} <small>{{kml.document_created_at}}</small>
+                                                  </li>
+                                                  <li class="list-group-item">
+                                                     <a class="btn btn-info" href='#/kml/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{kml.klm_id}}/'><span class="glyphicon glyphicon-send"></span> {{'OPEN' | translate}}</a>
+                                                  </li>
+                                                </ul>
+                                                <hr>
+                                            </div>
+                                     </div>
+					                <table id="no-more-tables" class="table table-striped table-hover">
+					                    <thead>
+					                    <tr>
+					                        <th><a ng-click="orderByName()" class="cursorchg">{{ 'IMAGE_NAME' | translate }}</a></th>
+					                        <th><a ng-click="orderByDate()" class="cursorchg">{{ 'IMAGE_TIME' | translate }}</a></th>
+					                        <th><p>{{ 'TERRITORY' | translate }}</p></th>
+					                        <th></th>
+					                    </tr>
+					                    </thead>
+					                    <tbody>
+					                    <tr ng-repeat="kml in kmls | orderBy : order">
+					                        <td>{{kml.document_name}}</td>
+					                        <td>{{kml.document_created_at}}</td>
+					                        <td>{{getPolygonName(kml.polygon_id)}}</td>
+					                        <td>
+					                            <a class="btn btn-info" href='#/kml/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{kml.klm_id}}/'><span class="glyphicon glyphicon-send"></span> {{'OPEN' | translate}}</a>
+					                        </td>
+					                    </tr>
+					                    </tbody>
+					                </table>
+					            </div>
+					        </div>
+					        <div class="panel panel-default panelSmallBorder" ng-show="selectedAccount.polygons.length > 0 && orderImages.length > 0">
+					            <div class="panel-heading panelSmall">
+					                <h3 class="panel-title">{{selectedAccount.name}} | {{'IMAGES' | translate}} <a class="pull-right cursorchg" ng-click="toogleImagesPanel()" ng-show="imagesPanelOpen"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'MINIMIZE' | translate }}</a><a class="pull-right cursorchg" ng-click="toogleImagesPanel()" ng-show="!imagesPanelOpen"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'MAXIMIZE' | translate }}</a></h3>
+					            </div>
+					            <div class="panel-body imagePanel" ng-show="imagesPanelOpen">
+					            	<a class="btn btn-success full-btn" href='#/allImages/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/'><span class="glyphicon glyphicon-th-list"></span> {{ 'LIST_ALL_IMAGES' | translate }}</a>
+					            	<div id="no-more-lists">
+                                            <div ng-repeat="image in orderImages | orderBy : order">
+                                                <ul class="list-group" >
+                                                  <li class="list-group-item">
+                                                    <p ng-show="image.image_type != 2">{{ image.document_name }} <small>{{ image.document_created_at }}</small></p> 
+					                        		<p ng-show="image.image_type == 2">{{cutLargeImageName(image.document_name)}} <span class="badge">{{ 'LARGE_IMAGE' | translate }}</span> <small>{{ image.document_created_at }}</small></p>
+                                                  </li>
+                                                  <li class="list-group-item">
+                                                     <a ng-show="image.image_type != 2" class="btn btn-info" href='#/recording/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{image.image_id}}/{{image.polygon_id}}/'><span class="glyphicon glyphicon-camera"></span> {{'OPEN' | translate}}</a>
+					                            	<a ng-show="image.image_type == 2" class="btn btn-warning" href='#/recordingDg/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{image.image_id}}/{{image.polygon_id}}/'><span class="glyphicon glyphicon-camera"></span> {{'OPEN' | translate}}</a>
+                                                  </li>
+                                                </ul>
+                                                <hr>
+                                            </div>
+                                     </div>
+					                <table id="no-more-tables" class="table table-striped table-hover">
+					                    <thead>
+					                    <tr>
+					                        <th><a ng-click="orderByName()" class="cursorchg">{{'IMAGE_NAME' | translate}}</a></th>
+					                        <th><a ng-click="orderByDate()" class="cursorchg">{{'IMAGE_TIME' | translate}}</a></th>
+					                        <th><a href="#/polygonsMap/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/" class="btn btn-success"><span class="glyphicon glyphicon-globe"></span> {{ 'SHOW_ON_MAP' | translate }}</a></th>
+					                    </tr>
+					                    </thead>
+					                    <tbody>
+					                    <tr ng-repeat="image in orderImages | orderBy : order">
+					                        <td>
+					                        	<p ng-show="image.image_type != 2">{{ image.document_name }}</p> 
+					                        	<p ng-show="image.image_type == 2">{{cutLargeImageName(image.document_name)}} <span class="badge">{{ 'LARGE_IMAGE' | translate }}</span></p>
+					                        </td>
+					                        <td>{{ image.document_created_at }}</td>
+					                        <td>
+					                            <a ng-show="image.image_type != 2" class="btn btn-info" href='#/recording/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{image.image_id}}/{{image.polygon_id}}/'><span class="glyphicon glyphicon-camera"></span> {{'OPEN' | translate}}</a>
+					                            <a ng-show="image.image_type == 2" class="btn btn-warning" href='#/recordingDg/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{image.image_id}}/{{image.polygon_id}}/'><span class="glyphicon glyphicon-camera"></span> {{'OPEN' | translate}}</a>
+					                        </td>
+					                    </tr>
+					                    </tbody>
+					                </table>
+					            </div>
+					        </div>
+					        <div class="panel panel-default panelSmallBorder" ng-show="selectedAccount.stations.length > 0">
+					            <div class="panel-heading panelSmall">
+					                <h3 class="panel-title">{{selectedAccount.name}} | {{ 'SENSORS' | translate}} <a href="#/sensors" class="pull-right cursorchg"><span class="glyphicon glyphicon-eye-close"></span> {{ 'COMPARATIVE' | translate }}</a></h3>
+					            </div>
+					            <div class="panel-body">
+					                <div class="google-map-canvas" id="map-canvas-results"></div>
+					            </div>
+					        </div>
+					    </div>
+	                </div>  
+                </div>
+               
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

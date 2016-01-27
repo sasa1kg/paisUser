@@ -1,0 +1,212 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ 'MY_ORDERS' | translate }} <small>{{ 'DETAILS' | translate }}</small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-12">
+				                    		<div class="alert alert-warning" ng-if="accounts.length==0">
+				        <a class="close" aria-label="close">&times;</a>
+				        <strong>{{ 'ORDERS' | translate }}</strong> {{ 'NO_ORDERS' | translate }} 
+				        <a href="#/newOrder"class="alert-link"> {{ 'NEW_ORDER' | translate}}</a>
+				    </div>
+
+				    <div class="col-lg-4" ng-if="accounts.length>0" cg-busy="{promise:getOrders,message:'Loading...',backdrop:true}">
+
+				        <div class="panel panel-default panelSmallBorder">
+				            <div class="panel-heading panelSmall">
+				                <h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> {{ 'ORDERS' | translate}}</h3>
+				            </div>
+				            <div class="panel-body">
+				                <ul class="list-group">
+				                    <a class="list-group-item hoverblue" ng-repeat="account in accounts" ng-click="select(account.order_id)"
+				                       id="{{account.order_id}}" ng-class="{'active' : isActive(account.order_id)}">{{account.name}} 
+				                       <span class="badge activeBadge" ng-if="account.status==2">{{ 'ACTIVE' | translate}}</span> 
+				                       <span class="badge inactiveBadge" ng-if="account.status==0">{{ 'INACTIVE' | translate}}</span> 
+				                       <span class="badge" ng-if="account.status==1">{{ 'PENDING' | translate}}</span>
+				                       <span class="badge canceledBadge" ng-if="account.status==3">{{ 'CANCELED' | translate }}</span>
+				                       <span class="badge finishedBadge" ng-if="account.status==4">{{ 'FINISHED' | translate }}</span>
+				                   </a>
+				                </ul>
+				            </div>
+				        </div>
+				    </div>
+
+
+				    <div class="col-lg-8" ng-if="accounts.length>0" ng-show="!loaded">
+				        <div class="panel panel-default panelSmallBorder">
+				            <div class="panel-heading form-group panelSmall">
+				                <h3 class="panel-title">{{ 'LOADING' | translate }}</h3>
+				            </div>
+				        </div>
+				    </div>
+
+				    <div class="col-lg-8" ng-if="accounts.length>0" cg-busy="{promise:getFrequencies,message:'Loading...',backdrop:true}" ng-show="loaded">
+				        <div class="alert alert-success" ng-if="selectedAccount.status==1">
+				            <strong> <a class="cursorchg" ng-click="showInvoice()" class="alert-link"> {{ 'OPEN_INVOICE' | translate}}</a> </strong>
+				        </div>
+				        <div class="alert alert-danger" ng-if="selectedAccount.status==3">
+				            <strong>{{ 'CANCELED_INFO' | translate }}</strong>
+				        </div>
+				        <div class="alert alert-warning" ng-if="selectedAccount.status==4">
+				            <strong>{{ 'FINISHED_INFO' | translate }}</strong>
+				        </div>
+				        <div class="panel panel-default panelSmallBorder">
+				            <div class="panel-heading panelSmall">
+				                <h3 class="panel-title"><span class="glyphicon glyphicon-th"></span> {{ 'DETAILS' | translate}} <a href="#/results/{{selectedAccount.order_id}}/" class="pull-right cursorchg"><span class="glyphicon glyphicon-signal"></span> {{ 'OPEN_RESULTS' | translate }}</a></h3>
+				            </div>
+				            <div class="panel-body">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4 class="panel-title">{{ 'DESCRIPTION' | translate}}</h4>
+				                    </div>
+				                    <div class="panel-body">
+				                        <label>{{selectedAccount.description}} </label>
+				                    </div>
+				                </div>
+				                    <div class="panel panel-default panelSmallBorder" ng-show="selectedAccount.polygons.length>0">
+				                            <div class="panel-heading panelSmall">
+				                                <h4 class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> {{ 'IMAGES' | translate}}
+				                                <a class="pull-right cursorchg" ng-click="toogleImagesPanel()" ng-show="imagesPanelOpen"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'MINIMIZE' | translate }}</a><a class="pull-right cursorchg" ng-click="toogleImagesPanel()" ng-show="!imagesPanelOpen"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'MAXIMIZE' | translate }}</a>
+				                                </h4>
+				                            </div>
+				                            <div class="panel-body" ng-show="imagesPanelOpen">
+				                                <p>{{ 'CREATED_AT' | translate}}</p> 
+
+				                                <input class="form-control" ng-disabled="true" ng-model="selectedAccount.created_at">
+				                                
+				                                <p ng-show="selectedAccount.start_date != null">{{ 'FROM' | translate}} </p>
+
+				                                <input class="form-control" ng-disabled="true" ng-model="selectedAccount.start_date">
+
+				                                <p ng-show="selectedAccount.end_date != null">{{ 'TO' | translate}}</p>
+
+				                                <input class="form-control" ng-disabled="true" ng-model="selectedAccount.end_date">
+				                                </br>
+				                                <p>{{ 'NO_TERITORIES' | translate}}</p>
+				                                <input class="form-control" ng-disabled="true" ng-model="selectedAccount.polygons.length"> 
+				                                </br>
+				                                <p>{{ 'SURFACE' | translate}}</p>
+				                                <input class="form-control" ng-disabled="true" ng-model="roundDouble(totalSurface)"> 
+				                                <hr>
+				                                <p>{{ 'IMAGE_TYPES' | translate}}</p>
+				                                <ul class="list-group">
+				                                    <li class="list-group-item form-control" ng-repeat="imageType in selectedAccount.imageTypes">{{imageType.image_type_name}}</li>
+				                                </ul>
+				                                <p>{{ 'IMAGE_FREQ' | translate}}</p> 
+												<input class="form-control" ng-disabled="true" ng-model="frequencyName"> 
+				                                <hr>
+				                                <div class="panel panel-default panelSmallBorder" ng-repeat="polygon in selectedAccount.polygons">
+				                                    <div class="panel-heading panelSmall">
+				                                        <h5>{{ 'TER_ID' | translate }} {{polygon.polygon_id}}<h5>
+				                                    </div>
+				                                    <div class="panel-body">
+				                                        {{ 'TER_SURFACE' | translate}} [ha]
+				                                        <input class="form-control" ng-disabled="true" ng-value="roundDouble(polygon.surface)">
+				                                        <textarea class="form-control separateFive" ng-disabled="true" rows="2" ng-model="polygon.description" placeholder="{{ 'TER_DESC' | translate }}"></textarea>
+				                                        <p class="pull-right pull-left-btn" ng-show="getPolygonImagesCount(polygon.polygon_id) > 0"><a href="#/results/{{selectedAccount.order_id}}/"><span class="glyphicon glyphicon-record"></span> {{ 'OPEN_RESULTS' | translate }}</a></p>
+				                                        <p ng-show="getPolygonImagesCount(polygon.polygon_id) > 0"><a href="#/allImages/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/">{{ 'POLY_IMAGES_LENGTH' | translate }} {{getPolygonImagesCount(polygon.polygon_id)}}</a> 
+				                                        <a class="pull-right" href="#/polygonsMap/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/"><span class="glyphicon glyphicon-globe"></span> {{ 'SHOW_ON_MAP' | translate }}</a></p>
+				                                        <p ng-show="getPolygonImagesCount(polygon.polygon_id) == 0"> {{ 'POLY_IMAGES_NO' | translate }} </p>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                    </div>
+				                     <div class="panel panel-default panelSmallBorder" ng-show="selectedAccount.stations.length>0">
+				                            <div class="panel-heading panelSmall">
+				                                <h4 class="panel-title"><span class="glyphicon glyphicon-map-marker"></span> Sensor stations</h4>
+				                            </div>
+				                            <div class="panel-body">
+				                            	{{ 'SENS_ST_NUM' | translate }}: {{selectedAccount.stations.length}} 
+				                                </br>
+				                                <span class="badge activeBadge pull-right" ng-if="selectedAccount.stations.length > 0">{{ 'ACTIVE_SENSORS' | translate}} {{activeSensors}}</span><span class="badge inactiveBadge pull-right" ng-if="selectedAccount.stations.length > 0">{{ 'INACTIVE_SENSORS' | translate}} {{nonActiveSensors}}</span></dt>
+				                                <div ng-repeat="station in selectedAccount.stations">
+				                                <p class="pulltopbutton"><strong>{{ 'SENSOR_STATION' | translate }} {{station.station_id}}</strong> <small>{{ 'SENS_ST_ORDERED' | translate }} {{station.station_set_at}}</small></p>
+				                                <textarea ng-disabled="true" ng-show="station.station_description.length > 0" ng-model="station.station_description" class="form-control separateFive" rows="2"></textarea>
+				                                <div id="no-more-lists" class="tableTop">
+		                                            <div ng-repeat="sen in station.sensors">
+		                                                <ul class="list-group" >
+		                                                  <li class="list-group-item">
+		                                                    {{getSensorTypeName(sen.type_id)}} <small ng-show="sen.active==1">({{ 'ACTIVE_AT' | translate }} {{sen.activate_at}})</small>
+		                                                  </li>
+		                                                  <li class="list-group-item" ng-show="sen.min_value != null || sen.max_value != null">
+		                                                    <div ng-show="sen.min_value != null"><span class="glyphicon glyphicon-arrow-down"></span> {{roundDoubleTwo(sen.min_value)}} {{getUOMSymbol(sen.type_id, sen.uom_id)}}</br></div>
+                                                            	<div ng-show="sen.max_value != null"><span class="glyphicon glyphicon-arrow-up"></span> {{roundDoubleTwo(sen.max_value)}} {{getUOMSymbol(sen.type_id, sen.uom_id)}}</div>
+		                                                  </li>
+		                                                  <li class="list-group-item">
+		                                                   	 <a class="cursorchg" href="#/sensor/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{station.station_id}}/measurement/{{sen.sensor_id}}/" ng-show="sen.active==1"><span class="glyphicon glyphicon-equalizer"></span> {{ 'OPEN_RESULTS' | translate }}</a>
+
+                                                                <a ng-show="sen.active==0"><span class="glyphicon glyphicon-remove"></span> {{ 'IN_SENS' | translate }}</a>
+		                                                  </li>
+		                                                </ul>
+		                                                <hr>
+		                                            </div>
+		                                         </div>
+				                                <table id="no-more-tables" class="table table-bordered table-responsive table-hover tableTop">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{ 'SENSOR_TYPE' | translate }}</th>
+                                                            <th>{{ 'DESCRIPTION' | translate }}</th>
+                                                            <th>{{ 'ALARM_VALUES' | translate }}</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="sen in station.sensors">
+                                                            <td>{{getSensorTypeName(sen.type_id)}} <small ng-show="sen.active==1">({{ 'ACTIVE_AT' | translate }} {{sen.activate_at}})</small></td>
+                                                            <td>{{sen.description}}</td>
+                                                            <td>
+                                                            	<div ng-show="sen.min_value != null"><span class="glyphicon glyphicon-arrow-down"></span> {{roundDoubleTwo(sen.min_value)}} {{getUOMSymbol(sen.type_id, sen.uom_id)}}</br></div>
+                                                            	<div ng-show="sen.max_value != null"><span class="glyphicon glyphicon-arrow-up"></span> {{roundDoubleTwo(sen.max_value)}} {{getUOMSymbol(sen.type_id, sen.uom_id)}}</div>
+                                                            </td>
+                                                            <td>
+                                                                <a class="cursorchg" href="#/sensor/{{selectedAccount.client_id}}/{{selectedAccount.order_id}}/{{station.station_id}}/measurement/{{sen.sensor_id}}/" ng-show="sen.active==1"><span class="glyphicon glyphicon-equalizer"></span> {{ 'OPEN_RESULTS' | translate }}</a>
+
+                                                                <a ng-show="sen.active==0"><span class="glyphicon glyphicon-remove"></span> {{ 'IN_SENS' | translate }}</a>
+                                                            </td>
+
+                                                            
+                                                        </tr>
+                                                    </tbody>
+                                            </table>
+                                        	</div>
+				                            </div>
+				                    </div>
+
+				                   
+				                      
+				        
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+				                    </div>      
+                </div>
+               
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

@@ -1,0 +1,75 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+
+  <!-- Modal -->
+    <script type="text/ng-template" id="loadModal.html">
+        <div>
+
+            <!-- Modal content-->
+            <div>
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="dismissModal()">&times;</button>
+                    <h4 class="modal-title">Load Tile</h4>
+                </div>
+                <div class="modal-body">
+                    <strong>{{ 'LOAD_Q_1' | translate }} {{percX}}% {{ 'LOAD_Q_2' | translate }} {{percY}}% {{ 'LOAD_Q_3' | translate }}<strong>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-primary" ng-click="redirect()"><span class="glyphicon glyphicon-zoom-in"></span> {{ 'LOAD' | translate }}</a>
+                    <a type="button" class="btn btn-danger" ng-click="dismissModal()"><span class="glyphicon glyphicon-remove"></span> {{ 'CANCEL' | translate }}</a>
+                </div>
+            </div>
+
+        </div>
+    </script>
+
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ 'DG_IMAGE' | translate }} <small>{{cutLargeImageName(imageObj.document_name)}} <a class="btn btn-success pull-right btn-right-pull" href='#/allImages/{{client_id}}/{{order_id}}/'><span class="glyphicon glyphicon-th-list"></span> {{ 'LIST_ALL_IMAGES' | translate }}</a> <a class="btn btn-primary pull-right btn-right-pull" ng-click="newWindow()" ng-disabled="loading"><span class="glyphicon glyphicon-paste"></span> {{ 'IMAGE_OPEN' | translate }}</a> <a class="btn btn-primary pull-right btn-right-pull" href="#/polygonsMap/{{client_id}}/{{order_id}}/"><span class="glyphicon glyphicon-globe"></span> {{ 'POLY_MAP' | translate }}</a> <a class="btn btn-primary pull-right btn-right-pull" href="#/results/{{order_id}}/"><span class="glyphicon glyphicon-chevron-left"></span> {{ 'BACK_RESULTS' | translate }}</a></small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+
+	                <div class="col-lg-12">
+	                	 <div class="panel-body img-responsive">
+		                <!--<img src="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg" image-zoom class="img-responsive">
+		                <div image-src="http://www.exosphere3d.com/pubwww/images/aspen_colorado/aspen_overhead_view.jpg" image-zoom></div>-->
+		                	
+		                	<div class="alert alert-info" role="alert" ng-show="loading"><strong>{{ 'LOADING' | translate}}</strong></div>
+		                	<div class="alert alert-success" ng-show="!loading">
+						  		<strong>{{ 'DG_IMAGE_CLICK' | translate }}</strong>
+							</div>
+							<div class="dgHolder">
+			                	<a id="dgPic">
+			                		<img id="example2" class="dgImage img-responsive" src="{{imageSrc}}" ng-show="!loading"></img>
+			                	</a>
+			                </div>
+            			</div>
+	     			</div>
+                </div>
+               
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

@@ -1,48 +1,60 @@
 <div class="container">
 
-<div class="col-lg-6 col-lg-offset-6 pulltop loginform">
-        <div class="insideloginform">
+    <div class="col-lg-6 col-lg-offset-6 alert alert-danger pulltop20" ng-show="expired">
+       <strong>{{ 'LOGIN' | translate }}</strong> {{ 'ERROR_LOGIN' | translate }}
+   </div>
+
+   <div class="col-lg-6 col-lg-offset-6 alert alert-danger pulltop20" ng-show="back_error">
+       <strong>ERROR</strong> Communication with backend failed. Please contact administrative team.
+   </div>
+
+   <form class="col-lg-6 col-lg-offset-6 pulltop loginform" tabindex="1" ng-keyup="myFunct($event)">
+    <div class="insideloginform col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="navbar-brand brandlogin">
             </div>
             <div>
-                  <ul class="nav navbar-nav navbar-right langPicker">
-                    <li><a ng-click="translate('rs')" class="hover"><img src="img/flag_serbian.gif"></img></a></li>
-                    <li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
-                  </ul>
-            </div>
-     
-            <input type="text" class="form-control input-lg pulltop20" id="inputEmail" placeholder="{{ 'LOGIN_USERNAME' | translate}}" ng-model="username">
-
-
-            <input type="password" class="form-control input-lg pulltop20" id="inputPassword" placeholder="{{ 'LOGIN_PASSWORD' | translate}}" ng-model="password">
-  
-            <div class="pulltop20">
-                <a class="btn btn-primary submitbutton btn-lg pull-right" role="button" ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> {{ 'LOGIN' | translate}}</a>
-              
-                  <!--<oauth
-                        site="http://oauth-ng-server.herokuapp.com."
-                        client-id="017b9f702a904869a6e52bd39b147bb912"
-                        redirect-uri="http://localhost/pais/#/newOrder"
-                        profile-uri="http://oauth-ng-server.herokuapp.com/api/v1/me"
-                        scope="public">
-                </oauth>  -->
-            </div>
-
+              <ul class="nav navbar-nav navbar-right langPicker">
+                <li><a ng-click="translate('rs')" class="hover"><img src="img/flag_serbian.gif"></img></a></li>
+                <li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
+            </ul>
         </div>
-
-        <div class="alert alert-danger" ng-show="loginFailed">
-            <strong>{{ 'LOGIN' | translate }}</strong> {{ 'ERROR_LOGIN' | translate }}
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 pulltop20">
+            <a autofocus ng-keyup="myFunct($event)" class="col-lg-12 btn btn-primary submitbutton btn-lg" role="button"  href="/login.php"><span class="glyphicon glyphicon-log-in"></span> {{ 'LOGIN' | translate}}</a>
+            
         </div>
+    </div>
+
 </div>
+</form>
 
 
 <div class="col-lg-6 col-lg-offset-6 pulltop20 loginform2">
     <div class="insideloginform2">
-        <a class="btn btn-primary" href="#/registration"><span class="glyphicon glyphicon-user"></span> {{ 'REGISTER' | translate}}</a>
-        <a class="btn btn-success" href="#/contact"><span class="glyphicon glyphicon-envelope"></span> {{ 'CONTACT_US' | translate}}</a>
-        <a class="btn btn-info" href="#/about"><span class="glyphicon glyphicon-info-sign"></span> {{ 'ABOUT' | translate}}</a>
-        <a class="btn btn-danger" href="#/termsOfService"><span class="glyphicon glyphicon-briefcase"></span> {{ 'TOF' | translate}}</a>
+        <a class="btn btn-primary btnAdditional" href="#/registration"><span class="glyphicon glyphicon-user"></span> {{ 'REGISTER' | translate}}</a>
+        <a class="btn btn-success btnAdditional" href="#/contact"><span class="glyphicon glyphicon-envelope"></span> {{ 'CONTACT_US' | translate}}</a>
+        <a class="btn btn-info btnAdditional" href="#/about"><span class="glyphicon glyphicon-info-sign"></span> {{ 'ABOUT' | translate}}</a>
+        <a class="btn btn-danger btnAdditional" ng-click="tof()"><span class="glyphicon glyphicon-briefcase"></span> {{ 'TOF' | translate}}</a>
     </div>
 </div>
+</div>
 
+
+
+</div>
+
+<div class="footer">
+    <div class="container contExt">
+        <div class="col-sm-4">
+            <img src="img/euc.svg" class="logoExt"></img>
+            <img src="img/acc.svg" class="logoExt"></img>
+            <img src="img/fractals_logo.png" class="logoExt"></img>
+        </div>
+        <div class="col-sm-8">
+            <p><small>{{ 'EU_COM_TXT' | translate}}</small></p>
+        </div>
+    </div>
 </div>

@@ -7,7 +7,7 @@ body{
 }
 
 .pulltop {
-	margin-top: 10%;
+	margin-top: 5%;
 }
 
 .pulltop20 {
@@ -21,6 +21,10 @@ body{
 
 .fullwidth {
 	width: 100%;
+}
+
+.btn-right-pull {
+	margin-right: 20px !important;
 }
 
 .holder {
@@ -40,6 +44,10 @@ body{
 .again {
 	width: 60px;
 	height: 60px;
+}
+
+.margin {
+	padding: 20px;
 }
 
 .loginform {
@@ -62,6 +70,7 @@ body{
 }
 
 .submitbutton {
+	width: 100% !important;
 }
 
 .insideloginform {
@@ -76,6 +85,9 @@ body{
 
 .langPicker {
 	padding-bottom: 10px;
+	position: absolute !important;
+	min-width: 50px;
+	right: 10px !important;
 }
 
 #map-canvas {
@@ -164,11 +176,12 @@ li.active {
 	background: url("img/PAIS_logo_S.png");
 	height: 78px;
 	width: 100px;
-	margin-left: 15px !important;
+	margin-left: 50px !important;
+	margin-top: 10px !important;
 }
 
 .navbar-fixed-top{
-	height: 78px;
+	height: 98px;
 }
 .navbar-nav{
 	padding-top: 14px;
@@ -192,16 +205,173 @@ li.active {
 .inactiveBadge {
 	background-color: red;
 }
+.canceledBadge {
+	background-color: #cc0099 !important;
+}
+.finishedBadge {
+	background-color: #0000ff !important;
+}
 .panelBig {
-	background-color: #CCFF99 !important;
+	background-color: #222 !important;
+	color: white !important;
 }
 .panelBorder {
-	border: 3px solid #CCFF99 !important;
+	border: 3px solid #222 !important;
 }
 .panelSmall {
-	background-color: black !important;
+	background-color: #222 !important;
 	color: white !important;
 }
 .panelSmallBorder {
-	border: 2px solid black !important;
+	border: 2px solid #222 !important;
+}
+.backGray {
+	background-color: #222 !important;
+}
+.tableTop {
+	margin-top: 30px;
+}
+.full {
+	max-height: 500px;
+	min-width: 800px;
+}
+.imagePanel {
+	max-height: 400px;
+	overflow-y: scroll;
+}
+.sensorCard {
+	padding: 10px;
+	min-height: 100px;
+	max-height: 100px;
+	opacity: 0.6;
+}
+.sensorCard :before {
+    z-index: 1;
+    content: '';
+    position: absolute;
+    opacity: 0.6;
+}
+.textCard {
+	opacity: 1 !important;
+	z-index: 999;
+	color: black;
+}
+.mycard {
+	font-size: 25px !important;
+}
+.statsCard {
+	border: 2px solid;
+	border-radius: 5px;
+	min-height: 100px;
+	margin-top: 10px;
+}
+.statsCardIcon {
+	margin-top: 10px;
+	font-size: 4em !important;
+}
+.statsCardText {
+	font-size: 2.5em;
+	margin-top: 20px;
+}
+.statsCardTextSmall {
+	font-size: 0.9em;
+}
+.statsCardTextSmallDate {
+	font-size: 0.9em;
+	margin-top: 10px;
+}
+.statsCardTextDate {
+	font-size: 2em;
+}
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.descText {
+	color: white !important;
+}
+.loginformAck {
+	opacity: 0.7;
+}
+.logoExt {
+	max-height: 30px;
+}
+.footer {
+	background-color: #f5f5f5;
+	height: 70px;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	padding-top: 20px;
+	opacity: 0.7;
+}
+.contExt {
+	background-color: #f5f5f5;
+}
+.btnAdditional {
+	margin-top: 10px;
+}
+#myPic {
+	cursor: crosshair;
+}
+#dgPic {
+	cursor: crosshair;
+}
+.full-btn {
+	width: 100% !important;
+}
+.dgHolder {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+.dgImage {
+}
+.pull-left-btn {
+	margin-left: 20px !important;
+}
+.popover {
+	position: absolute;
+	z-index: 100;
+}
+.myforminput:after {
+	color: #d00;
+    content: "*";
+    font-size: 22px;
+    position: absolute;
+    margin-left: -10px;
+    top: 0px;
+}
+@media only screen and (max-width: 1150px) {
+        /* Force table to not be like tables anymore */
+        #no-more-tables {
+        	display: none !important;
+        }
+}
+
+@media only screen and (min-width: 1150px) {
+        /* Force table to not be like tables anymore */
+        #no-more-tables {
+        	display: block !important;
+        }
+}
+
+@media only screen and (max-width: 1150px) {
+        /* Force table to not be like tables anymore */
+        #no-more-lists {
+        	display: block !important;
+        }
+}
+
+@media only screen and (min-width: 1150px) {
+        /* Force table to not be like tables anymore */
+        #no-more-lists {
+        	display: none !important;
+        }
+}
+.myRespoTable {
+	margin-bottom: 20px !important;
+}
+.ul-success {
+	background-color: #ccffcc !important;
 }

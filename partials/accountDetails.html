@@ -1,4 +1,4 @@
-<div class="container">
+div class="container">
     <nav class="navbar navbar-default" ng-include="'partials/navigationBar.html'">
     </nav>
 
@@ -28,7 +28,7 @@
                     <dt><label>{{ 'E-MAIL' | translate }}:  </label></dt>
                     <dd>
                         <div class="col-xs-10">
-                            <input type="email" name="email" class="form-control" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required>
+                            <input type="email" name="email" class="form-control bold" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required ng-disabled="true">
                         </div>
                     </dd>
                     </br>

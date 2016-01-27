@@ -6,7 +6,7 @@
         </div>
   
         <div class="panel-body">
-        	<div class="panel panel-default">
+        	<div class="panel panel-default" ng-show="getLanguage() == 'en'">
         		<div class="panel-heading">
         			<p>Basic info</p>
         		</div>
@@ -16,23 +16,55 @@
         			<p>Novi Sad, Serbia</p>
         		</div>
         	</div>
-        	<div class="panel panel-default">
+            <div class="panel panel-default" ng-show="getLanguage() != 'en'">
+                <div class="panel-heading">
+                    <p>Osnovne informacije</p>
+                </div>
+                <div class="panel-body">
+                    <img ng-src="img/PAIS_logo_S.png"></img>
+                    <p class="pulltop20">AGRO PAIS</p>
+                    <p>Novi Sad, Srbija</p>
+                </div>
+            </div>
+        	<div class="panel panel-default" ng-show="getLanguage() == 'en'">
         		<div class="panel-heading">
         			<p>What is PAIS?</p>
         		</div>
         		<div class="panel-body">
-        			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        			<p>The <b>Precision Agriculture based Information Service (PAIS)</b> web-based service for the collection and archiving of diverse data on crops and their presentations to the farmers. The source of crop data is two-folded: aerial images and sensor measurements. The aerial images are taken using an inexpressive unmanned aerial vehicle equipped with suitably selected cameras (RGB,  NIR, IR, multispectral, etc.), while mobile sensor stations or  wireless sensor networks (WSN) installed on crop fields are used for monitoring changes in temperature, humidity, soil moisture, pH, etc. All of this gathered data from the same parcel is linked based on spatial and temporal attributes.
+                </p>
+                <p>
+                    PAIS is the service available to its end-users, such as farmers, agricultural communities and agricultural consulting agencies by using the web browser or Android application. The service allows the end-user to define its parcels, to specify positions and attitudes from where images should be taken and where sensor nodes should be placed. PAIS  enable end-user online access to crop conditions and to make timely decisions. PAIS provides a comprehensive image of crops growth and indications of its changes due to diseases, lack of fertilization or inadequate agricultural technical actions. In this way, it increases the yield and product quality, but also savings in the use of fertilizers and protective agents.</p>
         		</div>
 
         	</div>
-        	<div class="panel panel-default">
+            <div class="panel panel-default" ng-show="getLanguage() != 'en'">
+                <div class="panel-heading">
+                    <p>Šta je PAIS?</p>
+                </div>
+                <div class="panel-body">
+                    <p><b>PAIS</b> (eng. Precision Agriculture based Information Service) je web servis za prikupljanje podataka o stanju i razvoju useva i njihov prikaz korisnicima putem interneta. Koriste se dva načina prikupljanja podataka: snimanje pomoću ultralakih bespilotnih letelica (UAV) opremljenih kamerama (RGB, NIR, IR, multispektralne, itd); i putem mobilnih multi-senzorskih stanica i bežičnih senzorskih mreža postavljenih na polju u cilju praćenja promena karakteristika tla i mikroklime (temperatura i vlažnost tla i vazduha, pH, itd). Ovi heterogeni podaci sa parcela su povezani sa prostorno-vremenskim atributima i pružaju sveobuhvatnu sliku o stanju useva.
+                </p>
+                <p>
+                    PAIS je servis namenjen poljoprivrednim gazdinstvima, individualnim proizvođačima i poljoprivrednim agencijama, a dostupan je putem internet i Android aplikacija. Servis omogućava krajnjem korisniku da definiše svoje parcele, da odredi pozicije odakle će se snimanje izvršiti i pozicije gde će senzori biti smešteni. PAIS omogućava korisnicima stalan, on-line pristup uslovima na parcelama i time donošenje blagovremene odluke. PAIS pruža sveobuhvatnu sliku rasta useva i indikacije promena nastalih usled bolesti ili neadekvatnih poljoprivredno-tehničkih radnji. Na taj način se omogućava povečanje prinosa i kvaliteta proizvoda, ali i ušteda u upotrebi đubriva i zaštitnih sredstava.</p>
+                </div>
+            </div>
+        	<div class="panel panel-default" ng-show="getLanguage() == 'en'">
         		<div class="panel-heading">
         			<p>How to use it?</p>
         		</div>
         		<div class="panel-body">
-        			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        			<a class="btn btn-info btn-lg" ng-click="manual()"><i class="fa fa-file-pdf-o"></i> {{ 'MANUAL' | translate }}</a>
         		</div>
         	</div>
+            <div class="panel panel-default" ng-show="getLanguage() != 'en'">
+                <div class="panel-heading">
+                    <p>Kako ga koristiti?</p>
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-info btn-lg" ng-click="manual()"><i class="fa fa-file-pdf-o"></i> {{ 'MANUAL' | translate }}</a>
+                </div>
+            </div>
         </div>
         		
         </div>

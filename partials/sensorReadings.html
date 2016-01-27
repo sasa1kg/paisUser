@@ -19,65 +19,51 @@
                     <div class="panel-heading panelBig">
                         <h5>{{ 'TIME_FILTER' | translate }}</h5>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body margin">
                                 <label class="labelwidth">{{ 'FROM' | translate }}: </label>
                                 <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <input class="form-control" type="date" min="2015-07-01" ng-model="dateFrom">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-control">
-                                            <option 
-                                                    ng-repeat="hour in hours"
-                                                    value="{{hour.value}}">
-                                              {{hour.display}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-control">
-                                        
-                                            <option 
-                                                    ng-repeat="min in minutes"
-                                                    value="{{min.value}}">
-                                              {{min.display}}
-                                            </option>
-                                        
-                                        </select>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown">
+                                            <div class="input-group"><input type="text" class="form-control"
+                                                                            data-ng-model="dateFrom | date:'dd.MM.yyyy HH:mm'">
+                                                <span
+                                                    class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                            <datetimepicker data-ng-model="dateFrom" 
+                                            data-on-set-time="onTimeSetFrom(newDate, oldDate)"
+                                                            data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+                                        </ul>
                                     </div>
                                 </div>
                                 <label class="labelwidth">{{ 'TO' | translate }}: </label>
                                 <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <input class="form-control" type="date" min="2015-07-01" ng-model="dateTo">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-control">
-                                            <option 
-                                                    ng-repeat="hour in hours"
-                                                    value="{{hour.value}}">
-                                              {{hour.display}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-control">
-                                        
-                                            <option 
-                                                    ng-repeat="min in minutes"
-                                                    value="{{min.value}}">
-                                              {{min.display}}
-                                            </option>
-                                        
-                                        </select>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown">
+                                            <div class="input-group"><input type="text" class="form-control"
+                                                                            data-ng-model="dateTo | date:'dd.MM.yyyy HH:mm'">
+                                                <span
+                                                    class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                            <datetimepicker data-ng-model="dateTo" 
+                                            data-on-set-time="onTimeSetFrom(newDate, oldDate)"
+                                                            data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+                                        </ul>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary">FILTER</button>
+                                <button class="btn btn-primary" ng-click="filter()">FILTER</button>
                     </div>
             </div>
         </div>
 
+
         <div class="col-lg-12">
-            <nvd3 options="options" data="results" config="{refreshDataOnly: true}"></nvd3>
+            <p ng-show="loading"><strong>{{'LOADING' | translate}}</string></p>
+            <nvd3 options="options" data="results" config="{refreshDataOnly: true}" ng-show="!loading"></nvd3>
         </div>
     </div>

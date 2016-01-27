@@ -1,0 +1,167 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+        <!-- Modal -->
+    <script type="text/ng-template" id="changePasswordModal.html">
+        <div>
+
+            <!-- Modal content-->
+            <div>
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="dismissModal()">&times;</button>
+                    <h4 class="modal-title">{{ 'PASSWORD' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'OLD_PASS' | translate }}</p>
+                    <input class="form-control" ng-disabled="true" ng-model="oldPassword">
+                    </br>
+                    <p>{{ 'NEW_PASS' | translate }}</p>
+                    <input input class="form-control" type="password" ng-model="password">
+                    </br>
+                    <p>{{ 'NEW_PASS_REP' | translate }}</p>
+                    <input input class="form-control" type="password" ng-model="passwordRepeat">
+                    </br>
+				    <div class="alert alert-danger" ng-show="errorCode == 1">
+				        <strong>{{ 'CHANGE_PASSWORD' | translate }}</strong> {{ 'REG_ERR_PASS' | translate }}
+				    </div>
+				  	<div class="alert alert-danger" ng-show="errorCode == 2">
+				        <strong>{{ 'CHANGE_PASSWORD' | translate }}</strong> {{ 'REG_ERR_REP_PASS' | translate }}
+				    </div>
+				    <div class="alert alert-success" ng-show="updateDone && updateSuccess">
+				        <strong>{{ 'CHANGE_PASSWORD' | translate }}</strong> {{ 'REG_ERR_REP_PASS' | translate }}
+				    </div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-primary" ng-click="updateAccount()"><span class="glyphicon glyphicon-save"></span> {{ 'SAVE' | translate }}</a>
+                    <a type="button" class="btn btn-danger" ng-click="dismissModal()"><span class="glyphicon glyphicon-remove"></span> {{ 'CANCEL' | translate }}</a>
+                </div>
+            </div>
+
+        </div>
+    </script>
+
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ 'MY_PROFILE' | translate }} <small>{{ 'DETAILS' | translate }}</small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+	                <div class="col-lg-12">
+	                	<div class="panel panel-default" cg-busy="{promise:getUser,message:'Loading...',backdrop:true}">
+			        <form class="panel-body">
+			            <div class="col-sm-6">
+			                
+			                    <p>{{ 'USERNAME' | translate }}  </p>
+
+			                        <div class="col-xs-10">
+			                            <input class="form-control bold" placeholder="{{ 'USERNAME' | translate }}" ng-model="user.user_name" ng-disabled=true>
+			                        </div>
+
+								</br>
+			                    <hr>
+			                    
+			                    <p>{{ 'E-MAIL' | translate }}  </p>
+
+			                        <div class="col-xs-10">
+			                            <input type="email" name="email" class="form-control bold" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required ng-disabled="true">
+			                        </div>
+			               
+			                    </br>
+			                    <hr>
+			                    <p>{{ 'NAME' | translate }}: </p>
+			                    
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="user.first_name">
+			                        </div>
+			                    
+			                    </br>
+			                    <hr>
+			                    <p>{{ 'SURNAME' | translate }}: </p>
+			                    
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'SURNAME' | translate }}" ng-model="user.last_name">
+			                        </div>
+			                   
+			                    </br>
+			                    <hr>
+			             
+			            </div>
+
+			            <div class="col-sm-6">
+			                
+			                    <p>{{ 'ACCOUNT_TYPE' | translate }}</p>
+			                    
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'ACCOUNT_TYPE' | translate }}" ng-disabled=true ng-model="user.type_name">
+			                        </div>
+			                    
+			                    </br>
+			                    <hr>
+			                    <p>{{ 'PHONE' | translate }}: </p>
+			                    
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'PHONE' | translate }}" ng-model="user.phone">
+			                        </div>
+			                    
+			                    </br>
+			                    <hr>
+			                    <p>{{ 'COUNTRY' | translate }}: </p>
+			                  
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'COUNTRY' | translate }}" ng-model="user.country_code" ng-disabled=true>
+			                        </div>
+			                  
+			                    </br>
+			                    <hr>
+			                    <p>{{ 'DOB' | translate }}: </p>
+			                  
+			                        <div class="col-xs-10">
+			                            <input class="form-control" placeholder="{{ 'DOB' | translate }}" ng-model="user.registration_date" ng-disabled=true>
+			                        </div>
+			                   
+			              
+			                </br>
+			                <div class="col-xs-10 pulltopbutton">
+			                    <submit class="btn btn-primary pull-right cursorchg" type="button" ng-click="updateUser()"><span class="glyphicon glyphicon-floppy-disk"></span> {{ 'SAVE' | translate }}</submit>
+			                    <a class="btn btn-info pull-right cursorchg btn-right-pull" type="button" ng-click="changePassword()"><span class="glyphicon glyphicon-option-vertical"></span> {{ 'CHANGE_PASSWORD' | translate }}</a>
+			                </div>
+			            </div>
+			        </form>
+			    </div>
+
+			    <div class="alert alert-success" ng-show="updateSuccess && updateDone">
+			        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			        <strong>{{ 'PROFILE_CHANGE' | translate }}</strong> {{ 'PROFILE_CHANGE_SUCCESS' | translate }}
+			    </div>
+
+			    <div class="alert alert-danger" ng-show="!updateSuccess && updateDone">
+			        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			        <strong>{{ 'PROFILE_CHANGE' | translate }}</strong> {{ 'PROFILE_CHANGE_FAIL' | translate }}
+			    </div>
+	                </div>
+                </div>
+               
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

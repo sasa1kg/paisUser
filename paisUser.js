@@ -1,35 +1,61 @@
 var userApp = angular.module("userApp", ['ngRoute', 'ngCookies', 'LocalStorageModule',
-	'angularjs-dropdown-multiselect', 'angularCharts', 
-	'ngMagnify', 'nvd3', 'ngSanitize', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ServerService', 'cgBusy','ui.bootstrap']);
+	'angularjs-dropdown-multiselect', 
+	'ngMagnify', 'ngSanitize', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ServerService', 'cgBusy','ui.bootstrap']);
 
 
-userApp.config(function($sceDelegateProvider) {
+
+userApp.config(function($sceDelegateProvider, $httpProvider, $locationProvider, localStorageServiceProvider) {
+
   $sceDelegateProvider.resourceUrlWhitelist([
     // Allow same origin resource loads.
     'self',
     // Allow loading from our assets domain.  Notice the difference between * and **.
     'http://srv*.assets.example.com/**'
   ]);
-});
-
-userApp.config(function (localStorageServiceProvider) {
   localStorageServiceProvider
     .setPrefix('paisUser');
+
 });
 
-
-userApp.run(function($rootScope, $translate, ServerService, $location) {
+userApp.run(['$rootScope', '$translate', '$location', 'ServerService', function($rootScope, $translate, $location, ServerService) {
+    
         $rootScope.translate = function(lang) {
-			     $translate.use(lang);
+            ServerService.registerLanguage(lang);
+			 $translate.use(lang);
         };
         $rootScope.getLanguage = function () {
           return $translate.use();
+        };
+        $rootScope.errorOccured = function () {
+          ServerService.clearUserInStorage();
+          $location.path('/login?error=backend');
         };
         $rootScope.logout = function () {
           ServerService.clearUserInStorage();
           $location.path('/login');
         }
-});
+        $rootScope.roundDouble = function (num) {
+            return Math.round(num * 10000) / 10000;
+        }
+        $rootScope.roundDoubleTwo = function (num) {
+            return Math.round(num * 100) / 100;
+        }
+        $rootScope.preSetLang = function() {
+            var lang = ServerService.getRegisteredLanguage();
+            if (lang != null) {
+                $rootScope.translate(lang);
+            }
+        };
+        $rootScope.manual = function () {
+            if ($rootScope.getLanguage() == "en") {
+                window.open("/newOrderManual_en.pdf");
+            } else {
+                window.open("/newOrderManual_rs.pdf");
+            } 
+        };
+        $rootScope.preSetLang(); 
+
+}]);
 
 
 
@@ -83,7 +109,7 @@ userApp.config(function($translateProvider) {
     LOGIN: 'Log in',
     LOGIN_MAIL: 'E-mail',
     LOGIN_PASSWORD : 'Password',
-    ESTIMATE : 'ESTIMATE',
+    ESTIMATE : 'NEXT',
     DETAILS : 'Details',
     PERSONAL_ACCOUNT: 'Personal account',
     COMPANY_ACCOUNT: 'Company/Community account',
@@ -107,20 +133,25 @@ userApp.config(function($translateProvider) {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'NOT ACTIVE',
     LOADING: 'LOADING...',
+    CANCELED: 'CANCELED',
+    FINISHED: 'FINISHED',
+    CANCELED_INFO: 'This order has been canceled.',
+    FINISHED_INFO: 'This order has been finished.',
     CREATED_AT: 'Created',
     DESCRIPTION: 'Description',
     ACTIVE_SENSORS: 'Activated',
     INACTIVE_SENSORS: 'Not activated',
-    INFORMATION: 'Informations',
+    INFORMATION: 'Order overview',
     CHOOSEN_SERVICES: 'Selected services:',
     CHOOSEN_NO_T: 'Number of selected territories ',
-    CHOOSEN_NO_T_SURFACE: 'With a total surface of',
+    CHOOSEN_NO_T_SURFACE: 'Total surface ',
     CHOOSEN_NO_SENSORS: 'Placed sensors',
-    CHOOSEN_EVALUATE: 'Evaluation',
+    CHOOSEN_EVALUATE: 'Price and payment',
     APPROX_VALUE: 'Approximate value of services is',
     ESTIMATE_ALERT: 'NOTE: Estimated value is calculated only approximately and may vary from the exact prices. After the order confirmation you will be contacted by our team who will familiarize you with the accurate price, method and schedule of payments.',
     LEGAL_NOTE: 'Legal note',
-    ACCEPT_TOS: 'By ordering selected services, you accept Terms of Service.',    
+    ACCEPT_TOS: 'By ordering selected services, you accept ',
+    ACCEPT_TOS_LINK: 'Terms of service',    
     CONFIRM_ORDER: 'Confirm order',
     CANCEL_ORDER: 'Back',
     ORDER_SUCCESS: 'Order successfully placed. You will be contacted be our staff according to your profile data.',
@@ -133,7 +164,7 @@ userApp.config(function($translateProvider) {
     WARN_IMG_TYPES: 'At least one image type must be selected.',
     WARNING_GEN : 'WARNING',
     WARNING_IMG_DESC: 'Order description cannot have more than 100 characters.',
-    ERROR_LOGIN : 'Please check your username and try again',
+    ERROR_LOGIN : 'Session has expired',
     TIME_FILTER: 'Time filter',
     TERRITORY: 'Territory',
     TER_DESC: 'Territory description or additional remarks',
@@ -151,6 +182,94 @@ userApp.config(function($translateProvider) {
     PENDING: 'PENDING',
     INVOICE: 'INVOICE',
     OPEN_INVOICE: 'Open invoice',
+    SENSOR_TYPE: 'Type',
+    OPEN_RESULTS: 'Show results',
+    IMAGE: 'Image',
+    IMAGE_OPEN: 'Open in new window',
+    SHOW_ON_MAP: 'Show on map',
+    POLY_MAP: 'Show images on map',
+    BACK_RESULTS: 'Back to order results',
+    POLY_MAP_TITLE: 'Image results on map',
+    MINIMIZE: 'Minimize',
+    MAXIMIZE: 'Open',
+    POLY_IMAGES_LENGTH: 'Images for territory ',
+    POLY_IMAGES_NO: 'No images taken yet',
+    PASSWORD_REPEAT : 'REPEAT PASSWORD',
+    REG_ERR_REP_PASS: 'Password and Repeat password fields do not match',
+    REG_ERR_USERNAME: 'Username must have at least 4 characters',
+    REG_ERR_PASS: 'Password field is empty',
+    REG_ERR_PHONE: 'Entered phone number is invalid',
+    REG_ERR_MAIL: 'Entered mail address is invalid',
+    REG_ERR_NAME: 'First and last name must have at least two characters',
+    CHANGE_PASSWORD: 'Change password',
+    CANCEL : 'Cancel',
+    OLD_PASS: 'Old password',
+    NEW_PASS: 'New password',
+    NEW_PASS_REP : 'Repeat new password',
+    LOAD_DATA: 'Load data',
+    SAVE_SELECTION : 'Save selection',
+    REMOVE: 'Remove',
+    ADD_TO_SELECTION: 'Add to selection',
+    ADD_SENSOR_TO_GRAPH: 'Add sensor to graph',
+    FROM_ORDER : 'from order',
+    SAVED_SELECTION:'Saved selections',
+    LOAD_SELECTION:'Load selection',
+    REMOVE_SELECTION:'Remove selection',
+    COLOR: 'Color',
+    UOM: 'Unit od measurement',
+    SELECTED_SENSORS: 'Selected sensors',
+    SHOW_STATS: 'Show stats',
+    NO_DATA : 'No data for the loaded period',
+    STATISTICS: 'Statistics',
+    EU_COM_TXT: 'This project is funded by FRACTALS (Future Internet Enabled Agricultural Applications, FP7 project No. 632874), under the funding framework of the European Commission',
+    STAT_PER: 'Statistics for the choosen period',
+    STAT_NUM: 'Number of measurements: ',
+    STAT_MAX: 'Maximum',
+    STAT_MIN: 'Minimum',
+    STAT_MEAN: 'Avg value',
+    STAT_STD: 'STD value',
+    INVOICE_VALUE : 'Invoice will be sent to the email. Methods of payment you agree with our team.',
+    SELECTION_NAME : 'Selection name',
+    COMB_WAR: 'Selections are only visible on your device. If you save your selection, it will be available only if you are logged in using current device.',
+    COMMANDS : 'Commands',
+    ACTIVE_FROM: 'Active from',
+    DG_IMAGE : 'Downgraded quality image',
+    DG_IMAGE_CLICK : 'Click on any point on the picture to load that part in the original quality/resolution.',
+    IMAGE_TILE : 'Image Tile',
+    BACK_TO_DG : 'Back to downgraded image',
+    LARGE_IMAGE : 'Large image',
+    LOAD : 'Load',
+    LOAD_Q_1 : 'Do you want to load tile which contains area ', 
+    LOAD_Q_2 : ' from the left border and ', 
+    LOAD_Q_3 : ' from the top border of the original downgraded image?',
+    FLIGHT_PLANS: 'Flight plans',
+    LIST_ALL_IMAGES : 'List all images',
+    ALL_IMAGES : 'All images on order',
+    IMAGE_TYPE : 'Image type',
+    IMAGE_TYPE_REG : 'Regular dron image',
+    IMAGE_TYPE_DG : 'Downgraded large image',
+    IMAGE_TYPE_TILE : 'Partial (tile) image',
+    OPEN_RESULTS : 'Open results',
+    ACTIVE_AT: 'Active from:',
+    MANUAL : 'Instruction manual',
+    PRICE_AND_PAY: 'Price and payment',
+    ORDER_OVERVIEW: 'Order overview',
+    COMPARATIVE: 'Comparative display',
+    SENSOR_STATIONS: 'Sensor Stations',
+    SENSOR_STATION: 'Sensor station',
+    ALARM_VALUES: 'Alarm values',
+    ALARM_MINIMUM: 'Alarm minimum value',
+    ALARM_MAXIMUM: 'Alarm maximum value',
+    SENSOR_STATION_DESC: 'Sensor station description',
+    SENSOR_STATION_SETTINGS: 'Sensor station settings',
+    SENS_ST_DESC: 'Sensor description added',
+    SENS_ST_ALARM: 'Alarm values selected',
+    SENS_ST_ADD_SETTINGS: 'Additional settings',
+    SENS_ST_ORDERED: 'Ordered',
+    SENS_ST_NUM: 'Number of sensor station',
+    SENS_ST_UOM_INFO: 'Unit of measurement for selected sensor is ',
+    IN_SENS: 'Not active',
+    ALARM_VALUES_INFO: 'If selected, system will inform you via mail when specific sensor readings are bellow minimum or above maximum.'
     })
     .translations('rs', {
       NEW_ORDER: 'Nova porudžbina',
@@ -200,7 +319,7 @@ userApp.config(function($translateProvider) {
     LOGIN: 'Ulaz',
     LOGIN_MAIL: 'Mejl adresa',
     LOGIN_PASSWORD : 'Lozinka',
-    ESTIMATE : 'Proceni',
+    ESTIMATE : 'DALJE',
     DETAILS : 'Detalji',
     PERSONAL_ACCOUNT: 'Fizičko lice',
     COMPANY_ACCOUNT: 'Pravno lice (kompanija ili udruženje)',
@@ -223,21 +342,26 @@ userApp.config(function($translateProvider) {
     NO_ORDERS: 'Nemate nijednu porudžbinu na profilu. Postavite novu klikom na ',
     ACTIVE: 'AKTIVNA',
     INACTIVE: 'NIJE AKTIVNA',
+    CANCELED: 'OTKAZANA',
+    FINISHED: 'ZAVRŠENA',
+    CANCELED_INFO: 'Ova narudžbina je otkazana.',
+    FINISHED_INFO: 'Ova narudžbina je završena.',
     LOADING: 'UČITAVANJE...',
     CREATED_AT: 'Napravljena',
     DESCRIPTION: 'Opis narudžbine',
     ACTIVE_SENSORS: 'Aktiviranih',
     INACTIVE_SENSORS: 'Neaktiviranih',
-    INFORMATION: 'Informacija',
+    INFORMATION: 'Pregled narudžbine',
     CHOOSEN_SERVICES: 'Odabrane usluge:',
     CHOOSEN_NO_T: 'Broj obeleženih teritorija',
-    CHOOSEN_NO_T_SURFACE: 'Ukupne površine',
+    CHOOSEN_NO_T_SURFACE: 'Ukupna površina',
     CHOOSEN_NO_SENSORS: 'Broj senzora',
-    CHOOSEN_EVALUATE: 'Procena vrednosti:',
+    CHOOSEN_EVALUATE: 'Cena i plaćanje',
     APPROX_VALUE: 'Približna vrednost obeleženih usluga je',
     ESTIMATE_ALERT: 'NAPOMENA: Procenjena vrednost je samo približno izračunata i može varirati od tačne cene. Po potvrdi narudžbine bićete kontaktirani od strane našeg tima koji će vas upoznati sa tačnom cenom, načinom i dinamikom plaćanja.',
     LEGAL_NOTE: 'Pravne informacije',
-    ACCEPT_TOS: 'Naručivanjem obeleženih usluga prihvatam uslove korišćenja.',
+    ACCEPT_TOS: 'Naručivanjem obeleženih usluga prihvatam ',
+    ACCEPT_TOS_LINK: 'Uslove korišćenja',
     CONFIRM_ORDER: 'Potvrdi narudžbinu',
     CANCEL_ORDER: 'Nazad',
     ORDER_SUCCESS: 'Narudžbina je uspešno poslata. Očekujte da budete kontaktirani preko kontakt brojeva koji se nalaze u vašem profilu.',
@@ -250,7 +374,7 @@ userApp.config(function($translateProvider) {
     WARN_IMG_TYPES: 'Minimalno jedan tip snimanja mora biti odabran.',
     WARNING_GEN : 'UPOZORENJE',
     WARNING_IMG_DESC: 'Opis narudžbine može imati maksimalno 100 karaktera.',
-    ERROR_LOGIN : 'Proverite podatke i pokušajte ponovo',
+    ERROR_LOGIN : 'Sesija je istekla',
     TIME_FILTER: 'Vremenski filter',
     TERRITORY: 'Teritorija',
     TER_DESC: 'Opis teritorije ili dodatne napomene',
@@ -268,6 +392,94 @@ userApp.config(function($translateProvider) {
     PENDING: 'NA ČEKANJU',
     INVOICE: 'PREDRAČUN',
     OPEN_INVOICE: 'Prikaži predračun',
+    SENSOR_TYPE: 'Tip',
+    OPEN_RESULTS: 'Prikaži rezultate',
+    IMAGE: 'Slika',
+    IMAGE_OPEN: 'Otvori u novom prozoru',
+    SHOW_ON_MAP: 'Prikaži na mapi',
+    POLY_MAP: 'Prikaži slike na mapi',
+    BACK_RESULTS: 'Nazad na rezultate narudžbine',
+    POLY_MAP_TITLE: 'Rezultati snimanja na mapi',
+    MINIMIZE: 'Skupi',
+    MAXIMIZE: 'Otvori',
+    POLY_IMAGES_LENGTH: 'Broj slika za teritoriju ',
+    POLY_IMAGES_NO: 'Nema slika',
+    PASSWORD_REPEAT : 'PONOVLJENA LOZINKA',
+    REG_ERR_REP_PASS: 'Lozinka i ponovljena lozinka se ne poklapaju',
+    REG_ERR_USERNAME: 'Korisničko ime mora imati minimalno 4 karaktera',
+    REG_ERR_PASS: 'Lozinka nije uneta',
+    REG_ERR_PHONE: 'Broj telefona je nevalidan',
+    REG_ERR_MAIL: 'Mejl adresa je nevalidna',
+    REG_ERR_NAME: 'Ime i prezime moraju imati minimalno 2 karaktera',
+    CHANGE_PASSWORD: 'Promeni lozinku',
+    CANCEL : 'Zatvori',
+    OLD_PASS: 'Stara lozinka',
+    NEW_PASS: 'Nova lozinka',
+    NEW_PASS_REP : 'Ponovi novu lozinku',
+    LOAD_DATA: 'Učitaj podatke',
+    SAVE_SELECTION : 'Sačuvaj kombinaciju',
+    REMOVE: 'Ukloni',
+    ADD_TO_SELECTION: 'Dodaj u kombinaciju',
+    ADD_SENSOR_TO_GRAPH: 'Dodaj senzor na graf',
+    FROM_ORDER: 'iz narudžbine',
+    SAVED_SELECTION:'Sačuvane kombinacije',
+    LOAD_SELECTION:'Učitaj kombinaciju',
+    REMOVE_SELECTION:'Ukloni kombinaciju',
+    COLOR: 'Boja',
+    UOM: 'Jedinica mere',
+    SELECTED_SENSORS: 'Odabrani senzori',
+    SHOW_STATS: 'Prikaži statistiku',
+    NO_DATA : 'Nema podataka za učitani period',
+    STATISTICS: 'Statistika',
+    EU_COM_TXT: 'Ovaj projekat je finansiran od strane FRACTALS (Future Internet Enabled Agricultural Applications, FP7 projekat broj 632874), pod finansirajućom platformom Evropske Komisije',
+    STAT_PER: 'Statistika za izabrani period',
+    STAT_NUM: 'Broj merenja: ',
+    STAT_MAX: 'Maksimum',
+    STAT_MIN: 'Minimum',
+    STAT_MEAN: 'Srednja vr.',
+    STAT_STD: 'Srednja dev.',
+    INVOICE_VALUE : 'Predračun će biti dostavljen na mejl. Način i dinamiku plaćanja ćete dogovoriti sa našim timom.',
+    SELECTION_NAME : 'Ime kombinacije',
+    COMB_WAR : 'Kombinacije će biti vidljiva samo na ovom uređaju. Ukoliko sačuvate kombinaciju, ona će Vam biti dostupna samo ako ste prijavljeni na ovom uređaju.',
+    COMMANDS : 'Akcije',
+    ACTIVE_FROM: 'Aktiviran od',
+    DG_IMAGE : 'Originalna slika slabijeg kvaliteta',
+    DG_IMAGE_CLICK : 'Kliknite na bilo koju tačku na slici kako bi učitali taj deo slike u originalnoj rezoluciji/kvalitetu.',
+    IMAGE_TILE : 'Odsečak slike',
+    BACK_TO_DG : 'Nazad na sliku slabijeg kvaliteta',
+    LARGE_IMAGE : 'Velika slika',
+    LOAD : 'Učitaj',
+    LOAD_Q_1 : 'Da li želite da učitate isečak koji sadrži teritoriju na ', 
+    LOAD_Q_2 : ' od leve ivice i ', 
+    LOAD_Q_3 : ' od gornje ivice originalne slike nižeg kvaliteta? ',
+    FLIGHT_PLANS: 'Planovi leta',
+    LIST_ALL_IMAGES : 'Lista svih slika',
+    ALL_IMAGES : 'Sve slike za narudžbinu',
+    IMAGE_TYPE : 'Tip slike',
+    IMAGE_TYPE_REG : 'Regularna slika sa drona',
+    IMAGE_TYPE_DG : 'Velika slika manjeg kvaliteta',
+    IMAGE_TYPE_TILE : 'Isečak velike slike',
+    OPEN_RESULTS : 'Otvori rezultate',
+    ACTIVE_AT: 'Aktiviran od:',
+    MANUAL : 'Uputstvo za upotrebu',
+    PRICE_AND_PAY: 'Cena i plaćanje',
+    ORDER_OVERVIEW: 'Pregled narudžbine',
+    COMPARATIVE: 'Uporedni prikaz',
+    SENSOR_STATIONS: 'Senzorske stanice',
+    SENSOR_STATION: 'Senzorska stanica',
+    ALARM_VALUES: 'Vrednosti alarma',
+    ALARM_MINIMUM: 'Minimalna vrednost alarma',
+    ALARM_MAXIMUM: 'Maksimalna vrednost alarma',
+    SENSOR_STATION_DESC: 'Opis senzorske stanice',
+    SENSOR_STATION_SETTINGS: 'Podešavanja senzorske stanice',
+    SENS_ST_DESC: 'Opis senzora dodat',
+    SENS_ST_ALARM: 'Alarmne vrednosti odabrane',
+    SENS_ST_ADD_SETTINGS: 'Dodatna podešavanja',
+    SENS_ST_ORDERED: 'Naručeno',
+    SENS_ST_NUM: 'Broj senzorskih stanica',
+    SENS_ST_UOM_INFO: 'Merna jedinica za odabrani senzor je ',
+    IN_SENS: 'Neaktivan',
+    ALARM_VALUES_INFO: 'Ako su unete alarmne vrednosti, sistem će Vas obavestiti kada vrednost na senzoru padne ispod minimalne alarmne vrednosti ili ako pređe maksimalnu alarmnu vrednost.'
     });
     $translateProvider.preferredLanguage('en');
 });
@@ -278,45 +490,3 @@ userApp.filter('trusted', ['$sce', function ($sce) {
         return $sce.trustAsResourceUrl(url);
     };
 }]);
-
-userApp.directive('imageonload', function() {
-        return {
-            restrict: 'A',
-            link: function(scope, element, attrs) {
-                element.bind('load', function() {
-                    //call the function that was passed
-                    console.log("imageonload called");
-                    scope.$apply(attrs.imageonload);
-                });
-            }
-        };
-});
-
-userApp.directive("mySrc", function() {
-    return {
-      link: function(scope, element, attrs) {
-        var img, loadImage;
-        img = null;
-
-        loadImage = function() {
-
-          element[0].src = "/img/spinner.gif";
-
-          img = new Image();
-          img.src = attrs.mySrc;
-
-          img.onload = function() {
-            element[0].src = attrs.mySrc;
-          };
-        };
-
-        scope.$watch((function() {
-          return attrs.mySrc;
-        }), function(newVal, oldVal) {
-          if (oldVal !== newVal) {
-            loadImage();
-          }
-        });
-      }
-    };
-  });

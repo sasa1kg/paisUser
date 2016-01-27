@@ -4,19 +4,21 @@ angular.module('userApp').controller("contactCtrl", ["$scope", "$location", "$fi
 
 	scope.mailToArray = [];
 
-	ServerService.getAdministrators().then(function (data) {
+    
+    
+    ServerService.getAdministratorsMails().then(function (data) {
                 if (data) {
-                	for (var i = data.length - 1; i >= 0; i--) {
-                		scope.mailToArray.push({
-                			mail:data[i].email, 
-                			mailto: "mailto:" + data[i].email + "?Subject=Help"});
-                	};
-                   scope.administrators = data;
+                    if (data.length > 0) {
+                        scope.mailToArray.push({
+                            mail:data[0].email, 
+                            mailto: "mailto:" + data[0].email + "?Subject=Help"});
+                    }
                 } else {
                    scope.generalError = true;
                 }
     }, function(reason) {
                 scope.generalError = true;
     });
+    
 
 }]);

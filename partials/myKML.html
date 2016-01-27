@@ -1,0 +1,40 @@
+ <div id="wrapper">
+
+        <div ng-include="'partials/navigation.html'">
+        </div>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Image Flight <small> <a class="btn btn-primary pull-right btn-right-pull" href="#/results/{{order_id}}/"><span class="glyphicon glyphicon-chevron-left"></span> {{ 'BACK_RESULTS' | translate }}</a></small>
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-12">
+                    	<div class="panel panel-default">
+                    		<div class="panel-body">
+                       			<div class="google-map-canvas" id="map-canvas-results"></div>
+                       		</div>
+                    	</div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+             
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

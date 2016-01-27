@@ -1,26 +1,28 @@
-angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filter", "ServerService",  
-	function (scope, http, filter, ServerService) {
-	scope.activeState = 1;
-	console.log("Accounts!");
-	scope.msg = "User accounts!";
-
-	scope.clientId = 22;
-
-
+angular.module('userApp').controller("accountsCtrl", ["$rootScope", "$scope", "$http", "$filter", "ServerService", "$location",  
+	function (rootScope, scope, http, filter, ServerService, location) {
 
 	scope.selectedAccount = "";
 	scope.accounts = [];
 	scope.loaded = false;
+	scope.imagesPanelOpen = true;
+
+
+    scope.toogleImagesPanel = function () {
+        scope.imagesPanelOpen = !scope.imagesPanelOpen;
+    }
+
 
 
 	scope.sensorsCalculation = function () {
 		scope.nonActiveSensors = 0;
 		scope.activeSensors = 0;
-		for (var i = scope.selectedAccount.sensors.length - 1; i >= 0; i--) {
-			if (scope.selectedAccount.sensors[i].active == 0) {
-				scope.nonActiveSensors = scope.nonActiveSensors + 1;
-			} else {
-				scope.activeSensors = scope.activeSensors + 1;
+		for (var i = scope.selectedAccount.stations.length - 1; i >= 0; i--) {
+			for (var j = scope.selectedAccount.stations[i].sensors.length - 1; j >= 0; j--) {
+				if (scope.selectedAccount.stations[i].sensors[j].active == 0) {
+					scope.nonActiveSensors = scope.nonActiveSensors + 1;
+				} else {
+					scope.activeSensors = scope.activeSensors + 1;
+				}
 			}
 		};
 	}
@@ -51,12 +53,13 @@ angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filte
 		                   scope.getTotalSurface();
 		                   scope.getOrderFrequencies();
 		                   scope.sensorsCalculation();
+		                   scope.getImages();
 		                   scope.loaded = true;
 		                } else {
-		                   alert("Data null");
+		                   rootScope.errorOccured();
 		                }
 		        }, function(reason) {
-		  				alert('Failed: ' + reason);
+		  				rootScope.errorOccured();
 				});
 			}
 		};
@@ -69,37 +72,108 @@ angular.module('userApp').controller("accountsCtrl", ["$scope", "$http", "$filte
 
 
 
-  	scope.getOrders = ServerService.clientOrders(scope.clientId).then(function (data) {
+  	scope.getOrders = function () {
+  		ServerService.clientOrders(scope.clientId).then(function (data) {
                 if (data) {
-                   console.log("Accounts " + data.length);
                    scope.accounts = data;
                    scope.select(data[0].order_id);
                 } else {
-                   alert("Data null");
+                   rootScope.errorOccured();
                 }
-    }, function(reason) {
-  				alert('Failed: ' + reason);
-	});
+    	}, function(reason) {
+  				rootScope.errorOccured();
+		});
+  	}
+
+  	scope.getOrders();
 
 
-	scope.getFrequencies = ServerService.getFrequencies().then(function (data) {
+	scope.getFrequencies = function () {
+		ServerService.getFrequencies().then(function (data) {
                 if (data) {
                    scope.frequencies = data;
                 } else {
-                   alert("Data null");
+                   rootScope.errorOccured();
                 }
-    }, function(reason) {
-  				alert('Failed: ' + reason);
-	});
+    	}, function(reason) {
+  				rootScope.errorOccured();
+		});
+	}
+
+	scope.getFrequencies();
+
+	scope.getSensorTypesDetailed = function () {
+		ServerService.getSensorTypes().then(function (data) {
+                        if (data) {
+                           scope.sensorTypes = data;
+                        } else {
+                            rootScope.errorOccured();
+                        }
+		}, function(reason) {
+	    	rootScope.errorOccured();
+		});
+	}
+
+	scope.getSensorTypesDetailed();
+
+	scope.getSensorTypeName = function (type_id) {
+		for (var i = scope.sensorTypes.length - 1; i >= 0; i--) {
+			if (scope.sensorTypes[i].id == type_id) {
+				return scope.sensorTypes[i].name;
+			}
+		};
+	}
+
+	scope.getUOMSymbol = function (type_id, uom_id) {
+        for (var i = scope.sensorTypes.length - 1; i >= 0; i--) {
+            if (scope.sensorTypes[i].id == type_id) {
+                for (var j = scope.sensorTypes[i].uoms.length - 1; j >= 0; j--) {
+                    if (scope.sensorTypes[i].uoms[j].id == uom_id) {
+                        return scope.sensorTypes[i].uoms[j].symbol;
+                    }
+                };
+            }
+        };
+    }
 
 
 	scope.showInvoice = function () {
-    	http.get('http://195.220.224.164/pais/clients/'+ scope.selectedAccount.client_id + '/orders/'+ scope.selectedAccount.order_id + '/getInvoice', {responseType: 'arraybuffer'})
-       .success(function (data) {
+		var userLS = ServerService.getUserInStorage();
+    	http.get('http://195.220.224.164/PaisImages/clients/'+ scope.selectedAccount.client_id + '/orders/'+ scope.selectedAccount.order_id + '/getInvoice', {
+    		headers: {'X-Auth-Token': userLS.token},
+    		responseType: 'arraybuffer'
+    	}).success(function (data) {
            var file = new Blob([data], {type: 'application/pdf'});
            var fileURL = URL.createObjectURL(file);
            window.open(fileURL);
-    });
+    	});
+    }
+
+    scope.getImages = function () {
+        ServerService.clientOrderImages(scope.clientId, scope.selectedAccount.order_id).then(function (data) {
+                        if (data) {
+                           scope.selectedOrderImage = data;
+                        } else {
+                          selectedOrderImage = [];
+                        }
+                }, function(reason) {
+                        selectedOrderImage = [];
+                });
+    }
+
+    scope.getPolygonImagesCount = function (polygon_id) {
+    	var imgs = 0;
+    	if (scope.selectedOrderImage == undefined) {
+    		return imgs;
+    	}
+    	if (scope.selectedOrderImage.length > 0) {
+	    	angular.forEach(scope.selectedOrderImage, function(img) {
+	    		if (img.polygon_id == polygon_id) {
+	    			imgs ++;
+	    		}
+	    	});
+   		}
+    	return imgs;
     }
 
 }]);

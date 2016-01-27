@@ -1,75 +1,82 @@
 
 angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http", 
-	"$filter", "$routeParams", "ServerService",  
-	function (scope, http, filter, rootParams, ServerService) {
+	"$filter", "$routeParams", "ServerService", "$rootScope",  
+	function (scope, http, filter, rootParams, ServerService, rootScope) {
 
 
-	console.log("Sensor Readings! " + rootParams.id);
-	console.log("Sensor Readings! " + rootParams.client_id);
-	console.log("Sensor Readings! " + rootParams.order_id);
-	scope.msg = "Sensor Readings Here";
+    scope.init = function () {
+        scope.dateFrom = new Date();
+        scope.dateTo = new Date();
+        scope.dateFrom.setTime(scope.dateFrom.getTime() - 10 * 24 * 60 * 60 * 1000);
+    }
+    scope.init();
+
+    scope.localDate = new Date();
+
+    scope.selectedSensor = {
+        "selectedSensor" : {
+            "color" : "#162656"
+        }
+    };
+
+
 
 	scope.sensorId = rootParams.id;
 	scope.clientId = rootParams.client_id;
 	scope.orderId = rootParams.order_id;
+    scope.stationId = rootParams.station_id;
 
-	scope.dateFrom = "";
-	scope.dateTo = "";
+	
+    scope.getLang = function () {
+        if (rootScope.getLanguage() === 'en') {
+            scope.timeLbl = "TIME";
+            scope.valueLbl = "VALUE";
+        } else {
+            scope.timeLbl = "VREME";
+            scope.valueLbl = "VREDNOST";
+        }
+    }
 
-	scope.hours = [];
-	scope.minutes = [];
-	scope.init = function () {
-		for (var i = 23; i >= 0; i--) {
-			var iDisplay;
-			if (i<10) {
-				iDisplay = "0" + i;
-			} else {
-				iDisplay = "" + i;
-			}
-			scope.hours.push({
-				value: i,
-				display: iDisplay + " h"
-			});
-		};
-		for (var i = 59; i >= 0; i--) {
-			var iDisplayMin;
-			if (i<10) {
-				iDisplayMin = "0" + i;
-			} else {
-				iDisplayMin = "" + i;
-			}
-			scope.minutes.push({
-				value: i,
-				display: iDisplayMin + " min"
-			});
-		};
-	}
-	scope.init();
+
+    scope.getLang();
 
 
 
-	//alert(new Date());
+    scope.data = {
+    	"name" : "",
+    	"data" : [],
+    	"unit" : ""
+    }
+
+    
+
+	scope.loading = true;
 
 	scope.getSensor = function () {
-		ServerService.clientOrderSensors(scope.clientId, scope.orderId, scope.sensorId).then(function (data) {
+		ServerService.clientOrderSensors(scope.clientId, scope.orderId, scope.stationId, scope.sensorId).then(function (data) {
                 if (data) {
                 	scope.sensor = data;
                 	ServerService.getSensorType(data.type_id).then(function (data1) {
                 		if (data1) {
                 			scope.sensorType = data1;
-                			ServerService.getSensorResults(scope.orderId, scope.sensorId).then(function (data2) {
+                			scope.data.name = data1.sensor_type_name;
+                            //return;
+                			ServerService.getSensorResults(scope.orderId, scope.sensorId, scope.stationId, {
+                                "from" : scope.refactorDate(scope.dateFrom),
+                                "to" : scope.refactorDate(scope.dateTo)
+                            }).then(function (data2) {
 				                if (data2) {
-				                	
 				                	for (var i = data2.length - 1; i >= 0; i--) {
-				                	 	scope.results[0].values.push({
-							            	x: new Date(data2[i].time),
-							            	y: data2[i].value
-							            });
-							            
-							            
-				                	 }; 
+				                	 	
+			                            var single_point = [];
+                                        single_point.push(data2[i].time - scope.localDate.getTimezoneOffset() * 60 * 1000);
+			                            single_point.push(parseFloat(data2[i].value));
+				                		scope.data.data.push(single_point);
+				                		
+				                	 }
 
-				 					scope.getOUM();
+				                	 scope.getOUM();
+				                	 
                 				} else {
 		                   			scope.generalError = true;
 		               			}
@@ -77,184 +84,205 @@ angular.module('userApp').controller("sensorReadingsCtrl", ["$scope", "$http",
 		               			if (reason == "NA") {
 		               				alert("Sensor is not active");
 		               			} else {
-		  							scope.generalError = true;
+		  							rootScope.errorOccured();
 		  						}
 							});
 
                 		//************
                 		} else {
-                   			scope.generalError = true;
+                   			rootScope.errorOccured();
                			}
                		}, function(reason) {
-  						scope.generalError = true;
+  						rootScope.errorOccured();
 					});
                 } else {
-                   scope.generalError = true;
+                   rootScope.errorOccured();
                 }
     }, function(reason) {
-  				scope.generalError = true;
+  				rootScope.errorOccured();
 	});
 	};
+
+    scope.filter = function () {
+        scope.data.data = [];
+        scope.loading = true;
+        ServerService.getSensorResults(scope.orderId, scope.sensorId, scope.stationId, {
+                                "from" : scope.refactorDate(scope.dateFrom),
+                                "to" : scope.refactorDate(scope.dateTo)
+                            }).then(function (data2) {
+                                if (data2) {
+                                    for (var i = data2.length - 1; i >= 0; i--) {
+                                        
+                                        var single_point = [];
+                                        single_point.push(data2[i].time - scope.localDate.getTimezoneOffset() * 60 * 1000);
+                                        single_point.push(parseFloat(data2[i].value));
+                                        scope.data.data.push(single_point);
+                                        
+                                     }
+
+                                     scope.getOUM();
+                                    
+                                     
+                                } else {
+                                    scope.generalError = true;
+                                }
+                            }, function(reason) {
+                                if (reason == "NA") {
+                                    alert("Sensor is not active");
+                                } else {
+                                    rootScope.errorOccured();
+                                }
+                            });
+    }
 
 
 	scope.getOUM = function () {
 		ServerService.getSensorUOM(scope.sensor.uom_id).then(function (data) {
 			if (data) {
-				scope.results[0].key = data.name;
+                scope.getStatistics();
+				scope.data.unit = data.name;
+                scope.uom_symbol = data.symbol;
+				scope.loading = false;
+				scope.rawChart(scope.data, scope.sensorType, scope.uom_symbol, 4, 14);
 			}
 		}, function(reason) {
-  			scope.generalError = true;
+  			rootScope.errorOccured();
 		});
 
 	}
+
+    scope.getStatistics = function () {
+        ServerService.getSensorStatistics(scope.orderId, scope.sensorId, scope.stationId, {
+                                "from" : scope.refactorDate(scope.dateFrom),
+                                "to" : scope.refactorDate(scope.dateTo)
+        }).then(function (data) {
+            if (data) {
+                scope.statistics = data;
+            }
+        }, function(reason) {
+            rootScope.errorOccured();
+        });
+    }
 
 
 	scope.getSensor();
 
 
-	scope.options = {
-            chart: {
-                type: 'lineChart',
-                height: 600,
-                margin : {
-                    top: 20,
-                    right: 20,
-                    bottom: 40,
-                    left: 55
-                },
-                x: function(d){ return d.x; },
-                y: function(d){ return d.y; },
-                useInteractiveGuideline: true,
-                xAxis: {
-                    axisLabel: 'Vreme',
-                    showMaxMin: false,
-                    tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y %H:%M')(new Date(d))
-                    },
-      				staggerLabels: true
-                },
-                yAxis: {
-                    axisLabel: 'Vrednost',
-                    tickFormat: function (d){
-                        return d3.format(',.1f')(d);
-                    },
-                    axisLabelDistance: 30
-                },
-                callback: function(chart){
-                    console.log("!!! lineChart callback !!!");
+	scope.rawChart = function (data, xAxisTitle, uom_symbol) {
+     $('#containerhc').empty();
+     scope.chart = $('#containerhc').highcharts({
+        chart: {
+            type: 'area',
+            zoomType: 'x',
+		      plotBackgroundColor: 'rgba(255, 255, 255, .9)',
+		      plotShadow: true,
+		      plotBorderWidth: 1
+        },
+        exporting: {
+            chartOptions: {
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: false
+                        }
+                    }
                 }
+            },
+            scale: 1,
+            fallbackToExportServer: false
+        },
+        title: {
+            text: 'Sensor Readings'
+        },
+        tooltip: {
+            formatter: function() {
+                return  '<b>' + this.series.name +'</b><br/>' +
+                    Highcharts.dateFormat('%e.%b %Y, %H:%M:%S',
+                                          this.x)
+                + ' <br/><b> ' + this.y + " " + uom_symbol + "</b>";
             }
-        };
-
-      
-    scope.results = [{
-					values: [],
-					key: '',
-					color: '#2ca02c'
-					}];
-	scope.data3 = function () {
-			scope.results = [];  
-			var temp = [];
-			var moist = [];
-
-            
-	            temp.push({
-	            	x: new Date("1/07/2015 10:10"),
-	            	y: 31
-	            });
-	            temp.push({
-	            	x: new Date("1/07/2015 10:15"),
-	            	y: 33
-	            });
-	            temp.push({
-	            	x: new Date("1/07/2015 10:20"),
-	            	y: 26
-	            });
-	           	moist.push({
-	            	x: new Date("1/07/2015 10:10"),
-	            	y: 45
-	            });
-	            moist.push({
-	            	x: new Date("1/07/2015 10:15"),
-	            	y: 55
-	            });
-	            moist.push({
-	            	x: new Date("1/07/2015 10:20"),
-	            	y: 66
-	            });
-        	
-        	ServerService.getSensorResults(scope.orderId, scope.sensorId).then(function (data2) {
-				                if (data2) {
-				                	alert(data2.length);
-				                	var resultArray = [];
-				                	for (var i = data2.length - 1; i >= 0; i--) {
-				                	 	scope.results.push({
-							            	x: data2[i].time,
-							            	y: data2[i].value
-							            });
-
-				                	 }; 
-
-                				} else {
-		                   			scope.generalError = true;
-		               			}
-		               		}, function(reason) {
-		               			if (reason == "NA") {
-		               				alert("Sensor is not active");
-		               			} else {
-		  							scope.generalError = true;
-		  						}
-							});
-				return [
-					{
-					values: temp,
-					key: 'Temperatura',
-					color: '#2ca02c'
-					}
-				];
-           
-
-	};
-
-	scope.data = {
-		series: ['Temperatura [Celzijus]', 'Vlažnost[%]'],
-		data: [
-			{
-				x: "1/7/2015 20:00",
-				y: [31, 45]
-			},
-			{
-				x: "2/7/2015 10:00",
-				y: [32, 55]
-			},
-			{
-				x: "3/7/2015 13:15",
-				y: [33, 51]
-			},
-			{
-				x: "4/7/2015 16:07",
-				y: [26, 71]
-			},
-			{
-				x: "5/7/2015 21:02",
-				y: [28, 49]
-			},
-		]
-	}
+        },
+        xAxis: {
+          gridLineWidth: 1,
+          lineColor: '#000',
+          tickColor: '#000',
+            type: 'datetime',
+             dateTimeLabelFormats: {
+               day: '%e. %b \'%y %H:%M:%S'
+             }
+        },
+        yAxis: {
+          minorTickInterval: 'auto',
+          lineColor: '#000',
+          lineWidth: 1,
+          tickWidth: 1,
+          tickColor: '#000',
+            title: {
+                text: data.unit
+            },
+            /*plotBands: [{
+                    from: scope.minimum,
+                    to: scope.maximum,
+                    color: 'rgba(68, 170, 213, 0.2)',
+                    label: {
+                        text: 'Last quarter year\'s value range'
+                    }
+                }]*/
+        },
+        plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+        },
+        series: [{
+            name: data.name,
+            data: data.data
+        }]
+    });
+  }
 
 
-	scope.chartType = 'line';
+  scope.refactorDate = function (date) {
+    var day = date.getDate();
+    if (day < 10) {
+        day = "0" + day;
+    }
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = "0" + month;
+    }
+    var year = date.getFullYear();
+    var minutes = date.getMinutes();
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    var hours = date.getHours();
+    if (hours < 10) {
+        hours = "0" + hours;
+    }
+    return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
 
-	scope.config2 = {
-		labels: false,
-		legend: {
-			display: true,
-			htmlEnabled: true,
-			position: 'right'
-		},
-		lineLegend: 'lineEnd'
-	}
-
-
+  }
 
 }]);

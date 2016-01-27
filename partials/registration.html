@@ -1,5 +1,29 @@
 <div class="container holder">
 
+    <div class="alert alert-danger" ng-show="errorCode==1">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_REP_PASS' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="errorCode==2">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_USERNAME' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="errorCode==3">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_PASS' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="errorCode==4 || errorCode==5">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_NAME' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="errorCode==6">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_PHONE' | translate }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="errorCode==7">
+        <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REG_ERR_MAIL' | translate }}
+    </div>
+
 	<div class="panel panel-default">
         <div class="panel-heading">
             <h2 class="panel-title">{{ 'REGISTER' | translate }} <a class="pull-right" href="#/login">{{ 'BACK_TO_LOGIN' | translate }}</a></h2>
@@ -9,23 +33,31 @@
                 <dl>
                     <dt><label>{{ 'USERNAME' | translate }}:  </label></dt>
                     <dd>
-                        <div class="col-xs-10">
-                            <input class="form-control" type="text" name="input" placeholder="{{ 'USERNAME' | translate }}" ng-model="user.username" required>
+                        <div class="col-xs-10 myforminput">
+                            <input class="form-control bold" type="text" name="input" placeholder="{{ 'USERNAME' | translate }}" ng-model="user.user_name" required>
                         </div>
                     </dd>
                     </br>
                     <hr>
                     <dt><label>{{ 'PASSWORD' | translate }}:  </label></dt>
                     <dd>
-                        <div class="col-xs-10">
+                        <div class="col-xs-10 myforminput">
                             <input type="password" name="input" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="user.password" required>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
+                    <dt><label>{{ 'PASSWORD_REPEAT' | translate }}:  </label></dt>
+                    <dd>
+                        <div class="col-xs-10 myforminput">
+                            <input type="password" name="input" class="form-control" placeholder="{{ 'PASSWORD_REPEAT' | translate }}" ng-model="repeatPassword" required>
                         </div>
                     </dd>
                     </br>
                     <hr>
                     <dt><label>{{ 'EMAIL' | translate }}:  </label></dt>
                     <dd>
-                        <div class="col-xs-10">
+                        <div class="col-xs-10 myforminput">
                             <input type="email" name="input" class="form-control" placeholder="{{ 'MAIL_EXAMPLE' | translate }}" ng-model="user.email" required>
                         </div>
                     </dd>
@@ -33,28 +65,27 @@
                     <hr>
                     <dt><label>{{ 'NAME' | translate }}: </label></dt>
                     <dd>
-                        <div class="col-xs-10">
+                        <div class="col-xs-10 myforminput">
                             <input class="form-control" type="text" name="input" placeholder="{{ 'NAME' | translate }}" ng-model="user.first_name" required>
                         </div>
                     </dd>
                     </br>
-                    <hr>
-                    <dt><label>{{ 'SURNAME' | translate }}: </label></dt>
-                    <dd>
-                        <div class="col-xs-10">
-                            <input class="form-control" type="text" name="input" placeholder="{{ 'SURNAME' | translate }}" ng-model="user.last_name" reuired>
-                        </div>
-                    </dd>
-                    </br>
-                    <hr>
                 </dl>
             </div>
 
             <div class="col-sm-6">
                 <dl>
+                    <dt><label>{{ 'SURNAME' | translate }}: </label></dt>
+                    <dd>
+                        <div class="col-xs-10 myforminput">
+                            <input class="form-control" type="text" name="input" placeholder="{{ 'SURNAME' | translate }}" ng-model="user.last_name" reuired>
+                        </div>
+                    </dd>
+                    </br>
+                    <hr>
                     <dt><label>{{ 'ACCOUNT_TYPE' | translate }}</label></dt>
                     <dd>
-                        <div class="col-xs-10">
+                        <div class="col-xs-10 myforminput">
                             <select class="form-control" id="account_type" ng-options="accountType.id as accountType.name for accountType in accountTypes" ng-model="user.type_id">
 						  	</select>
                         </div>
@@ -63,7 +94,7 @@
                     <hr>
                     <dt><label>{{ 'PHONE' | translate }}: </label></dt>
                     <dd>
-                        <div class="col-xs-10">
+                        <div class="col-xs-10 myforminput">
                             <input class="form-control" type="text" name="input" placeholder="{{ 'PHONE' | translate }}" ng-model="user.phone" required>
                         </div>
                     </dd>
@@ -71,7 +102,7 @@
                     <hr>
                     <dt><label>{{ 'COUNTRY' | translate }}: </label></dt>
                     <dd>
-                    	<div class="col-xs-10">
+                    	<div class="col-xs-10 myforminput">
                              <select class="form-control" id="country" ng-options="country.id as country.name for country in countries" ng-model="user.country_code">
 						  	</select>
 						</div>
@@ -81,24 +112,22 @@
                 </dl>
                 </br>
                 <div class="col-xs-10 pulltopbutton">
-                    <submit class="btn-lg btn-primary pull-right cursorchg" type="submit" ng-click="register()" ng-disabled="reg_form.$invalid">{{ 'CREATE' | translate }}</submit>
+                    <submit class="btn-lg btn-primary pull-right cursorchg" type="submit" ng-click="register()" ng-disabled="reg_form.$invalid" ng-show="!loading">{{ 'CREATE' | translate }}</submit>
+                     <submit class="btn-lg btn-primary pull-right cursorchg" ng-disabled="true" ng-show="loading">{{ 'LOADING' | translate }}</submit>
                 </div>
             </div>
         </form>
     </div>
 
     <div class="alert alert-success" ng-show="registered && !error">
-        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REGISTER_SUCCESS' | translate }}
     </div>
 
     <div class="alert alert-danger" ng-show="!registered && error">
-        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'REGISTER_ERROR' | translate }}
     </div>
 
-        <div class="alert alert-danger" ng-show="backendLoadingError">
-        <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <div class="alert alert-danger" ng-show="backendLoadingError">
         <strong>{{ 'REGISTER_TITLE' | translate }}</strong> {{ 'BACKEND_ERROR' | translate }}
     </div>
 </div>

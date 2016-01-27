@@ -1,0 +1,52 @@
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="navigationCtrl">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html"></a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav backGray">
+                
+                <li><a ng-click="translate('rs')" class="hover"><img src="img/flag_serbian.gif"></img></a></li>
+                <li><a ng-click="translate('en')" class="hover"><img src="img/uk.png"></img></a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle cursorchg" data-toggle="dropdown"><i class="fa fa-user"></i> {{user.idm_name}} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#/userDetails"><i class="fa fa-fw fa-users"></i> {{ 'MY_PROFILE' | translate }}</a>
+                        </li>
+                        <li>
+                            <a href="{{link}}" target="_top"><i class="fa fa-fw fa-envelope"></i> {{ 'CONTACT_US' | translate }}</a>
+                        </li>
+                        <li>
+                            <a class="cursorchg" ng-click="logout()"><i class="fa fa-fw fa-sign-out"></i> Logout</a>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse backGray">
+                <ul class="nav navbar-nav side-nav">
+                        <li>
+                            <a href="#/newOrder"><i class="fa fa-fw fa-area-chart"></i> {{ 'NEW_ORDER' | translate }} </a>
+                        </li>
+                        <li>
+                            <a href="#/orders"><i class="fa fa-fw fa-book"></i> {{ 'MY_ORDERS' | translate }} </a>
+                        </li>
+                        <li>
+                            <a href="#/results"><i class="fa fa-fw fa-bar-chart"></i> {{ 'MY_RESULTS' | translate }} </a>
+                        </li>
+                        <li>
+                            <a href="#/userDetails"><i class="fa fa-fw fa-user"></i> {{ 'MY_PROFILE' | translate }} </a>
+                        </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
